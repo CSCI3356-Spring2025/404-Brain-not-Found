@@ -1,5 +1,5 @@
 
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files extra words
 __pycache__/
 *.py[cod]
 *$py.class
