@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from PeerConnect.views import student_dashboard
+from PeerConnect import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('student_dashboard/', student_dashboard, name='student_dashboard')
+    path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
+    path('peer_answer_quant/', views.peer_answer_quant, name='peer_answer_quant'),
+    path('peer_answer_qual/', views.peer_answer_qual, name='peer_answer_qual'),
 ]
