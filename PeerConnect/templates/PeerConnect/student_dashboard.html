@@ -1,14 +1,6 @@
-{%load static %}
-<!DOCTYPE html>
-<html>
-   <head>
-      <link href="https://fonts.googleapis.com/css?family=Inder&display=swap" rel="stylesheet" />
-      <link href="https://fonts.googleapis.com/css?family=Instrument+Sans&display=swap" rel="stylesheet" />
-      <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet" />
-      <link href="{% static 'styles/student_dashboard.css' %}" rel="stylesheet" />
-      <title>Document</title>
-   </head>
-   <body>
+{% extends 'base.html' %}
+
+{% block content %}
       <div class="v108_1133">
          <div class="v108_1134">
             <div class="v108_1135"></div>
@@ -30,5 +22,4 @@
             </div>
          </div>
       </div>
-   </body>
-</html>
+{% endblock %}

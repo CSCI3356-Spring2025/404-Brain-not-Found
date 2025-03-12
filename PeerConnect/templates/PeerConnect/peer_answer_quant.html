@@ -1,14 +1,6 @@
-{%load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html>
-   <head>
-      <link href="https://fonts.googleapis.com/css?family=Inder&display=swap" rel="stylesheet" />
-      <link href="https://fonts.googleapis.com/css?family=Instrument+Sans&display=swap" rel="stylesheet" />
-      <link href="{% static 'styles/peer_answer_quant.css' %}" rel="stylesheet" />
-      <title>Document</title>
-   </head>
-   <body>
+{% block content %}
       <div class="v13_1362">
          <div class="v13_1363"></div>
          <span class="v13_1364">Quantitative</span>
@@ -51,5 +43,5 @@
             <div class="v116_1188"></div>
          </div>
       </div>
-   </body>
-</html>
+
+{% endblock %}
