@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'src.PeerConnect',
+    'PeerConnect',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +67,16 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+import os
+
+# Add this if not already in your settings.py
+STATIC_URL = '/static/'
+
+# Ensure Django knows where to find static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Ensure this path is correct
 ]
 
 WSGI_APPLICATION = 'BrainNotFound.wsgi.application'
