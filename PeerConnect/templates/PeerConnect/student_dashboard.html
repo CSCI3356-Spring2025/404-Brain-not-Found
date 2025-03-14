@@ -5,11 +5,11 @@
          <h1 class="greeting">Welcome, John!</h1>
          <div class="to-do">
             <h2>To Do:</h2>
-            <button class="to-do-btn">Peer Assessment - Delivery Two</button>
+            <a href="{% url 'peer_answer_qual' %}"><button class="to-do-btn">Peer Assessment - Delivery Two</button></a>
          </div>
          <div class="results">
             <h2>Results</h2>
-            <button class="results-btn">Peer Assessment - Delivery One</button>
+            <a href="{% url 'peer_answer_qual' %}"><button class="results-btn">Peer Assessment - Delivery One</button></a>
          </div>
       </div>
 {% endblock %}
