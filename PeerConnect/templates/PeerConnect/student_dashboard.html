@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-      <div class="assessment-container">
-         <h1 class="greeting">Welcome, John!</h1>
+      <h1 class="greeting">Welcome, John!</h1>
+      <div class="to-do-container">
          <div class="to-do">
             <h2>To Do:</h2>
             <a href="{% url 'peer_answer_qual' %}"><button class="to-do-btn">Peer Assessment - Delivery Two</button></a>
          </div>
+      </div>
+
+      <div class="results-container">
          <div class="results">
             <h2>Results</h2>
             <a href="{% url 'peer_answer_qual' %}"><button class="results-btn">Peer Assessment - Delivery One</button></a>
