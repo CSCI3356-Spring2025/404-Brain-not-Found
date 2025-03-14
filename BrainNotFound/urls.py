@@ -25,7 +25,7 @@ urlpatterns = [
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
     path('peer_answer_quant/', views.peer_answer_quant, name='peer_answer_quant'),
     path('peer_answer_qual/', views.peer_answer_qual, name='peer_answer_qual'),
-    path('landing_page/', views.landing_page, name="landing"),
+    path('', views.landing_page, name="landing"),
 
     path('accounts/', include('allauth.urls')),
 
