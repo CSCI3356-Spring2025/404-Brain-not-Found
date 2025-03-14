@@ -71,9 +71,15 @@ body {
 }
 
 .login-btn {
-  background-color: blue;
+  padding: 25px;
+  margin: 10px;
+  border-radius: 15px;
+  background-color: #315cec;
 }
 
 .signup-btn {
-  background-color: red;
+  padding: 25px;
+  margin: 10px;
+  border-radius: 15px;
+  background-color: rgb(240, 50, 50);
 }
