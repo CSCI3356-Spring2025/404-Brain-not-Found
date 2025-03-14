@@ -1,15 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-      <div class="v6_2">
-         <span class="v4_2">Welcome to PeerConnect</span><span class="v4_44">“Rate, review, and (hopefully) remain friends!”</span>
-         <div class="v4_1374"></div>
-         <div class="v4_1384"><span class="v4_1387">Welcome to PeerConnect</span></div>
-         <div class="v44_202"><span class="v44_203">Welcome to PeerConnect</span></div>
-         <div class="v4_1719"></div>
-         <div class="v4_1723"></div>
-         <span class="v4_1805"> PeerConnect makes peer assessment effortless! Give constructive feedback, track your progress, and improve teamwork—all in one place.</span>
-         <div class="name"></div>
-         <div class="name"></div>
-      </div>
+<body>
+    <div class="landing-container">
+        <h1 class="main-title">Welcome to PeerConnect</h1>
+        <p class="subtitle">“Rate, review, and (hopefully) remain friends!”</p>
+        <div class="hero-section">
+            <h2 class="hero-title">Join the PeerConnect Community</h2>
+        </div>
+        <div class="info-section">
+            <p class="info-text">PeerConnect makes peer assessment effortless! Give constructive feedback, track your progress, and improve teamwork—all in one place.</p>
+        </div>
+        <div class="login-container">
+         <a href="/accounts/google/login/"><button class="login-btn">Login</button></a>
+        </div>
+        <div class="signup-container">
+         <a href="/accounts/google/login/"><button class="signup-btn">Sign Up</button></a>
+        </div>
+    </div>
+</body>
+</html>
 {% endblock %}
