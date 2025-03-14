@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from PeerConnect import views
 
@@ -25,4 +25,7 @@ urlpatterns = [
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
     path('peer_answer_quant/', views.peer_answer_quant, name='peer_answer_quant'),
     path('peer_answer_qual/', views.peer_answer_qual, name='peer_answer_qual'),
+
+    path('accounts/', include('allauth.urls')),
+
 ]
