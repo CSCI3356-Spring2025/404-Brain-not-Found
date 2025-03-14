@@ -1,47 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-      <div class="v13_1362">
-         <div class="v13_1363"></div>
-         <span class="v13_1364">Quantitative</span>
-         <div class="v13_1365"></div>
-         <span class="v13_1366">Qualitative</span>
-         <div class="v13_1412"></div>
-         <span class="v13_1413">1</span>
-         <div class="v13_1414"></div>
-         <span class="v13_1415">2</span>
-         <div class="v13_1416"></div>
-         <span class="v13_1417">3</span>
-         <div class="v13_1418"></div>
-         <span class="v13_1419">4</span>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="v13_1506"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <div class="name"></div>
-         <span class="v64_382">The student communicates well.</span><span class="v64_384">The student is on time with their work.</span><span class="v64_386">The student is respectful to others.</span><span class="v64_388">The student contributes thoughtfully.</span>
-         <div class="v116_1182">
-            <div class="v116_1183"></div>
-            <div class="name"></div>
-            <span class="v116_1185">My Courses</span><span class="v116_1186">John Doe</span><span class="v116_1187">(Student)</span>
-            <div class="v116_1188"></div>
-         </div>
-      </div>
 
+   <div class="assessment-container">
+      <div class="tabs">
+         <a href="{% url 'peer_answer_quant' %}"><button class="tab active"> Quantitative</button></a>
+         <a href="{% url 'peer_answer_qual' %}"><button class="tab"> Qualitative</button></a>
+       </div>
+
+      <div class="ratings">
+         <div class="rating-option">
+             <span>The student communicates well.</span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star"></span>
+             <span class="fa fa-star"></span>
+         </div>
+         <div class="rating-option">
+             <span>The student is on time with their work.</span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star"></span>
+             <span class="fa fa-star"></span>
+         </div>
+         <div class="rating-option">
+             <span>The student is respectful to others.</span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star"></span>
+             <span class="fa fa-star"></span>
+         </div>
+         <div class="rating-option">
+             <span>The student contributes thoughtfully.</span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star checked"></span>
+             <span class="fa fa-star"></span>
+             <span class="fa fa-star"></span>
+         </div>
+     </div>
+
+      <button class="submit-btn">Submit</button>
+   </div>
 {% endblock %}

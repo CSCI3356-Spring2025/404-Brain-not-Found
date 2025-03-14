@@ -1,26 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-      <div class="v6_10">
-         <div class="v13_2"></div>
-         <span class="v13_6">Quantitative</span>
-         <div class="v13_8"></div>
-         <span class="v13_5">Qualitative</span><span class="v13_114">What are the student’s strengths?</span><span class="v13_127">What are the student’s weaknesses?</span>
-         <div class="v64_553"></div>
-         <span class="v64_554">Assertive
-         Communicative
-         Diligent</span>
-         <div class="v64_555"></div>
-         <span class="v64_556">Aggressive
-         Controlling
-         Lazy</span>
-         <div class="v64_558"></div>
-         <span class="v64_559">submit</span>
-         <div class="v116_1191">
-            <div class="v116_1192"></div>
-            <div class="name"></div>
-            <span class="v116_1194">My Courses</span><span class="v116_1195">John Doe</span><span class="v116_1196">(Student)</span>
-            <div class="v116_1197"></div>
-         </div>
-      </div>
+<div class="assessment-container">
+    <div class="tabs">
+      <a href="{% url 'peer_answer_quant' %}"><button class="tab"> Quantitative</button></a>
+      <a href="{% url 'peer_answer_qual' %}"><button class="tab active"> Qualitative</button></a>
+    </div>
+
+    <div class="question-section">
+        <label for="strengths">What are the student’s strengths?</label>
+        <textarea id="strengths" class="input-box" placeholder="Write your response here..."></textarea>
+    </div>
+
+    <div class="question-section">
+        <label for="weaknesses">What are the student’s weaknesses?</label>
+        <textarea id="weaknesses" class="input-box" placeholder="Write your response here..."></textarea>
+    </div>
+
+    <button class="submit-btn">Submit</button>
+</div>
+
 {% endblock %}

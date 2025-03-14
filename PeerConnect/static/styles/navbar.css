@@ -1,0 +1,28 @@
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 15%;
+    height: 100%;
+    background: #315cec;
+    padding: 20px;
+    color: #fff;
+  }
+  
+  .sidebar-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .user-name {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+  
+  .user-role {
+    font-size: 18px;
+    opacity: 0.8;
+  }
+  
