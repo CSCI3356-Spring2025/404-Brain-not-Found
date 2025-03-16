@@ -5,10 +5,12 @@
     background: #c6e6fc;
     padding: 10px;
     border-radius: 10px;
+    width: 100%;
   }
   
   .tab {
     flex: 1;
+    width: 100%;
     padding: 15px;
     font-size: 18px;
     text-align: center;
@@ -19,6 +21,7 @@
   
   .tab.active {
     background: #fff;
+    width: 100%;
     font-weight: bold;
     border-radius: 10px;
   }
