@@ -32,6 +32,10 @@ body {
   margin-top: 20px;
 }
 
+.to-do a, .results a {
+  text-decoration: none;
+}
+
 .to-do-btn, .results-btn {
   margin: 10px;
   padding: 15px;
