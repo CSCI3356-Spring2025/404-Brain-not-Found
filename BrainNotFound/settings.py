@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'PeerConnect',
-
+ 
     #allauth apps
     'allauth',
     'allauth.account',
@@ -159,13 +159,20 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         },
-        'OAUTH_PKCE_ENABLED': True,
+        #'OAUTH_PKCE_ENABLED': True,
     }
 }
 # Django allauth config
 SITE_ID = 2
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+#ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
+LOGIN_REDIRECT_URL = '/student_dashboard/'
+ACCOUNT_SIGNUP_REDIRECT_URL = "/student_dashboard/"
+SOCIALACCOUNT_ADAPTER = 'PeerConnect.adapters.MySocialAccountAdapter'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_USERNAME_REQUIRED = False
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
