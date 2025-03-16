@@ -59,27 +59,33 @@ body {
     color: #333;
 }
 
+.login-container , .signup-container  {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container a, .signup-container a {
+  text-decoration: none;
+}
+
 .login-btn, .signup-btn {
-  padding: 15px;
-  width: 100%;
+  padding: 20px;
+  margin: 10px;
+  width: 150px;
   text-align: center;
+  font-size: 18px;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 25px;
   cursor: pointer;
-  display: block;
+  display: inline-block;
 }
 
 .login-btn {
-  padding: 25px;
-  margin: 10px;
-  border-radius: 15px;
   background-color: #315cec;
 }
 
 .signup-btn {
-  padding: 25px;
-  margin: 10px;
-  border-radius: 15px;
   background-color: rgb(240, 50, 50);
 }

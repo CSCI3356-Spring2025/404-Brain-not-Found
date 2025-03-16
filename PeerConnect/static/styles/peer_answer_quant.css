@@ -31,14 +31,16 @@ body {
 }
 
 .rating-option {
-  display: flex;
+  font-size: larger;
+  display: inline-block;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 12px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Ensures each rating option takes full width */
+  width: 100%; 
+}
+
+.stars {
+  padding: 100px;
 }
 
 .checked {
