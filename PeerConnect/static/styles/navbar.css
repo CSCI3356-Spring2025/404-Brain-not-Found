@@ -49,6 +49,9 @@
 }
 
 /* Brand Name */
+.brand-name-link {
+  text-decoration: none;
+}
 .brand-name {
   font-family: 'Knewave', cursive;
   font-size: 28px; /* Reduced from 35px */
