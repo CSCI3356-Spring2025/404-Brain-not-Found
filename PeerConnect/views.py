@@ -11,6 +11,9 @@ def peer_answer_qual(request):
 def peer_answer_quant(request):
     return render(request, "PeerConnect/peer_answer_quant.html", {})
 
+def course_team_creation(request):
+    return render(request, "PeerConnect/course_team_creation.html", {})
+
 def landing_page(request):
     return render(request, "PeerConnect/landingpage.html", {})
 
