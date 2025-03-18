@@ -12,8 +12,8 @@ body {
 }
 
 .assessment-container {
-  width: 80%;
-  max-width: 800px;
+  width: 100%;
+  max-width: 1100px;
   margin: 0px auto;
   padding: 100px;
   border-radius: 10px;
