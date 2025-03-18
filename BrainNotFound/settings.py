@@ -84,7 +84,7 @@ STATIC_URL = '/static/'
 
 # Ensure Django knows where to find static files
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Ensure this path is correct
+    os.path.join(BASE_DIR, "PeerConnect", "static"),  # Ensure this path is correct
 ]
 
 WSGI_APPLICATION = 'BrainNotFound.wsgi.application'
@@ -165,14 +165,15 @@ SOCIALACCOUNT_PROVIDERS = {
 # Django allauth config
 SITE_ID = 2
 #ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+ACCOUNT_LOGIN_METHODS = {'email'}
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
 LOGIN_REDIRECT_URL = '/student_dashboard/'
 ACCOUNT_SIGNUP_REDIRECT_URL = "/student_dashboard/"
 SOCIALACCOUNT_ADAPTER = 'PeerConnect.adapters.MySocialAccountAdapter'
 SOCIALACCOUNT_LOGIN_ON_GET = True
-ACCOUNT_USERNAME_REQUIRED = False
+
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
