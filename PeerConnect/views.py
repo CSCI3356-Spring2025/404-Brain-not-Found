@@ -1,9 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .models import UserProfile
 
 # Create your views here.
 def student_dashboard(request):
-    return render(request, "PeerConnect/student_dashboard.html", {})
+    #user_profile = get_object_or_404(UserProfile, user=request.user)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if not user_profile.admin:
+        user_type = "Student"
+    else:
+        user_type = "Admin"
+    return render(request, "PeerConnect/student_dashboard.html", {'user': request.user, 'type': user_type})
 
 def peer_answer_qual(request):
     return render(request, "PeerConnect/peer_answer_qual.html", {})
