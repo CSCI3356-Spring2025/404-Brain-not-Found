@@ -85,6 +85,13 @@ body {
   border-radius: 5px;
 }
 
+.team_menu {
+  display: flex;
+  width: 100px;
+  background-color: rgb(233, 145, 249);
+}
+
+
 
 
 
