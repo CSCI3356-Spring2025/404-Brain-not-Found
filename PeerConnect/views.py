@@ -9,7 +9,7 @@ def student_dashboard(request):
     if not user_profile.admin:
         user_type = "Student"
     else:
-        user_type = "Admin"
+        user_type = "Professor"
     return render(request, "PeerConnect/student_dashboard.html", {'user': request.user, 'type': user_type})
 
 def peer_answer_qual(request):
