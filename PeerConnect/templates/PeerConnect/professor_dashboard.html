@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="greeting">Welcome {{type}} {{user.first_name}}</h1>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Courses</h2>
+            <ul>
+                <li>Computer Science I (CSCI1101)</li>
+                <li>Computer Science II (CSCI1102)</li>
+                <li>Computer Systems (CSCI2271)</li>
+            </ul>
+            <button class="create-class-btn">+ Create New Class</button>
+        </aside>
+        <div class="items">
+            <div class="to-do-container">
+                <div class="to-do">
+                    <h2>To Do:</h2>
+                    <a href="{% url 'peer_answer_qual' %}"><button class="to-do-btn">Peer Assessment - Delivery Two</button></a>
+                </div>
+            </div>
+            <div class="results-container">
+                <div class="results">
+                    <h2>Results:</h2>
+                    <a href="{% url 'peer_answer_qual' %}"><button class="results-btn">Peer Assessment - Delivery One</button></a>
+                </div>
+            </div>
+            <div class="form-activity">
+                <main class="dashboard-content">
+                    <section class="form-summary">
+                        <h2>Recent Form Activity</h2>
+                        <div class="form-box">
+                        <p><strong>Delivery 1:</strong> 85% submissions received</p>
+                        </div>
+                        <div class="form-box">
+                        <p><strong>Delivery 2:</strong> Open for submissions</p>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+{% endblock %}
