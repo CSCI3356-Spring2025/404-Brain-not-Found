@@ -24,6 +24,9 @@ def create(request):
 def landing_page(request):
     return render(request, "PeerConnect/landingpage.html", {})
 
+def professor_dashboard(request):
+    return render(request, "PeerConnect/professor_dashboard.html", {})
+
 
 def signup_view(request):
     # Check if user is already signed up
