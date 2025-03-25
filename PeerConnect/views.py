@@ -21,7 +21,14 @@ def peer_answer_quant(request):
     return render(request, "PeerConnect/peer_answer_quant.html", {})
 
 def create(request):
-    return render(request, "PeerConnect/create.html", {})
+    students = UserProfile.objects.filter(is_student=True)
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students})
+
+def create_team(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    students = course.students.all()  # Get only students in this course
+    #update this with the correct html page once that's created
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students}) 
 
 def landing_page(request):
     return render(request, "PeerConnect/landingpage.html", {})
