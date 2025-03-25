@@ -36,7 +36,6 @@ def landing_page(request):
 def professor_dashboard(request):
     return render(request, "PeerConnect/professor_dashboard.html", {})
 
-
 def signup_view(request):
     # Check if user is already signed up
     if request.user.is_authenticated:
