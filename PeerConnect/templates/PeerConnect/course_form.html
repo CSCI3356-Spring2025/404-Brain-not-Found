@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Inder&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Instrument+Sans&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inknut+Antiqua&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
+
+    <link href="{% static 'styles/course_form.css' %}" rel="stylesheet" />
+
+    <title>PeerConnect</title>
+</head>
+<body>
+    <form method="POST" action="{% url 'course_form' %}">
+        {% csrf_token %}
+        <label for="name">Course</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="students">Students</label>
+        <input list="students" name="student" required>
+            <datalist id="students">
+                <option value="Lena">
+                <option value="Priyal">
+                <option value="Nick">
+                <option value="Aimee">
+                <option value="Evan">
+                <option value="Zephan">
+            </datalist>
+
+        <button type="submit">Create Course</button>
+    </form>
+</body>
+</html>

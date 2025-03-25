@@ -6,7 +6,7 @@
    <div class="left-column">
       <div class="title">Courses</div>
       <div class="course-box">CSCI 1011</div>
-      <div class="new-course">New Course</div>
+      <div class="new-course"><a href="#course-popup">Create Course</a></div>
    </div>
 
    <div class="main-content">
@@ -33,11 +33,14 @@
          
          </form>
       </div>
-
-
-
    </div>
+</div>
 
+<div id="course-popup" class="modal">
+   <div class="modal-content">
+      <a href="#" class="close">&times;</a> <!-- Close button -->
+      {% include 'PeerConnect/course_form.html' %}
+   </div>
 </div>
 
 {% endblock %}
