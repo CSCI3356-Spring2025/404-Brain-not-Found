@@ -85,10 +85,12 @@ body {
   border-radius: 5px;
 }
 
-.team_menu {
-  display: flex;
-  width: 100px;
-  background-color: rgb(233, 145, 249);
+.team-menu {
+  grid-column: 1 / span 3;
+  height: 100vh;
+  width: 100vh;
+  color: grey;
+  padding: 20px;
 }
 
 .modal {
@@ -122,6 +124,11 @@ body {
 #course-popup:target {
   display: flex;
 }
+
+
+
+
+
 
 
 

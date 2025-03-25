@@ -25,4 +25,14 @@ class Team(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.course.name})"
+    
+
+class Assessment(models.Model):
+    name = models.CharField(max_length=255)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='forms')
+    due_date = models.DateTimeField()
+    questions = models.TextField()
+    
+    def __str__(self):
+        return f"{self.name} ({self.course.name})"
 
