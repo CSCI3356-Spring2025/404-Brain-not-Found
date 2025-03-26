@@ -33,6 +33,7 @@ body {
   padding: 20px;
   background-color: rgb(210, 235, 251);
   border-radius: 25px;
+  box-shadow: 0 4px 20px #a2adb9;
 }
 
 .left-column .title {
@@ -87,8 +88,8 @@ body {
 /* Main content section */
 .main-content {
   flex-grow: 1;
-  background-color: rgb(210, 235, 251);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  box-shadow: 0 4px 20px #a2adb9;
   border-radius: 25px;
   padding: 30px;
   overflow-y: auto; /* Allow scrolling if content overflows */
@@ -154,7 +155,7 @@ p {
 }
 
 /* Button */
-button[type="submit"] {
+.course-box button[type="submit"] {
   background-color: #007bff;
   color: white;
   font-size: 16px;
@@ -165,7 +166,7 @@ button[type="submit"] {
   transition: background-color 0.3s ease;
 }
 
-button[type="submit"]:hover {
+.course-box button[type="submit"]:hover {
   background-color: #0056b3;
 }
 
