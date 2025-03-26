@@ -45,11 +45,17 @@
     box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
 }
 
-/* Datalist styles */
-.course-form-wrapper datalist {
-    background-color: white;
+.course-form-wrapper select {
+    padding: 8px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
-    padding: 5px;
+    border-radius: 6px;
+    height: 150px; /* Set a fixed height */
+    font-size: 14px;
+    transition: 0.3s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto; /* Enable scrolling if many options */
 }
 
 .course-form-wrapper .selected-students {
