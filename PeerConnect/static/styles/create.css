@@ -28,9 +28,9 @@ body {
   justify-content: flex-start;
   align-items: center;
   margin-right: 20px;
-  width: 200px;
+  width: 250px;
   height: 100%;
-  padding: 10px;
+  padding: 20px;
   background-color: rgb(210, 235, 251);
   border-radius: 25px;
 }
@@ -43,12 +43,13 @@ body {
 }
 
 .left-column .course-box {
+  border: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background-color: #fff; /* Light blue background */
   color: #333;
   padding: 15px;
   border-radius: 8px;
-  width: 100%;
+  width: 208px;
   margin-top: 10px;
   text-align: left;
   font-size: 16px;
@@ -57,29 +58,30 @@ body {
 }
 
 .left-column .course-box:hover {
-  transform: translateY(-5px); /* Slight lift on hover */
+  background-color: #007bff; 
+}
+
+.left-column a {
+  display: block; /* Makes the link behave like a block element */
+  text-decoration: none; /* Removes underline */
+  width: 100%; /* Ensures full width */
 }
 
 .left-column .new-course {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: #007bff; /* Grey background */
-  color: black;
+  background-color: #007bff;
+  color: white;
   padding: 10px;
   border-radius: 8px;
-  width: 100%;
   text-align: center;
+  font-size: 16px;
   cursor: pointer;
+  width: 100%;
   margin-top: 10px;
 }
 
-.left-column .new-course a {
-  color: #fff; /* White text */
-  text-decoration: none;
-  font-size: 16px;
-}
-
 .left-column .new-course:hover {
-  background-color: #006bde; 
+  background-color: #006bde;
 }
 
 /* Main content section */
@@ -90,6 +92,16 @@ body {
   border-radius: 25px;
   padding: 30px;
   overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+p {
+  font-size: 20px;
+  text-align: center;
+  color: rgb(61, 109, 138);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; 
 }
 
 .grid-container {
@@ -243,6 +255,7 @@ button[type="submit"]:hover {
   .left-column {
     width: 100%;
     margin-right: 0;
+    margin-bottom: 30px;
   }
 
   .main-content {

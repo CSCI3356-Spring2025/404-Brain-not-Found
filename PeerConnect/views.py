@@ -23,8 +23,14 @@ def create(request):
     students = UserProfile.objects.filter(is_student=True)
     professor = get_object_or_404(UserProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
+
+    selected_course = None  # Default to None
+
+    if "selected_course_id" in request.GET:
+        selected_course = Course.objects.filter(id=request.GET["selected_course_id"]).first()
+
     print(courses)
-    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses})
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses, 'selected_course': selected_course})
 
 def course_form(request):
     students = UserProfile.objects.filter(is_student=True)

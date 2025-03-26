@@ -1,4 +1,4 @@
-<form method="POST" action="{% url 'save_team' course.id %}">
+<form method="POST" action="{% if course %}{% url 'save_team' course.id %}{% else %}#{% endif %}">
     {% csrf_token %}
     {{ form.as_p }}  <!-- Django automatically renders form fields -->
     <button type="submit">Create Team</button>
