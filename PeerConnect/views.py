@@ -48,7 +48,8 @@ def landing_page(request):
 def professor_dashboard(request):
     professor = get_object_or_404(UserProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
-    return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses})
+    students = UserProfile.objects.filter(is_student=True)
+    return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students})
 
 def signup_view(request):
     if request.user.is_authenticated:
