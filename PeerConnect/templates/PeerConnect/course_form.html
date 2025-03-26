@@ -18,7 +18,6 @@
         <form method="POST" action="{% url 'create_course' %}">
             {% csrf_token %}
 
-            <h1 id="title">Create a Course</h1>
             <label for="name">Course</label>
             <input type="text" id="name" name="name" required>
             
