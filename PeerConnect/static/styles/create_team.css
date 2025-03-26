@@ -3,9 +3,10 @@
     flex-direction: column;
     justify-content: center;
     gap: 15px;
-    max-width: 400px;
+    max-width: 300px;
     padding: 20px;
-    margin: auto;
+    background-color: rgb(210, 235, 251);
+    border-radius: 25px;
 }
 
 .form-group {

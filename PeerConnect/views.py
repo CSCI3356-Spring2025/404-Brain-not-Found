@@ -72,7 +72,8 @@ def render_create_team(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     students = course.students.all()  
     form = TeamForm(course=course)
-    return render(request, "PeerConnect/create_team.html", {'professor': request.user, 'students': students, 'course': course, 'form': form}) 
+    teams = Team.objects.filter(course=course)
+    return render(request, "PeerConnect/create_team.html", {'professor': request.user, 'students': students, 'course': course, 'form': form, 'teams': teams}) 
 
 
 @login_required

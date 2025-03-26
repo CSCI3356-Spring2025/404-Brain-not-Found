@@ -62,6 +62,12 @@ body {
   background-color: #007bff; 
 }
 
+.left-column .course-box.selected {
+  background-color: #007bff; /* Highlight selected course */
+  color: white;
+  font-weight: bold;
+}
+
 .left-column a {
   display: block; /* Makes the link behave like a block element */
   text-decoration: none; /* Removes underline */
@@ -70,7 +76,7 @@ body {
 
 .left-column .new-course {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: #007bff;
+  background-color: rgb(61, 109, 138);
   color: white;
   padding: 10px;
   border-radius: 8px;
@@ -82,7 +88,7 @@ body {
 }
 
 .left-column .new-course:hover {
-  background-color: #006bde;
+  background-color: rgb(40, 82, 109);
 }
 
 /* Main content section */

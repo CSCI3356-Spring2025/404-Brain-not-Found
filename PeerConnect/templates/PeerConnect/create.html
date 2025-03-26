@@ -7,9 +7,10 @@
       <div class="title">Courses</div>
       {% for course in courses %}
          <form method="GET" action="{% url 'create' %}">
-            {% csrf_token %}
             <input type="hidden" name="course_id" value="{{ course.id }}">
-            <button type="submit" class="course-box">{{ course.name }}</button>
+            <button type="submit" class="course-box {% if selected_course and selected_course.id == course.id %}selected{% endif %}">
+                  {{ course.name }}
+            </button>
          </form>
       {% endfor %}
       <a href="#course-popup"><div class="new-course">Create Course</div></a>
