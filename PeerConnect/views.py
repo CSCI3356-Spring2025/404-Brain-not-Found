@@ -21,7 +21,8 @@ def peer_answer_quant(request):
     return render(request, "PeerConnect/peer_answer_quant.html", {})
 
 def create(request):
-    return render(request, "PeerConnect/create.html")
+    students = UserProfile.objects.filter(is_student=True)
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students})
 
 def render_create_team(request, course_id):
     course = get_object_or_404(Course, id=course_id)
@@ -31,6 +32,8 @@ def render_create_team(request, course_id):
 
 def course_form(request):
     students = UserProfile.objects.filter(is_student=True)
+    print("Students: ")
+    print(students)
     return render(request, "PeerConnect/course_form.html", {'professor': request.user, 'students': students})
 
 def landing_page(request):
@@ -50,12 +53,13 @@ def create_course(request):
     if request.method == "POST":
         name = request.POST.get("name")
         student_ids = request.POST.getlist("students")
-        professor = get_object_or_404(UserProfile, user=request.user, is_professor=True)
+        professor = get_object_or_404(UserProfile, user=request.user)
         course = Course.objects.create(name=name, professor=professor)
         students = UserProfile.objects.filter(id__in=student_ids, is_student=True)
         course.students.set(students)
         
-        return JsonResponse({"message": "Course created successfully!", "course_id": course.id})
+        #return JsonResponse({"message": "Course created successfully!", "course_id": course.id})
+        return redirect("/create/")
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 @login_required

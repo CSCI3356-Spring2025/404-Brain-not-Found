@@ -29,6 +29,7 @@ urlpatterns = [
     path('course_form/', views.course_form, name='course_form'),
     path('professor_dashboard/', views.professor_dashboard, name='professor_dashboard'),
     path('', views.landing_page, name="landing"),
+    path('create_course/', views.create_course, name='create_course'),
 
     path('accounts/', include('allauth.urls')),
 
