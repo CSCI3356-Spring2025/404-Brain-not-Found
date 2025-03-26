@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile, Course, Team
 from django.http import JsonResponse
+from .forms import TeamForm
 
 # Create your views here.
 def student_dashboard(request):
@@ -27,7 +28,7 @@ def render_create_team(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     students = course.students.all()  
     #update this with the correct html page once that's created
-    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students}) 
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'course': course}) 
 
 def course_form(request):
     students = UserProfile.objects.filter(is_student=True)
@@ -58,8 +59,8 @@ def create_course(request):
         return JsonResponse({"message": "Course created successfully!", "course_id": course.id})
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-@login_required
-def create_team(request):
+#making this function a comment while we try to use django forms
+""" def create_team(request):
     if request.method == "POST":
         name = request.POST.get("name")
         course_id = request.POST.get("course_id")
@@ -70,7 +71,20 @@ def create_team(request):
         team.members.set(members)
         
         return JsonResponse({"message": "Team created successfully!", "team_id": team.id})
+    return JsonResponse({"error": "Invalid request"}, status=400) """
+
+@login_required
+def create_team(request):
+    if request.method == "POST":
+        form = TeamForm(request.POST)
+
+        if form.is_valid():
+            team = form.save()
+            return JsonResponse({"message": "Team created successfully!", "team_id": team.id})
+        return JsonResponse({"errors": form.errors}, status=400)
+
     return JsonResponse({"error": "Invalid request"}, status=400)
+
 
 @login_required
 def dashboard_redirect(request):
