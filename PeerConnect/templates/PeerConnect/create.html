@@ -6,9 +6,9 @@
    <div class="left-column">
       <div class="title">Courses</div>
       {% for course in courses %}
-         <form method="POST" action="{% url 'create' %}">
+         <form method="GET" action="{% url 'create' %}">
             {% csrf_token %}
-            <input type="hidden" name="selected_course_id" value="{{ course.id }}">
+            <input type="hidden" name="course_id" value="{{ course.id }}">
             <button type="submit" class="course-box">{{ course.name }}</button>
          </form>
       {% endfor %}

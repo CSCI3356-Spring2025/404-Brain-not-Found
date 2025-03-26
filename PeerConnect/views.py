@@ -8,7 +8,8 @@ def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     if user_profile.is_professor:
         user_type = "Professor"
-        return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type})
+        courses = Course.objects.filter(professor=user_profile)
+        return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses})
     else:
         user_type = "Student"
     return render(request, "PeerConnect/student_dashboard.html", {'user': request.user, 'type': user_type})
@@ -24,12 +25,11 @@ def create(request):
     professor = get_object_or_404(UserProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
 
-    selected_course = None  # Default to None
+    course_id = request.GET.get("course_id")
+    selected_course = None
+    if course_id:
+        selected_course = get_object_or_404(Course, id=course_id)
 
-    if "selected_course_id" in request.GET:
-        selected_course = Course.objects.filter(id=request.GET["selected_course_id"]).first()
-
-    print(courses)
     return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses, 'selected_course': selected_course})
 
 def course_form(request):
@@ -42,7 +42,9 @@ def landing_page(request):
     return render(request, "PeerConnect/landingpage.html", {})
 
 def professor_dashboard(request):
-    return render(request, "PeerConnect/professor_dashboard.html", {})
+    professor = get_object_or_404(UserProfile, user=request.user)
+    courses = Course.objects.filter(professor=professor)
+    return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses})
 
 def signup_view(request):
     if request.user.is_authenticated:
