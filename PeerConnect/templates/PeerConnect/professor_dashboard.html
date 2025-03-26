@@ -11,13 +11,22 @@
 
         <div class="items">
             <div class="courses">
-                <a href="{% url 'create' %}"><button type="submit" class="course-box">Software Engineering</button></a>
                 {% for course in courses %}
                     <a href="{% url 'create' %}"><button type="submit" class="course-box">{{ course.name }}</button></a>
                 {% endfor %}
-                <a href="{% url 'course_form' %}"><button type="submit" class="new-course">+</button></a>
+                <a href="#course-popup"><button type="submit" class="new-course">+</button></a>
             </div>
         </div>
     </div>
-    
+
+    <div id="course-popup" class="modal">
+        <div class="modal-content">
+           <div class="modal-header">
+              <h1 id="title">Create a Course</h1>
+              <a href="#" class="close">&times;</a> <!-- Close button -->
+           </div>
+           {% include 'PeerConnect/course_form.html' %}
+        </div>
+     </div>
+
 {% endblock %}

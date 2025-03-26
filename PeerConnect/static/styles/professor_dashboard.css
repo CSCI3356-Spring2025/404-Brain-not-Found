@@ -88,3 +88,82 @@
   .results-btn {
     background-color: rgb(240, 50, 50);
   }
+
+  /* Modal background overlay */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+#course-popup:target {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal content styling */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 60%;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.1);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-left: 24px;
+  margin-bottom: 10px;
+}
+
+.close {
+  margin-right: 30px;
+  font-size: 35px;
+  color: #333;
+  text-align: right;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.close:hover {
+  color: #ff4747;
+}
+
+/* Modal slide-in animation */
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 80%;
+    padding: 20px;
+  }
+}
