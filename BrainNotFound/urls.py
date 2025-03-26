@@ -30,6 +30,9 @@ urlpatterns = [
     path('professor_dashboard/', views.professor_dashboard, name='professor_dashboard'),
     path('', views.landing_page, name="landing"),
     path('create_course/', views.create_course, name='create_course'),
+    path('create_team/<int:course_id>', views.render_create_team, name='create_team'),
+    path('save_team/<int:course_id>/', views.create_team, name='save_team'),  
+
 
     path('accounts/', include('allauth.urls')),
 

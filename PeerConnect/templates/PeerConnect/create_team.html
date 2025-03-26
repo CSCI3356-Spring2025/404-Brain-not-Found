@@ -1,0 +1,5 @@
+<form method="POST" action="{% url 'save_team' course.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Django automatically renders form fields -->
+    <button type="submit">Create Team</button>
+</form>

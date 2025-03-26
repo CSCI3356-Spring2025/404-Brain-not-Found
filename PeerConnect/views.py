@@ -25,12 +25,6 @@ def create(request):
     students = UserProfile.objects.filter(is_student=True)
     return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students})
 
-def render_create_team(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
-    students = course.students.all()  
-    #update this with the correct html page once that's created
-    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'course': course}) 
-
 def course_form(request):
     students = UserProfile.objects.filter(is_student=True)
     print("Students: ")
@@ -77,14 +71,29 @@ def create_course(request):
         return JsonResponse({"message": "Team created successfully!", "team_id": team.id})
     return JsonResponse({"error": "Invalid request"}, status=400) """
 
-@login_required
-def create_team(request):
-    if request.method == "POST":
-        form = TeamForm(request.POST)
+def render_create_team(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    students = course.students.all()  
+    form = TeamForm(course=course)
+    #update this with the correct html page once that's created
+    return render(request, "PeerConnect/create_team.html", {'professor': request.user, 'students': students, 'course': course, 'form': form}) 
 
+
+@login_required
+def create_team(request, course_id):
+    """Handles team creation using Django Forms, ensuring the course is correctly assigned."""
+    course = get_object_or_404(Course, id=course_id)
+    print("here1")
+    if request.method == "POST":
+        form = TeamForm(request.POST, course=course) 
+        print("here2")
         if form.is_valid():
-            team = form.save()
-            return JsonResponse({"message": "Team created successfully!", "team_id": team.id})
+            team = form.save(commit=False)  # Don't save yet
+            team.course = course  
+            team.save() 
+            form.save_m2m()  # Save many-to-many members
+            print("here3")
+            return redirect("create_team", course_id=course.id)
         return JsonResponse({"errors": form.errors}, status=400)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
