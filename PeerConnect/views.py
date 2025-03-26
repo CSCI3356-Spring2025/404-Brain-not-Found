@@ -29,17 +29,16 @@ def create(request):
 
     course_id = request.GET.get("course_id")
     selected_course = None
+    teams = None
     form = None
     if course_id:
         selected_course = get_object_or_404(Course, id=course_id)
         form = TeamForm(course=selected_course)
-
-    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form})
+        teams = Team.objects.filter(course=selected_course)
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams})
 
 def course_form(request):
     students = UserProfile.objects.filter(is_student=True)
-    print("Students: ")
-    print(students)
     return render(request, "PeerConnect/course_form.html", {'professor': request.user, 'students': students})
 
 def landing_page(request):
