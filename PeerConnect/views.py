@@ -21,7 +21,10 @@ def peer_answer_quant(request):
 
 def create(request):
     students = UserProfile.objects.filter(is_student=True)
-    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students})
+    professor = get_object_or_404(UserProfile, user=request.user)
+    courses = Course.objects.filter(professor=professor)
+    print(courses)
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses})
 
 def course_form(request):
     students = UserProfile.objects.filter(is_student=True)

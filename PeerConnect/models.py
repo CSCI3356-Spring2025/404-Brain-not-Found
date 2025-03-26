@@ -12,7 +12,7 @@ class UserProfile(models.Model):
     
 class Course(models.Model):
     name = models.CharField(max_length=100)
-    professor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='courses_taught', limit_choices_to={'is_professor': True})
+    professor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='courses_taught')
     students = models.ManyToManyField(UserProfile, related_name='courses_enrolled', limit_choices_to={'is_student': True})
 
     def __str__(self):
