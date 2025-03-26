@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserProfile, Course, Team
+from .models import UserProfile, Team
 
 class TeamForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
@@ -19,3 +19,5 @@ class TeamForm(forms.ModelForm):
         if course:
             self.course = course  # Store course for later
             self.fields["members"].queryset = course.students.all()
+
+        self.fields["members"].label_from_instance = lambda obj: f"{obj.user.first_name} {obj.user.last_name}"

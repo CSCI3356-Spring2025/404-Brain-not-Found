@@ -14,33 +14,60 @@
     <title>PeerConnect</title>
 </head>
 <body>
-    {%if course %}
-    <form method="POST" action="{% url 'save_team' course.id %}" class="team-form">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <label for="team-name">Team Name:</label>
-            {{ form.name }}
-        </div>
     <section class="team-container">
-        <h1>{{ selected_course.name }} Teams</h1>
-        {% for team in teams %}
-            <p>{{ team.name }}</p>
-         <!--<form method="GET" action="{% url 'create' %}">
-            <input type="hidden" name="team_id" value="{{ team.id }}">
-            <button type="submit" class="course-box">
-                  {{ team.name }}
-            </button>
-         </form>-->
-      {% endfor %}
-        <form method="POST" action="{% if course %}{% url 'save_team' course.id %}{% else %}#{% endif %}" class="team-form">
+        {%if course %}
+            {% if teams %}
+                <h1 class="team-title">{{ selected_course.name }} Teams</h1>
+                    {% for team in teams %}
+                        <form method="GET" action="{% url 'create' %}">
+                            <input type="hidden" name="team_id" value="{{ team.id }}">
+                            <button type="submit" class="team-box">
+                                {{ team.name }}
+                            </button>
+                        </form>
+                    {% endfor %}
+                    <a href="#team-popup"><div class="new-team">Create Team</div></a>
+            {% else %}
+                <h1 class="team-title">Start creating teams!</h1>
+                <form method="POST" action="{% url 'save_team' course.id %}" class="team-form">
+                    
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="team-name">Team Name:</label>
+                        {{ form.name }}
+                    </div>
+            
+                    <div class="form-group">
+                        <label>Members:</label>
+                        <div class="checkbox-group">
+                            {{ form.members }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Create Team</button>
+                </form>
+            {% endif %}
+        </section>
+    {%else %}
+        <p>Nothing.</p>
+    {% endif %}
+
+    <div id="team-popup" class="modal">
+        <div class="modal-content">
+           <div class="modal-header">
+              <h1 id="team-title">Create a Team</h1>
+              <a href="#" class="close">&times;</a> <!-- Close button -->
+           </div>
+           <form method="POST" action="{% url 'save_team' course.id %}" class="team-form">
+                    
             {% csrf_token %}
             
             <div class="form-group">
                 <label for="team-name">Team Name:</label>
                 {{ form.name }}
             </div>
-
+    
             <div class="form-group">
                 <label>Members:</label>
                 <div class="checkbox-group">
@@ -50,11 +77,7 @@
 
             <button type="submit" class="submit-btn">Create Team</button>
         </form>
-    </section>
-        <button type="submit" class="submit-btn">Create Team</button>
-    </form>
-    {%else %}
-    <p>Nothing.</p>
-    {% endif %}
+        </div>
+    </div>
 </body>
 </html>

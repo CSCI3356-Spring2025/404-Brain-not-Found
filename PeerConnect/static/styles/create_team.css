@@ -3,10 +3,11 @@
     flex-direction: column;
     justify-content: center;
     gap: 15px;
-    max-width: 300px;
+    width: 100%;
+    height: 100%;
     padding: 20px;
-    background-color: rgb(210, 235, 251);
     border-radius: 25px;
+    border: thin rgb(61, 109, 138);
 }
 
 .form-group {
@@ -38,3 +39,152 @@
 .submit-btn:hover {
     background-color: #0056b3;
 }
+
+/* Left Column */
+.team-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    margin-right: 20px;
+    width: 300px;
+    height: 100%;
+    padding: 20px;
+    background-color: rgb(210, 235, 251);
+    border-radius: 25px;
+  }
+  
+  .team-container .team-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff; /* Blue color for the title */
+    margin-bottom: 20px;
+  }
+  
+  .team-container .team-box {
+    display: block;
+    border: none;
+    background-color: #fff; /* Light blue background */
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 10px;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .team-container .team-box:hover {
+    background-color: #007bff; 
+  }
+  
+  .team-container .team-box.selected {
+    background-color: #007bff; /* Highlight selected course */
+    color: white;
+    font-weight: bold;
+  }
+  
+  .team-container a {
+    display: block; /* Makes the link behave like a block element */
+    text-decoration: none; /* Removes underline */
+    width: 100%; /* Ensures full width */
+  }
+  
+  .team-container .new-team {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgb(61, 109, 138);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .team-container .new-team:hover {
+    background-color: rgb(40, 82, 109);
+  }
+
+  /* Modal background overlay */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  #team-popup:target {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  /* Modal content styling */
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 60%;
+    max-width: 500px;
+    margin: auto;
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.1);
+    animation: modalSlideIn 0.3s ease-out;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-left: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .close {
+    margin-right: 30px;
+    font-size: 35px;
+    color: #333;
+    text-align: right;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .close:hover {
+    color: #ff4747;
+  }
+  
+  /* Modal slide-in animation */
+  @keyframes modalSlideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Responsive design adjustments */
+  @media (max-width: 768px) {
+    .modal-content {
+      width: 80%;
+      padding: 20px;
+    }
+  }  
+  
