@@ -85,7 +85,7 @@ def create_team(request, course_id):
             team.course = course  
             team.save() 
             form.save_m2m()
-            return redirect("create_team", course_id=course.id)
+            return redirect("create")
         return JsonResponse({"errors": form.errors}, status=400)
 
     return JsonResponse({"error": "Invalid request"}, status=400)

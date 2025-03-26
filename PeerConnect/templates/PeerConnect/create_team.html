@@ -14,7 +14,8 @@
     <title>PeerConnect</title>
 </head>
 <body>
-    <form method="POST" action="{% if course %}{% url 'save_team' course.id %}{% else %}#{% endif %}" class="team-form">
+    {%if course %}
+    <form method="POST" action="{% url 'save_team' course.id %}" class="team-form">
         {% csrf_token %}
         
         <div class="form-group">
@@ -31,5 +32,8 @@
 
         <button type="submit" class="submit-btn">Create Team</button>
     </form>
+    {%else %}
+    <p>Nothing.</p>
+    {% endif %}
 </body>
 </html>

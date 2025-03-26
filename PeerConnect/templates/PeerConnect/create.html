@@ -18,7 +18,7 @@
    <div class="main-content">
       {% if selected_course %}
         <div id="team-content">
-            {% include 'PeerConnect/create_team.html' %}
+            {% include 'PeerConnect/create_team.html' with course=selected_course %}
         </div>
       {% else %}
          <p id="no-course-message">You have no courses selected, please select or create to begin!</p>
