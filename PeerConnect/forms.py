@@ -3,17 +3,19 @@ from .models import UserProfile, Course, Team
 
 class TeamForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
-        queryset=UserProfile.objects.filter(is_student=True),
+        queryset=UserProfile.objects.none(),  # Default to empty, will be set dynamically
         widget=forms.CheckboxSelectMultiple,
         required=True
     )
 
     class Meta:
         model = Team
-        fields = ["name", "course", "members"]
+        fields = ["name", "members"]
 
     def __init__(self, *args, **kwargs):
-        course = kwargs.pop("course", None)  # Get the course passed from the view
+        course = kwargs.pop("course", None)  # Extract course from kwargs
         super().__init__(*args, **kwargs)
+
         if course:
-            self.fields["members"].queryset = course.students.all()  # Filter students by course
+            self.course = course  # Store course for later
+            self.fields["members"].queryset = course.students.all()
