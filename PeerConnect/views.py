@@ -6,10 +6,11 @@ from .forms import TeamForm
 
 def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    students = UserProfile.objects.filter(is_student=True)
     if user_profile.is_professor:
         user_type = "Professor"
         courses = Course.objects.filter(professor=user_profile)
-        return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses})
+        return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'students': students})
     else:
         user_type = "Student"
     return render(request, "PeerConnect/student_dashboard.html", {'user': request.user, 'type': user_type})
@@ -25,12 +26,15 @@ def create(request):
     professor = get_object_or_404(UserProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
 
+
     course_id = request.GET.get("course_id")
     selected_course = None
+    form = None
     if course_id:
         selected_course = get_object_or_404(Course, id=course_id)
+        form = TeamForm(course=selected_course)
 
-    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses, 'selected_course': selected_course})
+    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form})
 
 def course_form(request):
     students = UserProfile.objects.filter(is_student=True)
