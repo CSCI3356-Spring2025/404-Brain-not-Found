@@ -28,6 +28,7 @@
     text-align: center;
     height: 500px;
     max-height: 100%;
+    box-shadow: 0 4px 20px #a2adb9;
   }
 
   .sidebar ul {
@@ -89,6 +90,53 @@
     background-color: rgb(240, 50, 50);
   }
 
+  .course-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows multiple courses to wrap properly */
+    gap: 10px; /* Ensures spacing between elements */
+  }
+  
+  .course-container a {
+    display: inline-block; /* Ensures buttons inside links behave properly */
+    text-decoration: none; /* Removes underline */
+  }
+  
+  .course-card {
+    background-color: rgb(210, 235, 251);
+    box-shadow: 0 4px 20px #a2adb9;
+    height: 200px;
+    width: 200px;
+    margin: 10px;
+    color: rgb(61, 109, 138);
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .course-card:hover {
+    background-color: rgb(61, 109, 138);
+    color: rgb(210, 235, 251);
+  }
+  
+  .new-course {
+    background-color: white;
+    color: rgb(61, 109, 138);
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .new-course:hover {
+    color: rgb(61, 109, 138);
+    background-color: rgb(238, 238, 238);
+  }
+  
   /* Modal background overlay */
 .modal {
   display: none;

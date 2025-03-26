@@ -1,5 +1,35 @@
-<form method="POST" action="{% if course %}{% url 'save_team' course.id %}{% else %}#{% endif %}">
-    {% csrf_token %}
-    {{ form.as_p }}  <!-- Django automatically renders form fields -->
-    <button type="submit">Create Team</button>
-</form>
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Inder&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Instrument+Sans&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inknut+Antiqua&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
+
+    <link href="{% static 'styles/create_team.css' %}" rel="stylesheet" />
+
+    <title>PeerConnect</title>
+</head>
+<body>
+    <form method="POST" action="{% if course %}{% url 'save_team' course.id %}{% else %}#{% endif %}" class="team-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="team-name">Team Name:</label>
+            {{ form.name }}
+        </div>
+
+        <div class="form-group">
+            <label>Members:</label>
+            <div class="checkbox-group">
+                {{ form.members }}
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Create Team</button>
+    </form>
+</body>
+</html>
