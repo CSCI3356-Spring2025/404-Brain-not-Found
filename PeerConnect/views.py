@@ -68,6 +68,11 @@ def create_course(request):
         return redirect("/create/")
     return JsonResponse({"error": "Invalid request"}, status=400)
 
+def delete_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    course.delete()
+    return redirect("/create/")
+
 def render_create_team(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     students = course.students.all()  
@@ -91,6 +96,10 @@ def create_team(request, course_id):
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
+def delete_team(request,  team_id):
+    team = get_object_or_404(Team, id=team_id)
+    team.delete()
+    return redirect("/create/")
 
 @login_required
 def dashboard_redirect(request):

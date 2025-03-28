@@ -20,6 +20,7 @@
       {% if selected_course %}
         <div id="team-content">
             {% include 'PeerConnect/create_team.html' with course=selected_course %}
+            <a href="{% url 'delete_course' selected_course.id %}">Delete Course</a>
         </div>
       {% else %}
          <p id="no-course-message">You have no courses selected, please select or create to begin!</p>

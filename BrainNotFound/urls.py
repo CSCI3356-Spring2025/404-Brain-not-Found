@@ -31,7 +31,10 @@ urlpatterns = [
     path('', views.landing_page, name="landing"),
     path('create_course/', views.create_course, name='create_course'),
     path('create_team/<int:course_id>', views.render_create_team, name='render_create_team'),
-    path('save_team/<int:course_id>/', views.create_team, name='save_team'),  
+    path('save_team/<int:course_id>/', views.create_team, name='save_team'), 
+
+    path('delete_course/<int:course_id>', views.delete_course, name='delete_course'),
+    path('delete_team/<int:team_id>', views.delete_team, name='delete_team'), 
 
 
     path('accounts/', include('allauth.urls')),
