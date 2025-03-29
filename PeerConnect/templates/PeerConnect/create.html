@@ -20,8 +20,11 @@
       {% if selected_course %}
         <div id="team-content">
             {% include 'PeerConnect/create_team.html' with course=selected_course %}
-            <a href="{% url 'delete_course' selected_course.id %}">Delete Course</a>
         </div>
+
+        <!-- Only show the delete button when a course is selected -->
+        <a href="#delete-popup"><div class="delete-course">Delete Course</div></a>
+
       {% else %}
          <p id="no-course-message">You have no courses selected, please select or create to begin!</p>
       {% endif %}
@@ -37,5 +40,19 @@
       {% include 'PeerConnect/course_form.html' %}
    </div>
 </div>
+
+{% if selected_course %}
+<div id="delete-popup" class="modal">
+   <div class="modal-content">
+      <div class="modal-header">
+         <h1 id="title">Are you sure you would like to delete the course {{ selected_course.name }}?</h1>
+         <a href="#" class="close">&times;</a> <!-- Close button -->
+      </div>
+      <a href="{% url 'delete_course' selected_course.id %}">
+         <div class="delete-course">Yes</div>
+      </a>
+   </div>
+</div>
+{% endif %}
 
 {% endblock %}

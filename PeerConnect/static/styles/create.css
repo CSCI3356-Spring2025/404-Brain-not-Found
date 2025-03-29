@@ -12,6 +12,14 @@ body {
   color: #333; /* Darker text for readability */
 }
 
+.left-column:has(.course-box.selected) {
+  animation: none;
+}
+
+.main-content:has(.course-box.selected) {
+  animation: none;
+}
+
 /* Main container */
 .parent-container {
   display: flex;
@@ -34,6 +42,7 @@ body {
   background-color: rgb(210, 235, 251);
   border-radius: 25px;
   box-shadow: 0 4px 20px #a2adb9;
+  animation: slideInFromLeft 0.6s ease-out;
 }
 
 .left-column .title {
@@ -99,6 +108,7 @@ body {
   border-radius: 25px;
   padding: 30px;
   overflow-y: auto; /* Allow scrolling if content overflows */
+  animation: slideInFromRight 0.6s ease-out;
 }
 
 p {
@@ -109,33 +119,6 @@ p {
   align-items: center;
   justify-content: center;
   height: 100%; 
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.grid-container input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.grid-container #course-title {
-  grid-column: 1 / span 3;
-  font-size: 16px;
-  padding: 12px;
-}
-
-.grid-container input:focus {
-  outline: none;
-  border-color: #007bff; /* Blue border on focus */
 }
 
 .team-menu {
@@ -176,6 +159,28 @@ p {
   background-color: #0056b3;
 }
 
+a {
+  text-decoration: none;
+}
+
+.delete-course {
+  align-self: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgb(184, 89, 89);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.delete-course:hover {
+  background-color: rgb(161, 72, 72);
+}
+
 /* Modal background overlay */
 .modal {
   display: none;
@@ -193,6 +198,12 @@ p {
 }
 
 #course-popup:target {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#delete-popup:target {
   display: flex;
   opacity: 1;
   pointer-events: auto;
@@ -247,6 +258,39 @@ p {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Responsive design adjustments */
 @media (max-width: 768px) {
   .modal-content {
@@ -267,10 +311,6 @@ p {
 
   .main-content {
     width: 100%;
-  }
-
-  .grid-container {
-    grid-template-columns: 1fr;
   }
 
   button[type="submit"] {
