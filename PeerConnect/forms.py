@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserProfile, Team, Assessment
+from .models import UserProfile, Team, Assessment, PredefinedQuestion
 
 class TeamForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
@@ -23,6 +23,13 @@ class TeamForm(forms.ModelForm):
         self.fields["members"].label_from_instance = lambda obj: f"{obj.user.first_name} {obj.user.last_name}"
 
 class AssessmentForm(forms.ModelForm):
+    predefined_questions = forms.ModelMultipleChoiceField(
+        queryset=PredefinedQuestion.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required = False,
+        label = "Common Questions"
+    )
+    
     class Meta:
         model = Assessment
         fields = ["name", "course", "team", "available_date", "due_date", "self_assessment", "num_questions"]
@@ -37,6 +44,7 @@ class AssessmentForm(forms.ModelForm):
             self.fields["due_date"].label = f"Due Date for {course.name}"
         
         self.fields["self_assessment"].label = "Is this a self-assessment?"
+
 
         self.fields["num_questions"].label = "Number of Questions"
         num_questions = self.initial.get("num_questions", 0)

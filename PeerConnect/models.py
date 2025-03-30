@@ -28,7 +28,12 @@ class Team(models.Model):
     def __str__(self):
         return f"{self.name} ({self.course.name})"
     
+class PredefinedQuestion(models.Model):
+    text = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.text
+        
 class Assessment(models.Model):
     name = models.CharField(max_length=255)
     course = models.ManyToManyField(Course, related_name='assessments')  # Many-to-many to allow multiple courses to use the same assessment
@@ -38,7 +43,7 @@ class Assessment(models.Model):
     self_assessment = models.BooleanField(default=False)
     num_questions = models.PositiveIntegerField(default=0)
 
-    
+    predefined_questions = models.ManyToManyField(PredefinedQuestion, blank=True)
     
     
     def __str__(self):
