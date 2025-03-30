@@ -34,15 +34,15 @@ class Assessment(models.Model):
     course = models.ManyToManyField(Course, related_name='assessments')  # Many-to-many to allow multiple courses to use the same assessment
     team = models.ManyToManyField(Team, related_name='assessments', blank=True)  # Optional if not tied to a specific team
     available_date = models.DateTimeField(default=timezone.now)
-    due_date = models.DateTimeField(default=timezone.now() + timedelta(days=7))
+    due_date = models.DateTimeField(default= timezone.now() + timedelta(days=7))
     self_assessment = models.BooleanField(default=False)
     num_questions = models.PositiveIntegerField(default=0)
-    
 
     
     
+    
     def __str__(self):
-        courses_names = ", ".join(course.name for course in self.courses.all())
+        courses_names = ", ".join(course.name for course in self.course.all())
         return f"{self.name} ({courses_names})"
 
 

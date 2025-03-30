@@ -39,3 +39,7 @@ class AssessmentForm(forms.ModelForm):
         self.fields["self_assessment"].label = "Is this a self-assessment?"
 
         self.fields["num_questions"].label = "Number of Questions"
+        num_questions = self.initial.get("num_questions", 0)
+        for i in range(num_questions):
+            self.fields[f"question_{i}"] = forms.CharField(max_length=255, label=f"Question {i+1}")
+

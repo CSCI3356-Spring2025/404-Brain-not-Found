@@ -113,10 +113,18 @@ def create_assessment_view(request):
         assessment = form.save(commit=False)
         assessment.save()
         
-        assessment.courses.set(form.cleaned_data['courses'])  
+        assessment.course.set(form.cleaned_data['courses'])  
         if form.cleaned_data.get('teams'):  
             assessment.teams.set(form.cleaned_data['teams'])
+
+        num_questions = form.cleaned_data.get('num_questions', 0)
+        for i in range(num_questions):
+            question_text = form.cleaned_data.get(f"question_{i}")
+            if question_text:
+                Question.objects.create(assessment=assessment, text=question_text, order=i)
+        
         return redirect("assessment_list")
+
 
     context = {
         'form': form,
