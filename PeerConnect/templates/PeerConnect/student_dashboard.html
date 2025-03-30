@@ -1,18 +1,98 @@
 {% extends 'base.html' %}
 
 {% block content %}
-      <h1 class="greeting">Welcome {{user.first_name}} - {{type}}</h1>
-      <div class="to-do-container">
-         <div class="to-do">
-            <h2>To Do:</h2>
-            <a href="{% url 'peer_answer_qual' %}"><button class="to-do-btn">Peer Assessment - Delivery Two</button></a>
-         </div>
-      </div>
-
-      <div class="results-container">
-         <div class="results">
-            <h2>Results:</h2>
-            <a href="{% url 'peer_answer_qual' %}"><button class="results-btn">Peer Assessment - Delivery One</button></a>
-         </div>
-      </div>
+      <div class="dashboard-container">
+         <h2 class="greeting">Welcome {{user.first_name}} - {{type}}</h2>
+         
+         <div class="dashboard-grid">
+           <!-- To-Do Section -->
+           <div class="to-do-container">
+             <h3 class="section-title">To-Do</h3>
+             <div class="to-do">
+               <a href="#">
+                 <button class="to-do-btn">
+                   Chemistry Team Assessment 3
+                   <span class="notification-badge">!</span>
+                   <p class="due-date">Due: Tomorrow, 11:59 PM</p>
+                 </button>
+               </a>
+               <a href="#">
+                 <button class="to-do-btn">
+                  SWE Team Assessment 2
+                   <p class="due-date">Due: Friday, 11:59 PM</p>
+                 </button>
+               </a>
+               <a href="#">
+                 <button class="to-do-btn">
+                   SWE Team Assessment 3
+                   <p class="due-date">Due: Next Monday, 9:00 AM</p>
+                 </button>
+               </a>
+               
+               <div class="to-do-progress">
+                 <div class="progress-bar"></div>
+               </div>
+               <p>5 of 8 tasks completed</p>
+             </div>
+           </div>
+           
+           <!-- Results Section -->
+           <div class="results-container">
+             <h3 class="section-title">Recent Results</h3>
+             <div class="results">
+               <a href="#">
+                 <button class="results-btn">
+                   Chemistry Team Assessment 2
+                 </button>
+               </a>
+               <a href="#">
+                 <button class="results-btn">
+                   SWE Team Assessment 1
+                 </button>
+               </a>
+               <a href="#">
+                 <button class="results-btn">
+                   Chemistry Team Assessment 1
+                 </button>
+               </a>
+               <a href="#" class="see-all-link">
+                  <button class="see-all-btn">
+                    See All Results
+                  </button>
+                </a>                
+             </div>
+           </div>
+           
+           <!-- Teams Section -->
+           <div class="teams-container">
+             <h3 class="section-title">My Teams</h3>
+             <div class="teams">
+               <div class="team-card">
+                 <h4 class="team-name">Beaker Breakers</h4>
+                 <p class="team-course">CHEM1101.02 - Chemistry 101</p>
+                 <div class="team-members">
+                   <span class="team-member">You</span>
+                   <span class="team-member">Sarah K.</span>
+                   <span class="team-member">Michael P.</span>
+                   <span class="team-member">+4 more</span>
+                 </div>
+                 <p class="team-role">Member</p>
+               </div>
+               
+               <div class="team-card">
+                  <h4 class="team-name">Array of Sunshine</h4>
+                  <p class="team-course">CSCI3356.01 - Software Engineering</p>
+                  <div class="team-members">
+                    <span class="team-member">You</span>
+                    <span class="team-member">Emma S.</span>
+                    <span class="team-member">David W.</span>
+                  </div>
+                  <p class="team-role">Lead Programmer</p>
+                </div>
+              </div>
+              
+              
+            </div>
+          </div>
+        </div>
 {% endblock %}
