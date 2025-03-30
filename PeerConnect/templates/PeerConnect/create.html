@@ -30,10 +30,15 @@
             </div>
         </a>
       -->
-        
+
       <a href="#delete-popup">
          <div class="delete-course">
             Delete Course
+         </div>
+      </a>
+      <a href="#edit-popup">
+         <div class="edit-course">
+            Edit Course
          </div>
       </a>
 
@@ -63,6 +68,18 @@
       <a href="{% url 'delete_course' selected_course.id %}">
          <div class="delete-course">Yes</div>
       </a>
+   </div>
+</div>
+{% endif %}
+
+{% if selected_course %}
+<div id="edit-popup" class="modal">
+   <div class="modal-content">
+      <div class="modal-header">
+         <h1 id="title">{{ selected_course.name }}</h1>
+         <a href="#" class="close">&times;</a> <!-- Close button -->
+      </div>
+      {% include 'PeerConnect/course_form.html' %}
    </div>
 </div>
 {% endif %}
