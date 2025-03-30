@@ -36,6 +36,10 @@ class Assessment(models.Model):
     available_date = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(default=timezone.now() + timedelta(days=7))
     self_assessment = models.BooleanField(default=False)
+    num_questions = models.PositiveIntegerField(default=0)
+    
+
+    
     
     def __str__(self):
         courses_names = ", ".join(course.name for course in self.courses.all())
