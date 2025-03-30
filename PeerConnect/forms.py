@@ -25,7 +25,7 @@ class TeamForm(forms.ModelForm):
 class AssessmentForm(forms.ModelForm):
     class Meta:
         model = Assessment
-        fields = ["name", "course", "team", "available_date", "due_date", "self_assessment"]
+        fields = ["name", "course", "team", "available_date", "due_date", "self_assessment", "num_questions"]
 
     def __init__(self, *args, **kwargs):
         course = kwargs.pop("course", None)  # Extract course from kwargs
@@ -37,3 +37,5 @@ class AssessmentForm(forms.ModelForm):
             self.fields["due_date"].label = f"Due Date for {course.name}"
         
         self.fields["self_assessment"].label = "Is this a self-assessment?"
+
+        self.fields["num_questions"].label = "Number of Questions"

@@ -36,8 +36,21 @@ class Assessment(models.Model):
     available_date = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(default=timezone.now() + timedelta(days=7))
     self_assessment = models.BooleanField(default=False)
+    num_questions = models.PositiveIntegerField(default=0)
+    
+
+    
     
     def __str__(self):
         courses_names = ", ".join(course.name for course in self.courses.all())
         return f"{self.name} ({courses_names})"
+
+
+class Question(models.Model):
+    assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
+    text = models.TextField()
+    order = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"Question {self.order}: {self.text[:30]}"
 
