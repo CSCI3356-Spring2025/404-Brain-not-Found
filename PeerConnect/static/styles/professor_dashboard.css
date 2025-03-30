@@ -84,7 +84,7 @@
   }
   
   .course-card {
-    background-color: rgb(210, 235, 251);
+    background-color: rgb(255, 235, 212);
     box-shadow: 0 4px 20px #a2adb9;
     height: 200px;
     width: 200px;
@@ -104,8 +104,8 @@
   }
   
   .course-card:hover {
-    background-color: rgb(61, 109, 138);
-    color: rgb(210, 235, 251);
+    background-color: rgb(255, 226, 191);
+    color: rgb(61, 109, 138);
   }
   
   .new-course {

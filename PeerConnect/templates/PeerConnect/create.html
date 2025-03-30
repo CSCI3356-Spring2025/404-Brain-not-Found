@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="parent-container">
@@ -22,8 +23,19 @@
             {% include 'PeerConnect/create_team.html' with course=selected_course %}
         </div>
 
-        <!-- Only show the delete button when a course is selected -->
-        <a href="#delete-popup"><div class="delete-course">Delete Course</div></a>
+        <!-- 
+        <a href="#delete-popup">
+            <div class="delete-course">
+               <img src="{% static 'assets/delete.png' %}" alt="Delete">
+            </div>
+        </a>
+      -->
+        
+      <a href="#delete-popup">
+         <div class="delete-course">
+            Delete Course
+         </div>
+      </a>
 
       {% else %}
          <p id="no-course-message">You have no courses selected, please select or create to begin!</p>
@@ -45,7 +57,7 @@
 <div id="delete-popup" class="modal">
    <div class="modal-content">
       <div class="modal-header">
-         <h1 id="title">Are you sure you would like to delete the course {{ selected_course.name }}?</h1>
+         <h1 id="title">Are you sure you would like to delete the course '{{ selected_course.name }}'?</h1>
          <a href="#" class="close">&times;</a> <!-- Close button -->
       </div>
       <a href="{% url 'delete_course' selected_course.id %}">

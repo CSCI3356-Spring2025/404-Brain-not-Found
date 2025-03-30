@@ -50,6 +50,7 @@ body {
   font-weight: bold;
   color: #007bff; /* Blue color for the title */
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .left-column .course-box {
@@ -69,6 +70,7 @@ body {
 
 .left-column .course-box:hover {
   background-color: #007bff; 
+  color: #fff;
 }
 
 .left-column .course-box.selected {
@@ -173,13 +175,21 @@ a {
   text-align: center;
   font-size: 16px;
   cursor: pointer;
-  width: 100%;
+  width: 300px;
   margin-top: 10px;
 }
 
 .delete-course:hover {
   background-color: rgb(161, 72, 72);
 }
+
+/*.delete-course img {
+  width: 100%; 
+  height: 100%;
+  object-fit: contain; 
+  display: block; 
+  margin: auto;
+}*/
 
 /* Modal background overlay */
 .modal {
