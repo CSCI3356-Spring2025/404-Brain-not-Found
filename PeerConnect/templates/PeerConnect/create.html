@@ -19,7 +19,7 @@
 
    <div class="main-content">
       {% if selected_course %}
-        <div id="team-content">
+        <div class="team-content">
             {% include 'PeerConnect/create_team.html' with course=selected_course %}
         </div>
 
@@ -30,17 +30,21 @@
             </div>
         </a>
       -->
-
-      <a href="#delete-popup">
-         <div class="delete-course">
-            Delete Course
-         </div>
-      </a>
-      <a href="#edit-popup">
-         <div class="edit-course">
-            Edit Course
-         </div>
-      </a>
+      <div class="menu-icon">
+         <a href="#menu">
+             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <circle cx="12" cy="12" r="1"></circle>
+                 <circle cx="19" cy="12" r="1"></circle>
+                 <circle cx="5" cy="12" r="1"></circle>
+             </svg>
+         </a>
+     </div>
+     
+     <div id="menu" class="menu">
+         <a href="#delete-popup" class="delete-course">Delete Course</a>
+         <a href="#edit-popup" class="edit-course">Edit Course</a>
+         <a href="#">✖</a> <!-- Close menu by linking to an empty anchor -->
+     </div>
 
       {% else %}
          <p id="no-course-message">You have no courses selected, please select or create to begin!</p>

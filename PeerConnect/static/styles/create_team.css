@@ -6,8 +6,36 @@
     width: 100%;
     height: 100%;
     padding: 20px;
-    border-radius: 25px;
-    border: thin rgb(61, 109, 138);
+}
+
+.team-form label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input fields */
+.team-form input[type="text"], 
+.team-form select, 
+.team-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    height: 40px;
+    font-size: 14px;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    width: 100%;
+}
+
+/* Input focus effect */
+.team-form input:focus, 
+.team-form select:focus, 
+.team-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
 }
 
 .form-group {
@@ -26,18 +54,28 @@
     gap: 5px;
 }
 
+.checkbox-group input {
+    margin-right: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    accent-color: #1e3a5f; 
+}
+
 .submit-btn {
-    background-color: #007bff;
-    color: white;
     padding: 10px;
+    background-color: #e07a5f;
+    color: white;
+    font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
+    align-self: center;
 }
 
 .submit-btn:hover {
-    background-color: #0056b3;
+    background-color: #1e3a5f;
 }
 
 /* Left Column */
@@ -48,17 +86,19 @@
     align-items: stretch;
     margin-right: 20px;
     width: 300px;
-    height: 100%;
+    height: fit-content;
     padding: 20px;
-    background-color: rgb(255, 235, 212);
+    background-color: #f5e6da;
     border-radius: 25px;
   }
   
   .team-container .team-title {
     font-size: 24px;
     font-weight: bold;
-    color: #007bff; /* Blue color for the title */
+    color: #1e3a5f;
     margin-bottom: 20px;
+    text-align: center;
+    align-items: center;
   }
   
   .team-container .team-box {
@@ -77,12 +117,12 @@
   }
   
   .team-container .team-box:hover {
-    background-color: #007bff; 
+    background-color: #E07A5F; 
     color: #fff;
   }
   
   .team-container .team-box.selected {
-    background-color: #007bff; /* Highlight selected course */
+    background-color: #E07A5F; /* Highlight selected course */
     color: white;
     font-weight: bold;
   }
@@ -95,7 +135,7 @@
   
   .team-container .new-team {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: rgb(61, 109, 138);
+    background-color: #E07A5F;
     color: white;
     padding: 10px;
     border-radius: 8px;
@@ -104,88 +144,37 @@
     cursor: pointer;
     width: 100%;
     margin-top: 10px;
+    transition: background-color 0.2s;
   }
   
   .team-container .new-team:hover {
-    background-color: rgb(40, 82, 109);
+    background-color: #1e3a5f;
   }
 
-  /* Modal background overlay */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  #team-popup:target {
-    display: flex;
-    opacity: 1;
-    pointer-events: auto;
-  }
-  
-  /* Modal content styling */
-  .modal-content {
+  .team-form-container {
     display: flex;
     flex-direction: column;
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    width: 60%;
-    max-width: 500px;
-    margin: auto;
-    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.1);
-    animation: modalSlideIn 0.3s ease-out;
-  }
-  
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: stretch;
+    margin-right: 20px;
     width: 100%;
-    margin-left: 24px;
-    margin-bottom: 10px;
+    height: 100%;
+    padding: 20px;
+    border-radius: 25px;
   }
-  
-  .close {
-    margin-right: 30px;
-    font-size: 35px;
-    color: #333;
-    text-align: right;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    text-decoration: none;
+
+  .team-form-container .title {
+    text-align: center;
+    font-size: 30px;
+    color: #1e3a5f;
   }
-  
-  .close:hover {
-    color: #ff4747;
-  }
-  
-  /* Modal slide-in animation */
-  @keyframes modalSlideIn {
-    from {
-      transform: translateY(-20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+
+  .team-form-container form {
+    gap: 40px;
   }
   
   /* Responsive design adjustments */
   @media (max-width: 768px) {
-    .modal-content {
-      width: 80%;
-      padding: 20px;
-    }
+    
   }  
   

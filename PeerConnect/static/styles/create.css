@@ -39,7 +39,7 @@ body {
   width: 250px;
   height: 100%;
   padding: 20px;
-  background-color: rgb(210, 235, 251);
+  background-color: #F5E6DA;
   border-radius: 25px;
   box-shadow: 0 4px 20px #a2adb9;
   animation: slideInFromLeft 0.6s ease-out;
@@ -48,7 +48,7 @@ body {
 .left-column .title {
   font-size: 24px;
   font-weight: bold;
-  color: #007bff; /* Blue color for the title */
+  color: #1E3A5F; /* Blue color for the title */
   margin-bottom: 20px;
   text-align: center;
 }
@@ -69,12 +69,12 @@ body {
 }
 
 .left-column .course-box:hover {
-  background-color: #007bff; 
+  background-color: #E07A5F; 
   color: #fff;
 }
 
 .left-column .course-box.selected {
-  background-color: #007bff; /* Highlight selected course */
+  background-color: #E07A5F; /* Highlight selected course */
   color: white;
   font-weight: bold;
 }
@@ -87,7 +87,7 @@ body {
 
 .left-column .new-course {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: rgb(61, 109, 138);
+  background-color: #E07A5F;
   color: white;
   padding: 10px;
   border-radius: 8px;
@@ -96,19 +96,22 @@ body {
   cursor: pointer;
   width: 100%;
   margin-top: 10px;
+  transition: background-color 0.2s;
 }
 
 .left-column .new-course:hover {
-  background-color: rgb(40, 82, 109);
+  background-color: #1e3a5f;
 }
 
 /* Main content section */
 .main-content {
+  position: relative;
   flex-grow: 1;
-  background-color: white;
+  background-color: #fdfdfd;
   box-shadow: 0 4px 20px #a2adb9;
   border-radius: 25px;
   padding: 30px;
+  height: 100%;
   overflow-y: auto; /* Allow scrolling if content overflows */
   animation: slideInFromRight 0.6s ease-out;
 }
@@ -121,6 +124,12 @@ p {
   align-items: center;
   justify-content: center;
   height: 100%; 
+}
+
+.team-content {
+  display: flex;
+  flex-direction: row;
+  height: 80%;
 }
 
 .team-menu {
@@ -168,14 +177,14 @@ a {
 .delete-course {
   align-self: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: rgb(184, 89, 89);
+  background-color: #e07a5f;
   color: white;
   padding: 10px;
   border-radius: 8px;
   text-align: center;
   font-size: 16px;
   cursor: pointer;
-  width: 300px;
+  width: 232px;
   margin-top: 10px;
 }
 
@@ -186,14 +195,14 @@ a {
 .edit-course {
   align-self: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: rgb(123, 172, 122);
+  background-color: #e07a5f;
   color: white;
   padding: 10px;
   border-radius: 8px;
   text-align: center;
   font-size: 16px;
   cursor: pointer;
-  width: 300px;
+  width: 232px;
   margin-top: 10px;
 }
 
@@ -278,6 +287,58 @@ a {
 
 .close:hover {
   color: #ff4747;
+}
+
+.menu-icon {
+  position: absolute;
+  top: 25px;  
+  right: 25px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-icon:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.menu {
+  display: none;
+  position: absolute;
+  background: #f5e6da; /* Warm Beige */
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  right: 10px; /* Adjust as needed */
+  top: 30px; /* Space below the SVG */
+}
+
+/* Show menu when targeted */
+#menu:target {
+  display: block;
+}
+
+/* Style buttons */
+.menu a {
+  display: block;
+  text-decoration: none;
+  color: #1E3A5F; /* Deep Navy */
+  padding: 8px 12px;
+  margin: 5px 0;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.menu a:hover {
+  background: #e07a5f; /* Muted Gold */
+  color: white;
 }
 
 /* Modal slide-in animation */
