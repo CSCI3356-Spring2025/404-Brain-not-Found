@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile, Course, Team
 from django.http import JsonResponse
-from .forms import TeamForm
+from .forms import TeamForm, AssessmentForm
 
 def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -104,3 +104,22 @@ def delete_team(request,  team_id):
 @login_required
 def dashboard_redirect(request):
     return redirect('/dashboard/')  # Change this if needed
+
+@login_required
+def create_assessment_view(request):
+    form = AssessmentForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        assessment = form.save(commit=False)
+        assessment.save()
+        
+        assessment.courses.set(form.cleaned_data['courses'])  
+        if form.cleaned_data.get('teams'):  
+            assessment.teams.set(form.cleaned_data['teams'])
+        return redirect("assessment_list")
+
+    context = {
+        'form': form,
+        'courses': Course.objects.filter(professor=request.user.userprofile),
+    }
+    return render(request, "PeerConnect/create_assessment.html", context)
