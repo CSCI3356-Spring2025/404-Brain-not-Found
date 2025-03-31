@@ -8,15 +8,11 @@
         {% csrf_token %}
         {{ form.as_p }}
 
-        <div id="questions-container">
+        <div id="questions-container"></div>
 
-        </div>
-
-        <button type="button" id="add-question">Add Question</button>
-        
+    <button type="button" id="add-question">Add Question</button>
         <button type="submit">Create Assessment</button>
     </form>
-
-    <script src="{% static 'my_app/questions.js' %}"></script>
-
+    
+    <script src="{% static 'styles/PeerConnect/js/questions.js' %}"></script>
 {% endblock %}

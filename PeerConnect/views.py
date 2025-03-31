@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, Course, Team
+from .models import UserProfile, Course, Team,  Assessment, Question, PredefinedQuestion
 from django.http import JsonResponse
 from .forms import TeamForm, AssessmentForm
 
@@ -112,17 +112,27 @@ def create_assessment_view(request):
     if request.method == "POST" and form.is_valid():
         assessment = form.save(commit=False)
         assessment.save()
-        assessment.courses.set(form.cleaned_data['course'])
+        
+        assessment.course.set(form.cleaned_data['course'])
+        
         if form.cleaned_data.get('teams'):
             assessment.teams.set(form.cleaned_data['teams'])
 
         num_questions = form.cleaned_data.get('num_questions', 0)
         for i in range(num_questions):
-            question_text = form.cleaned_data.get(f"question_{i}")
-            if question_text:
-                Question.objects.create(assessment=assessment, text=question_text, order=i)
-        
-        return redirect("assessment_list")
+            question_text = form.cleaned_data.get(f"question_{i}_text")
+            question_type_id = form.cleaned_data.get(f"question_{i}_type")
+
+            if question_text and question_type:
+                question_type = QuestionType.objects.get(id=question_type_id)
+                question = Question.objects.create(
+                    assessment=assessment,
+                    text=question_text,
+                    order=i + 1,
+                    question_type=question_type_id
+                )
+
+        return redirect("professor_dashboard")
 
 
     context = {

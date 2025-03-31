@@ -2,9 +2,7 @@ from django.contrib import admin
 from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion
 
 # Register your models here.
-admin.site.register(UserProfile)
-admin.site.register(Course)
-admin.site.register(Team)
+
 
 
 class QuestionInline(admin.TabularInline):
@@ -14,6 +12,9 @@ class QuestionInline(admin.TabularInline):
 class AssessmentAdmin(admin.ModelAdmin):
     inlines = [QuestionInline]
 
-admin.site.register(Assessment, AssessmentAdmin)
+admin.site.register(UserProfile)
+admin.site.register(Course)
+admin.site.register(Team)
+admin.site.register(Assessment)
 admin.site.register(Question)
 admin.site.register(PredefinedQuestion)

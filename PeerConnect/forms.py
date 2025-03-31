@@ -53,7 +53,7 @@ class AssessmentForm(forms.ModelForm):
             self.fields[f"question_{i}_type"] = forms.ModelChoiceField(queryset=QuestionType.objects.all(), label=f"Question {i+1} Type")
 
     def save_questions(self, assessment):
-        num_questions = self.cleaned.data.get('num_questions')
+        num_questions = len(self.cleaned.data.get('num_questions'))
         for i in range(num_questions):
             text = self.cleaned_data.get(f"question_{i}_text")
             question_type = self.cleaned_data.get(f"question_{i}_type")
