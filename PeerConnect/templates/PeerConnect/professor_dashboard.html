@@ -6,7 +6,6 @@
         <aside class="sidebar">
             <h1 class="greeting">Welcome {{type}} {{user.first_name}}!</h1>
             <h4>Summary Statistics</h4>
-            
         </aside>
 
         <div class="items">
@@ -20,8 +19,22 @@
                     <button class="course-card new-course">+</button>
                 </a>
             </div>
+            <h4>Assessments</h4>
+            <div class="assessment-container">
+                {% if assessments %}
+                    <ul>
+                        {% for assessment in assessments %}
+                            <li>
+                                <a href="{% url 'view_assessment' assessment.id %}">{{ assessment.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No assessments available.</p>
+                {% endif %}
+            </div>
+            <button><a href="{% url 'create_assessment' %}" class="create-assessments-link">Create Assessments</a></button>
         </div>
-        
     </div>
 
     <div id="course-popup" class="modal">

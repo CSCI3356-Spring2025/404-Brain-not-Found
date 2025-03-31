@@ -112,9 +112,8 @@ def create_assessment_view(request):
     if request.method == "POST" and form.is_valid():
         assessment = form.save(commit=False)
         assessment.save()
-        
-        assessment.course.set(form.cleaned_data['courses'])  
-        if form.cleaned_data.get('teams'):  
+        assessment.courses.set(form.cleaned_data['course'])
+        if form.cleaned_data.get('teams'):
             assessment.teams.set(form.cleaned_data['teams'])
 
         num_questions = form.cleaned_data.get('num_questions', 0)
