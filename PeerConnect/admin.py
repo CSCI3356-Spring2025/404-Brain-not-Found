@@ -1,15 +1,15 @@
 from django.contrib import admin
 from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion
+from .forms import AssessmentForm
 
 # Register your models here.
-
-
 
 class QuestionInline(admin.TabularInline):
     model = Question
     extra = 1 
 
 class AssessmentAdmin(admin.ModelAdmin):
+    form = AssessmentForm
     inlines = [QuestionInline]
 
 admin.site.register(UserProfile)

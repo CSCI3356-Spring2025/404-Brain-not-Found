@@ -109,10 +109,11 @@ def dashboard_redirect(request):
 @login_required
 def create_assessment(request):
     form = AssessmentForm(request.POST or None)
-
+    #professor = get_object_or_404(UserProfile, user=request.user)
     if request.method == "POST" and form.is_valid():
         professor = get_object_or_404(UserProfile, user=request.user)
         assessment = form.save(commit=False)
+        assessment.professor = professor 
         assessment.save()
         form.save_m2m()
         
@@ -135,11 +136,19 @@ def create_assessment(request):
                     question_type=question_type_id
                 )
         return redirect("professor_dashboard")
+    
+    professor = get_object_or_404(UserProfile, user=request.user)  # Fetch professor for filtering courses
 
     context = {
         'form': form,
         'courses': Course.objects.filter(professor=professor)
     }
+
+    professor = get_object_or_404(UserProfile, user=request.user)  # Fetch professor for filtering courses
+    # context = {
+    #     'form': form,
+    #     'courses': Course.objects.filter(professor=professor)  # Ensure only professor's courses appear
+    # }
     return render(request, "PeerConnect/create_assessment.html", context)
 
 @login_required

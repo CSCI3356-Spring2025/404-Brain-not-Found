@@ -33,9 +33,16 @@ class AssessmentForm(forms.ModelForm):
         required = False,
         label = "Common Questions"
     )
-    available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
-    due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
-    
+    #available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
+    #due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
+    available_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        input_formats=['%Y-%m-%dT%H:%M']
+    )
+    due_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        input_formats=['%Y-%m-%dT%H:%M']
+    )
     class Meta:
         model = Assessment
         fields = ["name", "course", "team", "available_date", "due_date", "self_assessment", "num_questions"]
@@ -57,6 +64,13 @@ class AssessmentForm(forms.ModelForm):
         for i in range(num_questions):
             self.fields[f"question_{i}_text"] = forms.CharField(max_length=255, label=f"Question {i+1}")
             self.fields[f"question_{i}_type"] = forms.ModelChoiceField(queryset=QuestionType.objects.all(), label=f"Question {i+1} Type")
+    
+    def save(self, commit=True):
+        assessment = super().save(commit=False)
+        if commit:
+            assessment.save()
+            self.save_questions(assessment)
+        return assessment
 
     def save_questions(self, assessment):
         num_questions = len(self.cleaned.data.get('num_questions'))
@@ -71,3 +85,4 @@ class AssessmentForm(forms.ModelForm):
                 question_type=question_type
             )
             question.save()
+
