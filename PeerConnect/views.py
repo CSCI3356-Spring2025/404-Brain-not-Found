@@ -48,7 +48,8 @@ def professor_dashboard(request):
     professor = get_object_or_404(UserProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
     students = UserProfile.objects.filter(is_student=True)
-    return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students})
+    assessments = Assessment.objects.filter(professor=professor)
+    return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students, 'assessments': assessments})
 
 def signup_view(request):
     if request.user.is_authenticated:
@@ -106,15 +107,17 @@ def dashboard_redirect(request):
     return redirect('/dashboard/')  # Change this if needed
 
 @login_required
-def create_assessment_view(request):
+def create_assessment(request):
     form = AssessmentForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
+        professor = get_object_or_404(UserProfile, user=request.user)
         assessment = form.save(commit=False)
         assessment.save()
+        form.save_m2m()
         
         assessment.course.set(form.cleaned_data['course'])
-        
+    
         if form.cleaned_data.get('teams'):
             assessment.teams.set(form.cleaned_data['teams'])
 
@@ -131,12 +134,20 @@ def create_assessment_view(request):
                     order=i + 1,
                     question_type=question_type_id
                 )
-
         return redirect("professor_dashboard")
-
 
     context = {
         'form': form,
-        'courses': Course.objects.filter(professor=request.user.userprofile),
+        'courses': Course.objects.filter(professor=professor)
     }
     return render(request, "PeerConnect/create_assessment.html", context)
+
+@login_required
+def view_assessment(request, assessment_id):
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    questions = assessment.questions.all()
+    context = {
+        'assessment': assessment,
+        'questions': questions
+    }
+    return render(request, "PeerConnect/view_assessment.html", context)

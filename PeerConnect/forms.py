@@ -1,5 +1,9 @@
 from django import forms
-from .models import UserProfile, Team, Assessment, PredefinedQuestion
+from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question
+from django.utils import timezone
+
+
+
 
 class TeamForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
@@ -29,6 +33,8 @@ class AssessmentForm(forms.ModelForm):
         required = False,
         label = "Common Questions"
     )
+    available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
+    due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
     
     class Meta:
         model = Assessment

@@ -35,6 +35,7 @@ class PredefinedQuestion(models.Model):
         return self.text
         
 class Assessment(models.Model):
+    professor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='assessments_created')  # Link to the professor who created the assessment
     name = models.CharField(max_length=255)
     course = models.ManyToManyField(Course, related_name='assessments')  # Many-to-many to allow multiple courses to use the same assessment
     team = models.ManyToManyField(Team, related_name='assessments', blank=True)  # Optional if not tied to a specific team
@@ -42,6 +43,7 @@ class Assessment(models.Model):
     due_date = models.DateTimeField(default= timezone.now() + timedelta(days=7))
     self_assessment = models.BooleanField(default=False)
     num_questions = models.PositiveIntegerField(default=0)
+    
 
     predefined_questions = models.ManyToManyField(PredefinedQuestion, blank=True)
     
@@ -49,7 +51,6 @@ class Assessment(models.Model):
     def __str__(self):
         courses_names = ", ".join(course.name for course in self.course.all())
         return f"{self.name} ({courses_names})"
-
 
 class Question(models.Model):
     QUESTION_TYPE_CHOICES = [
