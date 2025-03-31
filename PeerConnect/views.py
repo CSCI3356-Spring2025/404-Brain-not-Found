@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile, Course, Team,  Assessment, Question, PredefinedQuestion
 from django.http import JsonResponse
-from .forms import TeamForm, AssessmentForm
+from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet
+
+
 
 def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -108,43 +110,86 @@ def dashboard_redirect(request):
 
 @login_required
 def create_assessment(request):
-    form = AssessmentForm(request.POST or None)
-    #professor = get_object_or_404(UserProfile, user=request.user)
-    if request.method == "POST" and form.is_valid():
-        professor = get_object_or_404(UserProfile, user=request.user)
-        assessment = form.save(commit=False)
-        assessment.professor = professor 
-        assessment.save()
-        form.save_m2m()
-        
-        assessment.course.set(form.cleaned_data['course'])
-    
-        if form.cleaned_data.get('teams'):
-            assessment.teams.set(form.cleaned_data['teams'])
+    professor = get_object_or_404(UserProfile, user=request.user)
+    if request.method == "POST" :
 
-        num_questions = form.cleaned_data.get('num_questions', 0)
-        for i in range(num_questions):
-            question_text = form.cleaned_data.get(f"question_{i}_text")
-            question_type_id = form.cleaned_data.get(f"question_{i}_type")
+        form = AssessmentForm(request.POST)
+        if form.is_valid() :
+            assessment = form.save(commit=False)
+            assessment.professor = professor
+            assessment.save()
+            form.save_m2m()
+            #formset.instance = assessment
 
-            if question_text and question_type:
-                question_type = Question.objects.get(id=question_type_id)
-                question = Question.objects.create(
-                    assessment=assessment,
-                    text=question_text,
-                    order=i + 1,
-                    question_type=question_type_id
-                )
-        return redirect("professor_dashboard")
+            formset = QuestionFormSet(request.POST, instance=assessment)
+            print(request.POST.dict())
+            if  formset.is_valid():
+                questions = formset.save(commit=False)
+                for index, question in enumerate(questions):
+                    question.assessment = assessment
+                    question.order = index + 1
+                    question.save()
+                formset.save_m2m()
+            else:
+                # If question formset has errors, re-render with errors
+                return render(request, "PeerConnect/create_assessment.html", {
+                    'form': form,
+                    'formset': formset,
+                    'courses': Course.objects.filter(professor=professor)
+                })
+            return redirect("professor_dashboard")
+
+        else:
+            formset = QuestionFormSet(request.POST)
     
-    professor = get_object_or_404(UserProfile, user=request.user)  # Fetch professor for filtering courses
+    else:
+        form = AssessmentForm()
+        formset = QuestionFormSet()
 
     context = {
         'form': form,
+        'formset': formset,
         'courses': Course.objects.filter(professor=professor)
     }
-
+    
     return render(request, "PeerConnect/create_assessment.html", context)
+
+    # #professor = get_object_or_404(UserProfile, user=request.user)
+    # if request.method == "POST" and form.is_valid():
+    #     professor = get_object_or_404(UserProfile, user=request.user)
+    #     assessment = form.save(commit=False)
+    #     assessment.professor = professor 
+    #     assessment.save()
+    #     form.save_m2m()
+        
+    #     assessment.course.set(form.cleaned_data['course'])
+    
+    #     if form.cleaned_data.get('teams'):
+    #         assessment.teams.set(form.cleaned_data['teams'])
+
+    #     num_questions = form.cleaned_data.get('num_questions', 0)
+    #     # for i in range(num_questions):
+    #     #     question_text = form.cleaned_data.get(f"question_{i}_text")
+    #     #     question_type_id = form.cleaned_data.get(f"question_{i}_type")
+
+    #     #     if question_text and question_type:
+    #     #         question_type = Question.objects.get(id=question_type_id)
+    #     #         question = Question.objects.create(
+    #     #             assessment=assessment,
+    #     #             text=question_text,
+    #     #             order=i + 1,
+    #     #             question_type=question_type_id
+    #     #         )
+    #     return redirect("professor_dashboard")
+    
+    # #professor = get_object_or_404(UserProfile, user=request.user)  # Fetch professor for filtering courses
+
+    # context = {
+    #     'form': form,
+    #     'courses': Course.objects.filter(professor=professor)
+    # }
+
+    # return render(request, "PeerConnect/create_assessment.html", context)
 
 @login_required
 def view_assessment(request, assessment_id):

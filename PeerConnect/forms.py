@@ -1,8 +1,7 @@
 from django import forms
 from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question
 from django.utils import timezone
-
-
+from django.forms.models import inlineformset_factory
 
 
 class TeamForm(forms.ModelForm):
@@ -60,29 +59,22 @@ class AssessmentForm(forms.ModelForm):
 
 
         self.fields["num_questions"].label = "Number of Questions"
-        num_questions = self.initial.get("num_questions", 0)
-        for i in range(num_questions):
-            self.fields[f"question_{i}_text"] = forms.CharField(max_length=255, label=f"Question {i+1}")
-            self.fields[f"question_{i}_type"] = forms.ChoiceField(choices=Question.QUESTION_TYPE_CHOICES, label=f"Question {i+1} Type")
+        # num_questions = self.initial.get("num_questions", 0)
+        # for i in range(num_questions):
+        #     self.fields[f"question_{i}_text"] = forms.CharField(max_length=255, label=f"Question {i+1}")
+        #     self.fields[f"question_{i}_type"] = forms.ChoiceField(choices=Question.QUESTION_TYPE_CHOICES, label=f"Question {i+1} Type")
     
-    def save(self, commit=True):
-        assessment = super().save(commit=False)
-        if commit:
-            assessment.save()
-            self.save_questions(assessment)
-        return assessment
 
-    def save_questions(self, assessment):
-        num_questions = self.cleaned.data.get('num_questions',0)
-        for i in range(num_questions):
-            text = self.cleaned_data.get(f"question_{i}_text")
-            question_type = self.cleaned_data.get(f"question_{i}_type")
-            if text and question_type:
-                question = Question.objects.create(
-                    assessment=assessment,
-                    text=text,
-                    order=i + 1,
-                    question_type=question_type
-                )
-                question.save()
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text', 'question_type']
 
+QuestionFormSet = inlineformset_factory(
+    Assessment,
+    Question,
+    form=QuestionForm,
+    fields=['text', 'question_type'],
+    extra=1,
+    can_delete=True
+)
