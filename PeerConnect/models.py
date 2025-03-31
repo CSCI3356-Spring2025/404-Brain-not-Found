@@ -60,7 +60,7 @@ class Question(models.Model):
     assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField()
     order = models.PositiveIntegerField()
-    type = models.CharField(max_length=10, choices = QUESTION_TYPE_CHOICES, default = "open")
+    question_type = models.CharField(max_length=10, choices = QUESTION_TYPE_CHOICES, default = "open")
+    
     def __str__(self):
         return f"{self.get_question_type_display()} Question {self.order}: {self.text[:30]}"
-
