@@ -175,3 +175,4 @@ cython_debug/
 __pycache__/
 *.pyc
 *.pyo
+.DS_Store
