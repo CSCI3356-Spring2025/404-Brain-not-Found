@@ -148,6 +148,20 @@
     text-decoration: none; /* Removes underline */
     color: #1e3a5f; /* Ensures the link color matches the card text */
   }
+
+  .create-assessments-btn {
+    border: none;
+    margin-top: 15px;
+  }
+  
+  .create-assessments-link {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    color: #1e3a5f;
+    margin-top: 5;
+  }
   
   /* Modal background overlay */
 .modal {
