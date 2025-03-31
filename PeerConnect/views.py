@@ -128,7 +128,7 @@ def create_assessment(request):
             question_type_id = form.cleaned_data.get(f"question_{i}_type")
 
             if question_text and question_type:
-                question_type = QuestionType.objects.get(id=question_type_id)
+                question_type = Question.objects.get(id=question_type_id)
                 question = Question.objects.create(
                     assessment=assessment,
                     text=question_text,

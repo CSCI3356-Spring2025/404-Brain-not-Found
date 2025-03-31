@@ -33,16 +33,16 @@ class AssessmentForm(forms.ModelForm):
         required = False,
         label = "Common Questions"
     )
-    #available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
-    #due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
-    available_date = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        input_formats=['%Y-%m-%dT%H:%M']
-    )
-    due_date = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        input_formats=['%Y-%m-%dT%H:%M']
-    )
+    available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
+    due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
+    # available_date = forms.DateTimeField(
+    #     widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+    #     input_formats=['%Y-%m-%dT%H:%M']
+    # )
+    # due_date = forms.DateTimeField(
+    #     widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+    #     input_formats=['%Y-%m-%dT%H:%M']
+    # )
     class Meta:
         model = Assessment
         fields = ["name", "course", "team", "available_date", "due_date", "self_assessment", "num_questions"]
