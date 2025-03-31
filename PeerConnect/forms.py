@@ -33,16 +33,16 @@ class AssessmentForm(forms.ModelForm):
         required = False,
         label = "Common Questions"
     )
-    available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
-    due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
-    # available_date = forms.DateTimeField(
-    #     widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-    #     input_formats=['%Y-%m-%dT%H:%M']
-    # )
-    # due_date = forms.DateTimeField(
-    #     widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-    #     input_formats=['%Y-%m-%dT%H:%M']
-    # )
+    #available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
+    #due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
+    available_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        input_formats=['%Y-%m-%dT%H:%M']
+    )
+    due_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        input_formats=['%Y-%m-%dT%H:%M']
+    )
     class Meta:
         model = Assessment
         fields = ["name", "course", "team", "available_date", "due_date", "self_assessment", "num_questions"]
@@ -63,7 +63,7 @@ class AssessmentForm(forms.ModelForm):
         num_questions = self.initial.get("num_questions", 0)
         for i in range(num_questions):
             self.fields[f"question_{i}_text"] = forms.CharField(max_length=255, label=f"Question {i+1}")
-            self.fields[f"question_{i}_type"] = forms.ModelChoiceField(queryset=QuestionType.objects.all(), label=f"Question {i+1} Type")
+            self.fields[f"question_{i}_type"] = forms.ChoiceField(choices=Question.QUESTION_TYPE_CHOICES, label=f"Question {i+1} Type")
     
     def save(self, commit=True):
         assessment = super().save(commit=False)
@@ -73,16 +73,16 @@ class AssessmentForm(forms.ModelForm):
         return assessment
 
     def save_questions(self, assessment):
-        num_questions = len(self.cleaned.data.get('num_questions'))
+        num_questions = self.cleaned.data.get('num_questions',0)
         for i in range(num_questions):
             text = self.cleaned_data.get(f"question_{i}_text")
             question_type = self.cleaned_data.get(f"question_{i}_type")
-
-            question = Question.objects.create(
-                assessment=assessment,
-                text=text,
-                order=i + 1,
-                question_type=question_type
-            )
-            question.save()
+            if text and question_type:
+                question = Question.objects.create(
+                    assessment=assessment,
+                    text=text,
+                    order=i + 1,
+                    question_type=question_type
+                )
+                question.save()
 

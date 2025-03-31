@@ -12,6 +12,11 @@ class AssessmentAdmin(admin.ModelAdmin):
     form = AssessmentForm
     inlines = [QuestionInline]
 
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('assessment', 'order', 'question_type', 'text')
+    list_filter = ('question_type',)
+    search_fields = ('text',)
+
 admin.site.register(UserProfile)
 admin.site.register(Course)
 admin.site.register(Team)

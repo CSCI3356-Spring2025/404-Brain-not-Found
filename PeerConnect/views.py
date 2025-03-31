@@ -144,11 +144,6 @@ def create_assessment(request):
         'courses': Course.objects.filter(professor=professor)
     }
 
-    professor = get_object_or_404(UserProfile, user=request.user)  # Fetch professor for filtering courses
-    # context = {
-    #     'form': form,
-    #     'courses': Course.objects.filter(professor=professor)  # Ensure only professor's courses appear
-    # }
     return render(request, "PeerConnect/create_assessment.html", context)
 
 @login_required
