@@ -52,10 +52,15 @@ class Assessment(models.Model):
 
 
 class Question(models.Model):
+    QUESTION_TYPE_CHOICES = [
+        ('likert', 'Likert Scale'),
+        ('open', 'Open-Ended'),
+    ]
+    
     assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField()
     order = models.PositiveIntegerField()
-
+    type = models.CharField(max_length=10, choices = QUESTION_TYPE_CHOICES, default = "open")
     def __str__(self):
-        return f"Question {self.order}: {self.text[:30]}"
+        return f"{self.get_question_type_display()} Question {self.order}: {self.text[:30]}"
 
