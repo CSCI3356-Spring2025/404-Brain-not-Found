@@ -1,15 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<div class="assessment-container">
 <p>{{ assessment.name }}</p>
 <div class="qualitive">
     <h2>Qualitative Questions</h2>
+    {% for question in questions %}
+        {% if question.question_type == "open" %}
+            <p>Question: {{ question.text }}</p>
+        {% endif %}
+    {% endfor %}
 </div>
 
 <div class="quantitative">
     <h2>Quantitative Questions</h2>
     {% for question in questions %}
-        <p>Question: {{ question.text }}</p>
-{% endfor %}
+        {% if question.question_type == "likert" %}
+            <p>Question: {{ question.text }}</p>
+        {% endif %}
+    {% endfor %}
+</div>
 </div>
 {% endblock %}
