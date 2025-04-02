@@ -65,3 +65,13 @@ class Question(models.Model):
     
     def __str__(self):
         return f"{self.get_question_type_display()} Question {self.order}: {self.text[:30]}"
+
+class QuestionResponse(models.Model):
+    student = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='responses')
+    #assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='responses') #is this needed w question?
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='responses')
+    answer_text = models.TextField(blank=True, null=True)
+    answer_likert = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Response by {self.student} for {self.question}"

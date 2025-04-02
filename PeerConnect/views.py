@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile, Course, Team,  Assessment, Question, PredefinedQuestion
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet
 
 
@@ -194,7 +194,7 @@ def create_assessment(request):
 @login_required
 def view_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
-    questions = assessment.questions.all()
+    questions = Question.objects.filter(assessment=assessment)
     context = {
         'assessment': assessment,
         'questions': questions

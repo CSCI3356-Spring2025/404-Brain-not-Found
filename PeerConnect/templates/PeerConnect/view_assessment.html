@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block content %}
-<p>{{ 'name' }}</p>
-
+<h1>Assessment Page Loaded!</h1>
+{% if assessment %}
+    <h2>Assessment Name: {{ assessment.name }}</h2>
+    {% for question in questions %}
+        <p>Question: {{ question.text }}</p>
+    {% endfor %}
+{% else %}
+    <p>No assessment found.</p>
+{% endif %}
 {% endblock %}
