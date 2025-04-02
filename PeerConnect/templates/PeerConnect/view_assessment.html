@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Assessment Page Loaded!</h1>
-{% if assessment %}
-    <h2>Assessment Name: {{ assessment.name }}</h2>
-    {% for question in questions %}
-        <p>Question: {{ question.text }}</p>
-    {% endfor %}
-{% else %}
-    <p>No assessment found.</p>
-{% endif %}
+<script src="{% static 'styles/PeerConnect/view_assessment.css' %}"></script>
+<p>{{ assessment.name }}</p>
+<div class="qualitive">
+    <h2>Qualitative Questions</h2>
+</div>
+
+<div class="quantitative">
+    <h2>Quantitative Questions</h2>
+    {{ assessment.questions }}
+</div>
 {% endblock %}

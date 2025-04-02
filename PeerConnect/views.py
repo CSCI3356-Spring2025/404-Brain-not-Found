@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, Course, Team,  Assessment, Question, PredefinedQuestion
-from django.http import JsonResponse, HttpResponse
+from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion
+from django.http import JsonResponse
 from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet
 
 
@@ -151,7 +151,6 @@ def create_assessment(request):
         'formset': formset,
         'courses': Course.objects.filter(professor=professor)
     }
-    
     return render(request, "PeerConnect/create_assessment.html", context)
 
     # #professor = get_object_or_404(UserProfile, user=request.user)
@@ -194,7 +193,9 @@ def create_assessment(request):
 @login_required
 def view_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
-    questions = Question.objects.filter(assessment=assessment)
+    questions = assessment.objects.filter(assessment=assessment).order_by('order')
+    if assessment.professor != request.user.userprofile:
+        return redirect("professor_dashboard")  # Prevent unauthorized access
     context = {
         'assessment': assessment,
         'questions': questions

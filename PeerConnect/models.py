@@ -52,16 +52,15 @@ class Assessment(models.Model):
         courses_names = ", ".join(course.name for course in self.course.all())
         return f"{self.name} ({courses_names})"
 
+class QuestionType(models.TextChoices):
+    OPEN = 'open', 'Open-Ended'
+    LIKERT = 'likert', 'Likert Scale'
+
 class Question(models.Model):
-    QUESTION_TYPE_CHOICES = [
-        ('likert', 'Likert Scale'),
-        ('open', 'Open-Ended'),
-    ]
-    
     assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField()
     order = models.PositiveIntegerField()
-    question_type = models.CharField(max_length=10, choices = QUESTION_TYPE_CHOICES, default = "open")
+    question_type = models.CharField(max_length=10, choices = QuestionType.choices, default = QuestionType.OPEN)
     
     def __str__(self):
         return f"{self.get_question_type_display()} Question {self.order}: {self.text[:30]}"
