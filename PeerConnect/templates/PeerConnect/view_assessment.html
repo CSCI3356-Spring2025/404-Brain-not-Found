@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<script src="{% static 'styles/PeerConnect/view_assessment.css' %}"></script>
+
 <p>{{ assessment.name }}</p>
 <div class="qualitive">
     <h2>Qualitative Questions</h2>
@@ -8,6 +8,8 @@
 
 <div class="quantitative">
     <h2>Quantitative Questions</h2>
-    {{ assessment.questions }}
+    {% for question in questions %}
+        <p>Question: {{ question.text }}</p>
+{% endfor %}
 </div>
 {% endblock %}

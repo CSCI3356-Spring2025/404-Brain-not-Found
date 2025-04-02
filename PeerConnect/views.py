@@ -193,7 +193,7 @@ def create_assessment(request):
 @login_required
 def view_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
-    questions = assessment.objects.filter(assessment=assessment).order_by('order')
+    questions = Question.objects.filter(assessment=assessment).order_by('order')
     if assessment.professor != request.user.userprofile:
         return redirect("professor_dashboard")  # Prevent unauthorized access
     context = {
