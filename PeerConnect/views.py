@@ -16,7 +16,10 @@ def student_dashboard(request):
         return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'students': students})
     else:
         user_type = "Student"
-    return render(request, "PeerConnect/student_dashboard.html", {'user': request.user, 'type': user_type})
+        courses = user_profile.courses_enrolled.all()
+        teams = user_profile.teams.all()
+        assessments = Assessment.objects.filter(course__in=courses)
+    return render(request, "PeerConnect/student_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'teams': teams, 'assessments': assessments})
 
 def peer_answer_qual(request):
     return render(request, "PeerConnect/peer_answer_qual.html", {})
