@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion
+from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse
 from django.http import JsonResponse
-from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet
+from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm
+from django.forms import modelformset_factory
 
 
 
@@ -201,3 +202,30 @@ def view_assessment(request, assessment_id):
         'questions': questions
     }
     return render(request, "PeerConnect/view_assessment.html", context)
+
+QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+
+def submit_assessment(request, assessment_id):
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    student = request.user.userprofile
+    questions = assessment.questions.all()
+    
+    if request.method == "POST":
+        formset = QuestionResponseFormSet(request.POST, queryset=QuestionResponse.objects.filter(student=student, assessment=assessment))
+        
+        if formset.is_valid():
+            responses = formset.save(commit=False)
+            for response, question in zip(responses, questions):
+                response.student = student
+                response.assessment = assessment
+                response.question = question
+                response.save()
+            return redirect('/dashboard/') 
+    else:
+        # Prefill responses if student has already attempted some
+        formset = QuestionResponseFormSet(queryset=QuestionResponse.objects.filter(student=student, assessment=assessment))
+
+    return render(request, "PeerConnect/submit_assessment.html", {"assessment": assessment, "formset": formset})

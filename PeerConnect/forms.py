@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question
+from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question, QuestionResponse
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
 
@@ -78,3 +78,8 @@ QuestionFormSet = inlineformset_factory(
     extra=1,
     can_delete=True
 )
+
+class QuestionResponseForm(forms.ModelForm):
+    class Meta:
+        model = QuestionResponse
+        fields = ['answer_text', 'answer_likert']

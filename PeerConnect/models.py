@@ -67,10 +67,11 @@ class Question(models.Model):
 
 class QuestionResponse(models.Model):
     student = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='responses')
-    #assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='responses') #is this needed w question?
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='responses') #is this needed w question?
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='responses')
     answer_text = models.TextField(blank=True, null=True)
     answer_likert = models.IntegerField(blank=True, null=True)
+    #submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Response by {self.student} for {self.question}"
