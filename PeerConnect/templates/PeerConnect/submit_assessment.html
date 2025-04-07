@@ -9,6 +9,7 @@
     {% for form in formset %}
         <div class="question-response">
             <label>{{ form.instance.question.text }}</label>
+            {{ form.id }}
             {{ form.answer_text }}  {# For open-ended questions #}
             {{ form.answer_likert }} {# For Likert scale questions #}
         </div>

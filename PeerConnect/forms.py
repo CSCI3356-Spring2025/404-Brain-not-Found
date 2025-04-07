@@ -82,4 +82,13 @@ QuestionFormSet = inlineformset_factory(
 class QuestionResponseForm(forms.ModelForm):
     class Meta:
         model = QuestionResponse
-        fields = ['answer_text', 'answer_likert']
+        fields = ['id', 'answer_text', 'answer_likert']
+
+from django.forms import modelformset_factory
+
+QuestionResponseFormSet = modelformset_factory(
+    QuestionResponse,
+    form=QuestionResponseForm,
+    extra=0,
+    fields=['id', 'answer_text', 'answer_likert'] 
+)

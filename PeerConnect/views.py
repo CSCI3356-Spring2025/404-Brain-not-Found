@@ -205,25 +205,37 @@ def view_assessment(request, assessment_id):
 
 QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-
 def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     student = request.user.userprofile
     questions = assessment.questions.all()
-    
+
+    # Ensure that QuestionResponse objects are created if they don't exist
+    for question in questions:
+        QuestionResponse.objects.get_or_create(
+            student=student,
+            assessment=assessment,
+            question=question
+        )
+
     if request.method == "POST":
-        formset = QuestionResponseFormSet(request.POST, queryset=QuestionResponse.objects.filter(student=student, assessment=assessment))
-        
+        # Get the formset with existing responses (if any)
+        formset = QuestionResponseFormSet(
+            request.POST,
+            queryset=QuestionResponse.objects.filter(student=student, assessment=assessment)
+        )
+
         if formset.is_valid():
             responses = formset.save(commit=False)
             for response, question in zip(responses, questions):
                 response.student = student
                 response.assessment = assessment
-                response.question = question
+                response.question = question  # Ensure each response is linked to a question
                 response.save()
-            return redirect('/dashboard/') 
+            return redirect('/student_dashboard/')
+        else:
+            print("Formset errors:", formset.errors)  # Debug errors
+            print("POST data:", request.POST)  # Check if id is missing
     else:
         # Prefill responses if student has already attempted some
         formset = QuestionResponseFormSet(queryset=QuestionResponse.objects.filter(student=student, assessment=assessment))
