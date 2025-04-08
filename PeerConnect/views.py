@@ -13,7 +13,8 @@ def student_dashboard(request):
     if user_profile.is_professor:
         user_type = "Professor"
         courses = Course.objects.filter(professor=user_profile)
-        return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'students': students})
+        assessments = Assessment.objects.filter(professor=user_profile)
+        return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'students': students, 'assesments': assessments})
     else:
         user_type = "Student"
         courses = user_profile.courses_enrolled.all()
@@ -26,6 +27,9 @@ def peer_answer_qual(request):
 
 def peer_answer_quant(request):
     return render(request, "PeerConnect/peer_answer_quant.html", {})
+
+def assessment_summary(request, assessment_id):
+    return render(request, 'PeerConnect/peer_assessment_summary.html', {})
 
 def create(request):
     students = UserProfile.objects.filter(is_student=True)

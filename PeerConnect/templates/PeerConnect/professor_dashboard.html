@@ -27,7 +27,7 @@
                             <li>
                                 <a href="{% url 'view_assessment' assessment.id %}">{{ assessment.name }}</a>
                                 <p id="due-date">{{ assessment.due_date }}</p>
-                                <a href="{% url 'submit_assessment' assessment.id %}">Take Assessment</a>
+                                <a href="{% url 'assessment_summary' assessment.id %}">View Results</a>
                             </li>
                         {% endfor %}
                     </ul>
