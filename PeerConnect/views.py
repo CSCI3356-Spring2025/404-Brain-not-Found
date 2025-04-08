@@ -254,6 +254,8 @@ def publish_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
     if assessment.professor != request.user.userprofile:
-        return redirect('unauthorized')
+        return redirect('unauthorized')
 
-    return
+    assessment.published = True
+    assessment.save()
+    return redirect('assessment_detail', assessment_id=assessment.id)
