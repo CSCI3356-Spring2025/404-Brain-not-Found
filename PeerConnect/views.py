@@ -251,4 +251,9 @@ def submit_assessment(request, assessment_id):
 
 @login_required
 def publish_assessment(request, assessment_id):
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+
+    if assessment.professor != request.user.userprofile:
+        return redirect('unauthorized')
+
     return
