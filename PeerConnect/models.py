@@ -47,6 +47,8 @@ class Assessment(models.Model):
 
     predefined_questions = models.ManyToManyField(PredefinedQuestion, blank=True)
     
+    #tracks whether it is published
+    published = models.BooleanField(default=False)
     
     def __str__(self):
         courses_names = ", ".join(course.name for course in self.course.all())
