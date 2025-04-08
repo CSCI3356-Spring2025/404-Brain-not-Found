@@ -248,3 +248,7 @@ def submit_assessment(request, assessment_id):
         formset = QuestionResponseFormSet(queryset=QuestionResponse.objects.filter(student=student, assessment=assessment))
 
     return render(request, "PeerConnect/submit_assessment.html", {"assessment": assessment, "formset": formset})
+
+@login_required
+def publish_assessment(request, assessment_id):
+    return
