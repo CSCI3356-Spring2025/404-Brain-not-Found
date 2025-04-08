@@ -39,6 +39,7 @@ urlpatterns = [
     path('delete_team/<int:team_id>', views.delete_team, name='delete_team'), 
     path('submit_assessment/<int:assessment_id>', views.submit_assessment, name='submit_assessment'),
     path('assessment_summary/<int:assessment_id>', views.assessment_summary, name='assessment_summary'),
+    path('publish_assessment/<int:assessment_id>', views.publish_assessment, name='publish_assessment'),
 
 
     path('accounts/', include('allauth.urls')),
