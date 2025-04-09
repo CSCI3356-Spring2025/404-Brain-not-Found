@@ -63,7 +63,96 @@ body {
 }
 
 .results-title {
-  font-size: 16px;
+  font-size: 20px;
   color: #555;
   padding-left: 10px;
+}
+
+.publish-button {
+  background-color: var(--secondary-color);
+  margin: 20px auto;
+  padding: 15px 30px;
+  font-size: 16px;
+  text-align: center;
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  display: block;
+  max-width: 200px;   
+  transition: background-color 0.3s ease;
+}
+
+.publish-button:hover {
+  background-color: #38bebe; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+  transform: translateY(-2px); 
+}
+
+.response-section {
+  margin-top: 30px;
+}
+
+.response-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: var(--dark-text);
+}
+
+.response-entry {
+  background: var(--light-bg);
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+}
+
+.response-entry summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+.response-entry p {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--dark-text);
+}
+
+.rating-section {
+  margin-top: 30px;
+}
+
+.rating-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: var(--dark-text);
+}
+
+.star-rating {
+  position: relative;
+  width: 250px;  /* Adjust to the size you prefer */
+  height: 20px;
+  background: #ccc;  
+  border-radius: 5px;
+  overflow: hidden;  /* Ensures stars stay within the container */
+}
+
+.star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.empty {
+  background: #ccc;  /* Empty star (grey) */
+}
+
+.filled {
+  background: #38bebe;  
+  width: 0%; 
+  transition: width 0.3s ease;  
 }
