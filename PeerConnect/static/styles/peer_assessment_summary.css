@@ -6,9 +6,9 @@
 }
 
 :root {
-  --primary-color: #315cec;
-  --secondary-color: #49cccc;
-  --accent-color: #d2ebfb;
+  --primary-color: #1e3a5f;
+  --secondary-color: #e07a5f;
+  --accent-color: #f5e6da;
   --light-bg: #f9f9f9;
   --dark-text: #333;
   --light-text: #fff;
@@ -69,7 +69,7 @@ body {
 }
 
 .publish-button {
-  background-color: var(--secondary-color);
+  background-color: var(--accent-color);
   margin: 20px auto;
   padding: 15px 30px;
   font-size: 16px;
@@ -84,7 +84,7 @@ body {
 }
 
 .publish-button:hover {
-  background-color: #38bebe; 
+  background-color: var(--secondary-color); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
   transform: translateY(-2px); 
 }
@@ -152,7 +152,18 @@ body {
 }
 
 .filled {
-  background: #38bebe;  
+  background: #e07a5f;  
   width: 0%; 
   transition: width 0.3s ease;  
+}
+
+a {
+  color: #0060B6;
+  text-decoration: none;
+}
+
+a:hover {
+  color:#00A0C6; 
+  text-decoration:none; 
+  cursor:pointer;  
 }
