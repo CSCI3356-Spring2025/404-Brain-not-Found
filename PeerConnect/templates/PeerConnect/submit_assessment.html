@@ -1,20 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{{ assessment.name }}</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    
-    {% for form in formset %}
-        <div class="question-response">
-            <label>{{ form.instance.question.text }}</label>
-            {{ form.id }}
-            {{ form.answer_text }}  {# For open-ended questions #}
-            {{ form.answer_likert }} {# For Likert scale questions #}
+<h2 class="assessment-title">{{ assessment.name }}</h2>
+
+<div class="tab-wrapper">
+    <!-- Radio buttons for tab switching -->
+    <input type="radio" name="tabs" id="tab1" checked>
+    <label for="tab1" class="tab-label">Open-Ended</label>
+
+    <input type="radio" name="tabs" id="tab2">
+    <label for="tab2" class="tab-label">Likert Scale</label>
+
+    <form method="post" class="tab-content">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="tab" id="qualitative-tab">
+            {% for form in formset %}
+                {% if form.instance.question.question_type == 'open' %}
+                    <div class="question-response">
+                        <label>{{ form.instance.question.text }}</label>
+                        {{ form.id }}
+                        {{ form.answer_text }}
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
-    {% endfor %}
-    
-    <button type="submit">Submit Assessment</button>
-</form>
+
+        <div class="tab" id="quantitative-tab">
+            {% for form in formset %}
+                {% if form.instance.question.question_type == 'likert' %}
+                    <div class="question-response">
+                        <label>{{ form.instance.question.text }}</label>
+                        {{ form.id }}
+                        {{ form.answer_likert }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Assessment</button>
+    </form>
+</div>
 {% endblock %}
