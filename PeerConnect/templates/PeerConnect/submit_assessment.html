@@ -33,11 +33,23 @@
                     <div class="question-response">
                         <label>{{ form.instance.question.text }}</label>
                         {{ form.id }}
-                        {{ form.answer_likert }}
+                        <div class="star-rating">
+                            {% for i in "54321" %}
+                                {% with unique_id=form.prefix|add:"_star_"|add:i %}
+                                    <input type="radio"
+                                           id="{{ unique_id }}"
+                                           name="{{ form.prefix }}-answer_likert"
+                                           value="{{ i }}"
+                                           {% if form.initial.answer_likert|stringformat:"s" == i %}checked{% endif %}>
+                                    <label for="{{ unique_id }}">&#9733;</label>
+                                {% endwith %}
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endif %}
             {% endfor %}
         </div>
+        
 
         <button type="submit" class="submit-btn">Submit Assessment</button>
     </form>

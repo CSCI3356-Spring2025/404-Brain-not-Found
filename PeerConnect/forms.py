@@ -2,6 +2,7 @@ from django import forms
 from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question, QuestionResponse
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
+from django.utils.safestring import mark_safe
 
 
 class TeamForm(forms.ModelForm):
@@ -79,10 +80,28 @@ QuestionFormSet = inlineformset_factory(
     can_delete=True
 )
 
+class StarRatingWidget(forms.widgets.Widget):
+    def render(self, name, value, attrs=None, renderer=None):
+        if not value:
+            value = 0
+        output = '<div class="star-rating">'
+        for i in range(5, 0, -1):
+            checked = 'checked' if str(value) == str(i) else ''
+            output += f'''
+                <input type="radio" id="{name}_{i}" name="{name}" value="{i}" {checked}>
+                <label for="{name}_{i}">&#9733;</label>
+            '''
+        output += '</div>'
+        return mark_safe(output)
+
 class QuestionResponseForm(forms.ModelForm):
     class Meta:
         model = QuestionResponse
         fields = ['id', 'answer_text', 'answer_likert']
+        widgets = {
+            'answer_likert': StarRatingWidget()
+        }
+
 
 from django.forms import modelformset_factory
 

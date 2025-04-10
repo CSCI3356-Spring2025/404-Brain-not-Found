@@ -21,8 +21,7 @@
     color: #1e3a5f;
     padding: 12px 24px;
     cursor: pointer;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-radius: 8px 8px 0 0;
     margin-right: 6px;
     font-weight: bold;
     transition: all 0.3s ease;
@@ -91,6 +90,41 @@ input#tab2:checked + label {
     color: var(--dark-text); /* Ensure text color matches the theme */
     font-size: 1.05rem;
     border: none;
+    background-color: inherit;
+}
+
+.star-rating {
+    background-color: inherit;
+    direction: rtl;
+    display: inline-flex;
+    gap: 5px;
+    unicode-bidi: bidi-override;
+    font-size: 3rem;  /* Increase this value to make stars larger */
+    line-height: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: auto;
+    overflow: visible;
+    align-items: left;
+}
+
+.star-rating label {
+    background-color: inherit;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-size: 30px;  /* Inheriting font size from .star-rating */
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+    background-color: inherit;
+}
+
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffd700;
     background-color: inherit;
 }
 
