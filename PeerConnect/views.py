@@ -266,6 +266,11 @@ def publish_assessment(request, assessment_id):
     if assessment.professor != request.user.userprofile:
         return redirect('unauthorized')
 
+    print(f"Assessment {assessment.id}. Published: {assessment.published}")
+    
     assessment.published = True
     assessment.save()
+    
+    print(f"Assessment {assessment.id}. Published: {assessment.published}")
+
     return redirect('assessment_detail', assessment_id=assessment.id)
