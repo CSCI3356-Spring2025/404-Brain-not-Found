@@ -48,25 +48,30 @@ def student_results(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     questions = Question.objects.filter(assessment=assessment).order_by('order')
     question_responses = QuestionResponse.objects.filter(assessment=assessment)
-    responses_in_order = []
+    responses_by_q = []
     for question in questions:
-        temp = []
-        avg, ctr = 0, 0
-        for response in question_responses:
-            if response.question == question:
-                if question.question_type == 'likert':
-                    responses_in_order.append(response.answer_text)
-                else:
-                    avg += response.answer_likert
-                    ctr +=1
-        if question.question_type == 'likert':
-            responses_in_order.append(sorted(temp))
+        if question.question_type == 'open':
+            responses = question_responses.filter(question=question)
+            sorted_responses = sorted(
+                [r.answer_text for r in responses],
+                key=lambda text: text.strip().split()[0].lower() if text.strip() else ''
+            )
+            print(responses)
+            print(sorted_responses)
+            responses_by_q.append({'question': question, 'type': 'open', 'responses': sorted_responses})
         else:
-           responses_in_order.append(float(avg/ctr)) 
+            likert_values = question_responses.filter(question=question, answer_likert__isnull=False).values_list('answer_likert', flat=True)
+            if likert_values:
+                avg = sum(likert_values) / len(likert_values)
+            else:
+                avg = None
+            responses_by_q.append({'question': question, 'type': 'likert', 'average': avg})
+
+
+ 
     context = {
         'assessment': assessment,
-        'questions': questions,
-        'question_responses': responses_in_order
+        'responses_by_question': responses_by_q
     }
     return render(request, 'PeerConnect/student_results.html', context)
 

@@ -1,5 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="summary-container">
+    <h1 class="greeting">Results for "{{ assessment.name }}"</h1>
+  
+    {% for item in responses_by_question %}
+      <div class="question-container">
+        <div class="section-title">Question {{ forloop.counter }}: {{ item.question.text }}</div>
+  
+        {% if item.type == 'open' %}
+          <div class="results-title">Student Responses:</div>
+          <ul class="response-list">
+            {% for response in item.responses %}
+              <li class="response-item">{{ response }}</li>
+            {% endfor %}
+          </ul>
+  
+        {% elif item.type == 'likert' %}
+          <div class="results-title">
+            Average Rating: {{ item.average|floatformat:2 }}/5
+          </div>
 
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}
