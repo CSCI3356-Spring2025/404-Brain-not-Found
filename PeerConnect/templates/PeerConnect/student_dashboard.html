@@ -49,6 +49,16 @@
            <div class="results-container">
              <h3 class="section-title">Recent Results</h3>
              <div class="results">
+              {% for assessment in assessments %}
+              {% if assessment.published %}
+                <a href="{% url 'submit_assessment' assessment.id %}">
+                  <button class="results-btn">
+                    {{assessment.name}}
+                  </button>
+                </a>
+              {% endif %}
+              {% endfor %}
+              <!--
                <a href="#">
                  <button class="results-btn">
                    Chemistry Team Assessment 2
@@ -68,7 +78,8 @@
                   <button class="see-all-btn">
                     See All Results
                   </button>
-                </a>                
+                </a>     
+              -->           
              </div>
            </div>
            
