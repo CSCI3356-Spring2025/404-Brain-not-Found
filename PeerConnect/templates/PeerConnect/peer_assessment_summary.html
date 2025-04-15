@@ -2,43 +2,54 @@
 
 {% block content %}
 <div class="summary-container">
-    <div class="greeting">Results for {{assessment.name}}</div>
+    <div class="greeting">Results for {{ assessment.name }}</div>
     <div class="question-container">
-        <div class="section-title">Question: This is a test question.</div>
-        <div class="response-section">
-            <h3 class="response-title">Individual Responses</h3>
-          
-            <details class="response-entry">
-              <summary>Maya</summary>
-              <p>I liked it!</p>
-            </details>
-          
-            <details class="response-entry">
-              <summary>John</summary>
-              <p>Eh.</p>
-            </details>
-          
-            <details class="response-entry">
-              <summary>Sarah</summary>
-              <p>IDK</p>
-            </details>
-          </div>
-    </div>
-    <div class="question-container">
-        <div class="section-title">Question: Another test question appears here.</div>
-        <div class="rating-section">
-            <h3 class="rating-title">Average Rating: {{ average_rating }} / 5</h3>
-          
-            <div class="star-rating">
-                <div class="star empty"></div>
-                <div class="star filled" style="width: 74.8%"></div>
+      {% if questions %}
+        {% for question in questions %}
+          {% if question.question_type == "open" %}
+            <div class="section-title">Question {{ question.order }}: {{ question.text }}</div>
+              <div class="response-section">
+                  <h3 class="response-title">Individual Responses</h3>
+                
+                  <details class="response-entry">
+                    <summary>Maya</summary>
+                    <p>I liked it!</p>
+                  </details>
+                
+                  <details class="response-entry">
+                    <summary>John</summary>
+                    <p>Eh.</p>
+                  </details>
+                
+                  <details class="response-entry">
+                    <summary>Sarah</summary>
+                    <p>IDK</p>
+                  </details>
+                </div>
             </div>
+          {% else %}
+          <div class="question-container">
+            <div class="section-title">Question {{ question.order }}: {{ question.text }}.</div>
+            <div class="rating-section">
+                <h3 class="rating-title">Average Rating: {{ average_rating }} / 5</h3>
+              
+                <div class="star-rating">
+                    <div class="star empty"></div>
+                    <div class="star filled" style="width: 74.8%"></div>
+                </div>
+              </div>
           </div>
-    </div>
-    <div class="question-container">
+          {% endif %}
+        {% endfor %}
+      {% else %}
+          <p>No assessment questions yet.</p>
+      {% endif %}
+        
+   
+    <!-- <div class="question-container">
         <div class="section-title">Question: Third question for my peace of mind.</div>
-        <div class="results-title">Results: </div>
-    </div>
+        <div class="results-title">Results: blah blah blah</div>
+    </div> -->
 </div>
 <div class="publish-button">
     <a href="{% url 'professor_dashboard' %}">

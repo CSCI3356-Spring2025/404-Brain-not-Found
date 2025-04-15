@@ -29,7 +29,17 @@ def peer_answer_quant(request):
     return render(request, "PeerConnect/peer_answer_quant.html", {})
 
 def assessment_summary(request, assessment_id):
-    return render(request, 'PeerConnect/peer_assessment_summary.html', {})
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    questions = Question.objects.filter(assessment=assessment).order_by('order')
+    question_responses = QuestionResponse.objects.filter(assessment=assessment)
+    if assessment.professor != request.user.userprofile:
+        return redirect("professor_dashboard")  # Prevent unauthorized access
+    context = {
+        'assessment': assessment,
+        'questions': questions,
+        'question_responses': question_responses
+    }
+    return render(request, 'PeerConnect/peer_assessment_summary.html', context)
 
 def create(request):
     students = UserProfile.objects.filter(is_student=True)
@@ -256,6 +266,11 @@ def publish_assessment(request, assessment_id):
     if assessment.professor != request.user.userprofile:
         return redirect('unauthorized')
 
+    print(f"Assessment {assessment.id}. Published: {assessment.published}")
+    
     assessment.published = True
     assessment.save()
+    
+    print(f"Assessment {assessment.id}. Published: {assessment.published}")
+
     return redirect('assessment_detail', assessment_id=assessment.id)
