@@ -4,7 +4,7 @@
         <a class = "brand-name-link"
             href = 
                 "{% if request.user.userprofile.isprofessor%}{% url 'professor_dashboard' %}
-                {% else %}{% url 'professor_dashboard' %}
+                {% else %}{% url 'student_dashboard' %}
                 {% endif %}">
             <h1 class="brand-name">PeerConnect</h1>
         </a>
