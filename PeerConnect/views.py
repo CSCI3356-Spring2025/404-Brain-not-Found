@@ -212,7 +212,6 @@ def create_assessment(request):
     # return render(request, "PeerConnect/create_assessment.html", context)
 
 @login_required
-@login_required
 def view_assessment(request, assessment_id):
     professor = get_object_or_404(UserProfile, user=request.user)
     assessment = get_object_or_404(Assessment, id=assessment_id)
@@ -238,6 +237,7 @@ def view_assessment(request, assessment_id):
                 return redirect("professor_dashboard")
             else:
                 return render(request, "PeerConnect/view_assessment.html", {
+                    'assessment': assessment,
                     'form': form,
                     'formset': formset,
                     'courses': Course.objects.filter(professor=professor)
@@ -248,6 +248,7 @@ def view_assessment(request, assessment_id):
             formset = QuestionFormSet(queryset=questions)
 
         return render(request, "PeerConnect/view_assessment.html", {
+            'assessment': assessment,
             'form': form,
             'formset': formset,
             'courses': Course.objects.filter(professor=professor)

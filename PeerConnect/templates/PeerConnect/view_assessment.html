@@ -5,7 +5,7 @@
 
 <div class="assessment-container">
     <h1>{{ assessment.name }}</h1>
-    <form method="POST" action="{% url 'create_assessment' %}">
+    <form method="POST" action="{% url 'view_assessment' assessment.id %}">
         {% csrf_token %}
         {{ form.as_p }}
         {{ formset.management_form }}
