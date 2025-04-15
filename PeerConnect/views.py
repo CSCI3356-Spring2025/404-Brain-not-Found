@@ -273,4 +273,4 @@ def publish_assessment(request, assessment_id):
     
     print(f"Assessment {assessment.id}. Published: {assessment.published}")
 
-    return redirect('/professor_dashboard/', assessment_id=assessment.id)
+    return redirect('assessment_summary', assessment_id=assessment.id)
