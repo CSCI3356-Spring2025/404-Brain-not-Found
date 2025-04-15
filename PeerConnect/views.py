@@ -11,10 +11,13 @@ def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     students = UserProfile.objects.filter(is_student=True)
     if user_profile.is_professor:
-        user_type = "Professor"
-        courses = Course.objects.filter(professor=user_profile)
-        assessments = Assessment.objects.filter(professor=user_profile)
-        return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'students': students, 'assesments': assessments})
+        return redirect("professor_dashboard")
+    # if user_profile.is_professor:
+    #     print("user is a professor")
+    #     user_type = "Professor"
+    #     courses = Course.objects.filter(professor=user_profile)
+    #     assessments = Assessment.objects.filter(professor=user_profile)
+    #     return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'students': students, 'assesments': assessments})
     else:
         user_type = "Student"
         courses = user_profile.courses_enrolled.all()
