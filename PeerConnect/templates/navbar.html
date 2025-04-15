@@ -1,7 +1,15 @@
 <header class="main-header">
     <div class="header-container">
-        <a class="brand-name-link" href="{% url 'student_dashboard' %}"><h1 class="brand-name">PeerConnect</h1></a>
-        
+        <!--<a class="brand-name-link" href="{% url 'student_dashboard' %}"><h1 class="brand-name">PeerConnect</h1></a> -->
+        <a class = "brand-name-link"
+            href = 
+                "{% if request.user.userprofile.isprofessor%}{% url 'professor_dashboard' %}
+                {% else %}{% url 'professor_dashboard' %}
+                {% endif %}">
+            <h1 class="brand-name">PeerConnect</h1>
+        </a>
+
+
         <div class="course-selector">
             <div class="course-badge">
                 <h2 class="course-code">CSCI1101</h2>
