@@ -11,32 +11,30 @@
               <div class="response-section">
                   <h3 class="response-title">Individual Responses</h3>
                 
-                  <details class="response-entry">
-                    <summary>Maya</summary>
-                    <p>I liked it!</p>
-                  </details>
-                
-                  <details class="response-entry">
-                    <summary>John</summary>
-                    <p>Eh.</p>
-                  </details>
-                
-                  <details class="response-entry">
-                    <summary>Sarah</summary>
-                    <p>IDK</p>
-                  </details>
+                  {% for response in question_responses %}
+                    {% if response.question == question %}
+                    <details class="response-entry">
+                      <summary>{{ response.student }}</summary>
+                      <p>{{ response.answer_text }}</p>
+                    </details>
+                    {% endif %}
+                  {% endfor %}
                 </div>
             </div>
           {% else %}
           <div class="question-container">
             <div class="section-title">Question {{ question.order }}: {{ question.text }}.</div>
             <div class="rating-section">
-                <h3 class="rating-title">Average Rating: {{ average_rating }} / 5</h3>
+              {% for response in question_responses %}
+                {% if response.question == question %}
+                <h3 class="rating-title">Average Rating: {{ response.answer_likert }} / 5</h3>
               
                 <div class="star-rating">
                     <div class="star empty"></div>
                     <div class="star filled" style="width: 74.8%"></div>
                 </div>
+                {% endif %}
+              {% endfor %}
               </div>
           </div>
           {% endif %}
