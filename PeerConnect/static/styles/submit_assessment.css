@@ -1,3 +1,7 @@
+body {
+    padding-top: 80px; /* match your navbar height */
+}
+
 .tab-wrapper {
     max-width: 800px;
     margin: 40px auto;
@@ -15,6 +19,7 @@
     display: none;
 }
 
+/* Default look */
 .tab-label {
     display: inline-block;
     background-color: #f5e6da;
@@ -29,17 +34,29 @@
     border: 1px solid transparent;
 }
 
-.tab-label:hover {
+/* Hover effect only if NOT selected */
+input#tab1:not(:checked) ~ label[for="tab1"]:hover,
+input#tab2:not(:checked) ~ label[for="tab2"]:hover {
     background-color: #e07a5f;
     color: white;
 }
 
-input#tab1:checked + label,
-input#tab2:checked + label {
+
+/* Active tab styling */
+input#tab1:checked ~ label[for="tab1"],
+input#tab2:checked ~ label[for="tab2"] {
     background-color: #e07a5f;
     color: white;
     border-color: #e07a5f;
 }
+
+/* Ensure unselected tabs are light orange */
+input#tab1:checked ~ label[for="tab2"],
+input#tab2:checked ~ label[for="tab1"] {
+    background-color: #f5e6da;
+    color: #1e3a5f;
+}
+
 
 .tab-content {
     background-color: white;

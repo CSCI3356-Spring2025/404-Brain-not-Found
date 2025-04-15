@@ -1,3 +1,12 @@
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* or whatever height your navbar is */
+  z-index: 1000; /* keep it on top */
+}
+
 /* Header Icons */
 .header-icons {
   display: flex;
