@@ -118,36 +118,66 @@
     background-color: rgb(238, 238, 238);
   }
 
-  .assessment-container {
+  div .assessment-container {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 20px;
+    padding: 30px;
   }
-
+  
   .assessment-container ul {
     list-style: none;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 700px;
+    padding: 0;
   }
-
+  
   .assessment-container li {
     background-color: #f5e6da;
-    box-shadow: 0 4px 20px #a2adb9;
-    padding: 10px 20px;
-    margin: 10px 0;
-    border-radius: 8px;
-    width: 100%; 
-    text-align: center;
-    font-size: 16px;
+    box-shadow: 0 6px 18px rgba(30, 58, 95, 0.1);
+    padding: 16px 24px;
+    margin: 0;
+    border-radius: 12px;
+    width: 100%;
+    text-align: left;
+    font-size: 1.1rem;
     color: #1e3a5f;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     cursor: pointer;
-    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
   }
+  
+  .assessment-container li:hover {
+    background-color: #f1d4c0;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(30, 58, 95, 0.15);
+  }
+  
+  .assessment-container li::before {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.3rem;
+    opacity: 0.8;
+  }
+  
 
   .assessment-container a {
     text-decoration: none; 
     color: #1e3a5f; 
+  }
+
+  .assessment-container a:hover {
+    text-decoration: none; 
+    color: var(--secondary-color); 
   }
 
   #due-date {

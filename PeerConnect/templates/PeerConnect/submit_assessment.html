@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2 class="assessment-title">{{ assessment.name }}</h2>
+
 
 <div class="tab-wrapper">
+    <h2 class="assessment-title">{{ assessment.name }}</h2>
     <!-- Radio buttons for tab switching -->
     <input type="radio" name="tabs" id="tab1" checked>
     <label for="tab1" class="tab-label">Open-Ended</label>

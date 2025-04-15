@@ -51,16 +51,16 @@
 </div>
 
   {% if not assessment.published %}
-<div class="publish-button">
+
   
   <form method="post" action="{% url 'publish_assessment' assessment.id %}">
       {% csrf_token %}
-      <button type="submit">Publish Results</button>
+      <button type="submit" class="publish-button">Publish Results</button>
   </form>
   
-</div>
+
   {% else %}
-  <p>Results Published</p>
+  <p class="published">Results Published!</p>
   {% endif %}
 
 <!-- 

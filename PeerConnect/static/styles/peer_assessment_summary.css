@@ -69,7 +69,7 @@ body {
 }
 
 .publish-button {
-  background-color: var(--accent-color);
+  background-color: var(--secondary-color);
   margin: 20px auto;
   padding: 15px 30px;
   font-size: 16px;
@@ -84,9 +84,10 @@ body {
 }
 
 .publish-button:hover {
-  background-color: var(--secondary-color); 
+  background-color: var(--primary-color); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
   transform: translateY(-2px); 
+  transition: transform 0.3s ease;
 }
 
 .response-section {
@@ -157,13 +158,9 @@ body {
   transition: width 0.3s ease;  
 }
 
-a {
-  color: #0060B6;
-  text-decoration: none;
-}
 
-a:hover {
-  color:#00A0C6; 
-  text-decoration:none; 
-  cursor:pointer;  
+
+.published {
+  padding: 30px;
+  color: var(--primary-color);
 }
