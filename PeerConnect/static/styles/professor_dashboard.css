@@ -121,11 +121,18 @@
   div .assessment-container {
     background-color: #fff;
     display: flex;
+    max-height: 400px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
+    margin: 20px auto;
     padding: 30px;
+    max-height: 400px;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(30, 58, 95, 0.1);
   }
   
   .assessment-container ul {
@@ -136,6 +143,7 @@
     width: 100%;
     max-width: 700px;
     padding: 0;
+    margin-top: 100px;
   }
   
   .assessment-container li {
