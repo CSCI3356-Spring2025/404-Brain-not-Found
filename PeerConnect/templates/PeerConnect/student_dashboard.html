@@ -51,7 +51,7 @@
              <div class="results">
               {% for assessment in assessments %}
               {% if assessment.published %}
-                <a href="{% url 'submit_assessment' assessment.id %}">
+                <a href="{% url 'student_results' assessment.id %}">
                   <button class="results-btn">
                     {{assessment.name}}
                   </button>

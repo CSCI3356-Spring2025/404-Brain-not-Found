@@ -44,6 +44,32 @@ def assessment_summary(request, assessment_id):
     }
     return render(request, 'PeerConnect/peer_assessment_summary.html', context)
 
+def student_results(request, assessment_id):
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    questions = Question.objects.filter(assessment=assessment).order_by('order')
+    question_responses = QuestionResponse.objects.filter(assessment=assessment)
+    responses_in_order = []
+    for question in questions:
+        temp = []
+        avg, ctr = 0, 0
+        for response in question_responses:
+            if response.question == question:
+                if question.question_type == 'likert':
+                    responses_in_order.append(response.answer_text)
+                else:
+                    avg += response.answer_likert
+                    ctr +=1
+        if question.question_type == 'likert':
+            responses_in_order.append(sorted(temp))
+        else:
+           responses_in_order.append(float(avg/ctr)) 
+    context = {
+        'assessment': assessment,
+        'questions': questions,
+        'question_responses': responses_in_order
+    }
+    return render(request, 'PeerConnect/student_results.html', context)
+
 def create(request):
     students = UserProfile.objects.filter(is_student=True)
     professor = get_object_or_404(UserProfile, user=request.user)
