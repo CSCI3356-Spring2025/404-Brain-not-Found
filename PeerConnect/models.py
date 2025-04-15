@@ -15,12 +15,14 @@ class UserProfile(models.Model):
     
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.user.username
 
 class ProfessorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.user.username
