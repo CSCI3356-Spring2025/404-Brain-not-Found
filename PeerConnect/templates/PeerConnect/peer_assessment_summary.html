@@ -27,7 +27,7 @@
             <div class="rating-section">
               {% for response in question_responses %}
                 {% if response.question == question %}
-                <h3 class="rating-title">Average Rating: {{ response.answer_likert }} / 5</h3>
+                <h3 class="rating-title">Rating ({{ response.student }}): {{ response.answer_likert }} / 5</h3>
               
                 <div class="star-rating">
                     <div class="star empty"></div>
@@ -42,12 +42,6 @@
       {% else %}
           <p>No assessment questions yet.</p>
       {% endif %}
-        
-   
-    <!-- <div class="question-container">
-        <div class="section-title">Question: Third question for my peace of mind.</div>
-        <div class="results-title">Results: blah blah blah</div>
-    </div> -->
 </div>
 
   {% if not assessment.published %}
