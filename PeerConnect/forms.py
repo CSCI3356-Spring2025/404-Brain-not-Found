@@ -110,3 +110,7 @@ QuestionResponseFormSet = modelformset_factory(
     extra=0,
     fields=['id', 'answer_text', 'answer_likert'] 
 )
+
+    # professor can send invites to students
+class InviteStudentsForm(forms.Form):
+    emails = forms.CharField(widget=forms.Textarea, help_text="Enter one email per line.")

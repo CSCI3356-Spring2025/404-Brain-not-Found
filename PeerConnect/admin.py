@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse
+from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, CourseInvitation
 from .forms import AssessmentForm, QuestionForm
 
 # Register your models here.
@@ -17,3 +17,4 @@ admin.site.register(Assessment, AssessmentAdmin)
 admin.site.register(Question)
 admin.site.register(PredefinedQuestion)
 admin.site.register(QuestionResponse)
+admin.site.register(CourseInvitation)

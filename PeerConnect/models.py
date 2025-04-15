@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import timedelta
 from django.utils import timezone
+import uuid
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -77,3 +78,12 @@ class QuestionResponse(models.Model):
 
     def __str__(self):
         return f"Response by {self.student} for {self.question}"
+
+#track course invitations
+class CourseInvitation(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='invitations')
+    email = models.EmailField()
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False) #makes email invite individualized
+    accepted = models.BooleanField(default=False)
+
+    
