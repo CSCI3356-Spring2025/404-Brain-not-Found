@@ -1,23 +1,28 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="assessment-container">
-<p>{{ assessment.name }}</p>
-<div class="qualitive">
-    <h2>Qualitative Questions</h2>
-    {% for question in questions %}
-        {% if question.question_type == "open" %}
-            <p>Question: {{ question.text }}</p>
-        {% endif %}
-    {% endfor %}
-</div>
 
-<div class="quantitative">
-    <h2>Quantitative Questions</h2>
-    {% for question in questions %}
-        {% if question.question_type == "likert" %}
-            <p>Question: {{ question.text }}</p>
-        {% endif %}
-    {% endfor %}
+{% block content %}
+{% load static %}  
+
+<div class="assessment-container">
+    <h1>{{ assessment.name }}</h1>
+    <form method="POST" action="{% url 'create_assessment' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ formset.management_form }}
+        
+        <div id="questions-container">
+            {% for subform in formset %}
+                <div class="question-form">
+                    {{ subform.as_p }}
+                </div>
+            {% endfor %}
+        </div>
+
+
+    <button type="button" id="add-question">Add Question</button>
+    <button type="submit">Save Assessment</button>
+    </form>
 </div>
-</div>
+    
+<script src="{% static 'styles/PeerConnect/js/questions.js' %}"></script>
 {% endblock %}

@@ -212,16 +212,46 @@ def create_assessment(request):
     # return render(request, "PeerConnect/create_assessment.html", context)
 
 @login_required
+@login_required
 def view_assessment(request, assessment_id):
+    professor = get_object_or_404(UserProfile, user=request.user)
     assessment = get_object_or_404(Assessment, id=assessment_id)
-    questions = Question.objects.filter(assessment=assessment).order_by('order')
-    if assessment.professor != request.user.userprofile:
-        return redirect("professor_dashboard")  # Prevent unauthorized access
-    context = {
-        'assessment': assessment,
-        'questions': questions
-    }
-    return render(request, "PeerConnect/view_assessment.html", context)
+
+    if assessment.professor == professor:
+        questions = Question.objects.filter(assessment=assessment).order_by('order')
+        QuestionFormSet = modelformset_factory(Question, form=QuestionForm, extra=0, can_delete=True)
+
+        if request.method == 'POST':
+            form = AssessmentForm(request.POST, instance=assessment)
+            formset = QuestionFormSet(request.POST, queryset=questions)
+
+            if form.is_valid() and formset.is_valid():
+                form.save()
+                updated_questions = formset.save(commit=False)
+
+                for index, question in enumerate(updated_questions):
+                    question.assessment = assessment
+                    question.order = index + 1
+                    question.save()
+
+                formset.save_m2m()
+                return redirect("professor_dashboard")
+            else:
+                return render(request, "PeerConnect/view_assessment.html", {
+                    'form': form,
+                    'formset': formset,
+                    'courses': Course.objects.filter(professor=professor)
+                })
+
+        else:
+            form = AssessmentForm(instance=assessment)
+            formset = QuestionFormSet(queryset=questions)
+
+        return render(request, "PeerConnect/view_assessment.html", {
+            'form': form,
+            'formset': formset,
+            'courses': Course.objects.filter(professor=professor)
+        })
 
 QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
 

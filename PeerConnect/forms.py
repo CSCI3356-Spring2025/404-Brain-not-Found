@@ -3,6 +3,7 @@ from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question,
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from django.utils.safestring import mark_safe
+from django.forms import modelformset_factory
 
 
 class TeamForm(forms.ModelForm):
@@ -102,8 +103,6 @@ class QuestionResponseForm(forms.ModelForm):
             'answer_likert': StarRatingWidget()
         }
 
-
-from django.forms import modelformset_factory
 
 QuestionResponseFormSet = modelformset_factory(
     QuestionResponse,
