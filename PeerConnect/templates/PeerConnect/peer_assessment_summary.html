@@ -51,9 +51,24 @@
         <div class="results-title">Results: blah blah blah</div>
     </div> -->
 </div>
+
+  {% if not assessment.published %}
+<div class="publish-button">
+  
+  <form method="post" action="{% url 'publish_assessment' assessment.id %}">
+      {% csrf_token %}
+      <button type="submit">Publish Results</button>
+  </form>
+  
+</div>
+  {% else %}
+  <p>Results Published</p>
+  {% endif %}
+
+<!-- 
 <div class="publish-button">
     <a href="{% url 'professor_dashboard' %}">
         Publish Results
     </a>
-</div>
+</div> -->
 {% endblock %}
