@@ -1,29 +1,34 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse
+from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse
 from django.http import JsonResponse
 from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm
 from django.forms import modelformset_factory
 
 
-
+    #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    students = UserProfile.objects.filter(is_student=True)
-    if user_profile.is_professor:
-        return redirect("professor_dashboard")
+    #students = UserProfile.objects.filter(is_student=True)
     # if user_profile.is_professor:
-    #     print("user is a professor")
-    #     user_type = "Professor"
-    #     courses = Course.objects.filter(professor=user_profile)
-    #     assessments = Assessment.objects.filter(professor=user_profile)
-    #     return render(request, "PeerConnect/professor_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'students': students, 'assesments': assessments})
-    else:
+    #     return redirect("professor_dashboard")
+    try:
+        professor_profile = ProfessorProfile.objects.get(user=request.user)
+        return redirect("professor_dashboard")
+    except ProfessorProfile.DoesNotExist:
         user_type = "Student"
-        courses = user_profile.courses_enrolled.all()
-        teams = user_profile.teams.all()
+        student_profile = StudentProfile.objects.get(user=request.user)
+        courses = student_profile.courses_enrolled.all()
+        teams = student_profile.teams.all()
         assessments = Assessment.objects.filter(course__in=courses)
-    return render(request, "PeerConnect/student_dashboard.html", {'user': request.user, 'type': user_type, 'courses': courses, 'teams': teams, 'assessments': assessments})
+
+        return render(request, "PeerConnect/student_dashboard.html", {
+            'user': request.user, 
+            'type': user_type, 
+            'courses': courses, 
+            'teams': teams, 
+            'assessments': assessments
+        })
 
 def peer_answer_qual(request):
     return render(request, "PeerConnect/peer_answer_qual.html", {})
@@ -98,10 +103,15 @@ def course_form(request):
 def landing_page(request):
     return render(request, "PeerConnect/landingpage.html", {})
 
+    #updated to use studentProfile
 def professor_dashboard(request):
-    professor = get_object_or_404(UserProfile, user=request.user)
+    try:
+        professor = get_object_or_404(ProfessorProfile, user=request.user)
+    except ProfessorProfile.DoesNotExist:
+        return redirect("student_dashboard") 
     courses = Course.objects.filter(professor=professor)
-    students = UserProfile.objects.filter(is_student=True)
+    #students = StudentProfile.objects.filter(is_student=True) #changed from UserProfile
+    students = StudentProfile.objects.filter(courses_enrolled__in=courses)
     assessments = Assessment.objects.filter(professor=professor)
     return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students, 'assessments': assessments})
 

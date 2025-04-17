@@ -29,8 +29,8 @@ class ProfessorProfile(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
-    professor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='courses_taught')
-    students = models.ManyToManyField(UserProfile, related_name='courses_enrolled', limit_choices_to={'is_student': True})
+    professor = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, related_name='courses_taught')
+    students = models.ManyToManyField(StudentProfile, related_name='courses_enrolled')
 
     def __str__(self):
         return self.name
@@ -38,7 +38,7 @@ class Course(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=255)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='teams')
-    members = models.ManyToManyField(UserProfile, related_name='teams', limit_choices_to={'is_student': True})
+    members = models.ManyToManyField(StudentProfile, related_name='teams')
     
     def __str__(self):
         return f"{self.name} ({self.course.name})"
@@ -50,7 +50,7 @@ class PredefinedQuestion(models.Model):
         return self.text
         
 class Assessment(models.Model):
-    professor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='assessments_created')  # Link to the professor who created the assessment
+    professor = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, related_name='assessments_created')  # Link to the professor who created the assessment
     name = models.CharField(max_length=255)
     course = models.ManyToManyField(Course, related_name='assessments')  # Many-to-many to allow multiple courses to use the same assessment
     team = models.ManyToManyField(Team, related_name='assessments', blank=True)  # Optional if not tied to a specific team
@@ -83,7 +83,7 @@ class Question(models.Model):
         return f"{self.get_question_type_display()} Question {self.order}: {self.text[:30]}"
 
 class QuestionResponse(models.Model):
-    student = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='responses')
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='responses')
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='responses') #is this needed w question?
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='responses')
     answer_text = models.TextField(blank=True, null=True)
