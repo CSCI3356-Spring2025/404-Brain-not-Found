@@ -36,12 +36,20 @@ def peer_answer_qual(request):
 def peer_answer_quant(request):
     return render(request, "PeerConnect/peer_answer_quant.html", {})
 
+    # changed to include ProfessorProfile
 def assessment_summary(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     questions = Question.objects.filter(assessment=assessment).order_by('order')
     question_responses = QuestionResponse.objects.filter(assessment=assessment)
-    if assessment.professor != request.user.userprofile:
-        return redirect("professor_dashboard")  # Prevent unauthorized access
+    
+    try:
+        professor_profile = ProfessorProfile.objects.get(user=request.user)
+    except ProfessorProfile.DoesNotExist:   
+        return redirect(student_dashboard)
+
+    if assessment.professor != professor_profile:   # returns to dash if assessment isn't prof's
+        return redirect("professor_dashboard")  
+
     context = {
         'assessment': assessment,
         'questions': questions,
@@ -81,10 +89,10 @@ def student_results(request, assessment_id):
     return render(request, 'PeerConnect/student_results.html', context)
 
 def create(request):
-    students = UserProfile.objects.filter(is_student=True)
-    professor = get_object_or_404(UserProfile, user=request.user)
+    #students = UserProfile.objects.filter(is_student=True)
+    students = UserProfile.objects.all()
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
-
 
     course_id = request.GET.get("course_id")
     selected_course = None
@@ -94,16 +102,22 @@ def create(request):
         selected_course = get_object_or_404(Course, id=course_id)
         form = TeamForm(course=selected_course)
         teams = Team.objects.filter(course=selected_course)
-    return render(request, "PeerConnect/create.html", {'professor': request.user, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams})
+    return render(request, "PeerConnect/create.html", {'professor': professor, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams})
 
+    # changed to include StudentProfile
 def course_form(request):
-    students = UserProfile.objects.filter(is_student=True)
-    return render(request, "PeerConnect/course_form.html", {'professor': request.user, 'students': students})
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
+    students = StudentProfile.objects.all()
+    return render(request, "PeerConnect/course_form.html", {
+        'professor': professor,
+        'students': students
+    })
 
 def landing_page(request):
     return render(request, "PeerConnect/landingpage.html", {})
 
     #updated to use studentProfile
+@login_required
 def professor_dashboard(request):
     try:
         professor = get_object_or_404(ProfessorProfile, user=request.user)
@@ -125,9 +139,9 @@ def create_course(request):
     if request.method == "POST":
         name = request.POST.get("name")
         student_ids = request.POST.getlist("students")
-        professor = get_object_or_404(UserProfile, user=request.user)
+        professor = get_object_or_404(ProfessorProfile, user=request.user)
         course = Course.objects.create(name=name, professor=professor)
-        students = UserProfile.objects.filter(id__in=student_ids, is_student=True)
+        students = StudentProfile.objects.filter(id__in=student_ids)
         course.students.set(students)
     
         return redirect("/create/")
@@ -172,7 +186,7 @@ def dashboard_redirect(request):
 
 @login_required
 def create_assessment(request):
-    professor = get_object_or_404(UserProfile, user=request.user)
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
     if request.method == "POST" :
 
         form = AssessmentForm(request.POST)
@@ -215,46 +229,9 @@ def create_assessment(request):
     }
     return render(request, "PeerConnect/create_assessment.html", context)
 
-    # #professor = get_object_or_404(UserProfile, user=request.user)
-    # if request.method == "POST" and form.is_valid():
-    #     professor = get_object_or_404(UserProfile, user=request.user)
-    #     assessment = form.save(commit=False)
-    #     assessment.professor = professor 
-    #     assessment.save()
-    #     form.save_m2m()
-        
-    #     assessment.course.set(form.cleaned_data['course'])
-    
-    #     if form.cleaned_data.get('teams'):
-    #         assessment.teams.set(form.cleaned_data['teams'])
-
-    #     num_questions = form.cleaned_data.get('num_questions', 0)
-    #     # for i in range(num_questions):
-    #     #     question_text = form.cleaned_data.get(f"question_{i}_text")
-    #     #     question_type_id = form.cleaned_data.get(f"question_{i}_type")
-
-    #     #     if question_text and question_type:
-    #     #         question_type = Question.objects.get(id=question_type_id)
-    #     #         question = Question.objects.create(
-    #     #             assessment=assessment,
-    #     #             text=question_text,
-    #     #             order=i + 1,
-    #     #             question_type=question_type_id
-    #     #         )
-    #     return redirect("professor_dashboard")
-    
-    # #professor = get_object_or_404(UserProfile, user=request.user)  # Fetch professor for filtering courses
-
-    # context = {
-    #     'form': form,
-    #     'courses': Course.objects.filter(professor=professor)
-    # }
-
-    # return render(request, "PeerConnect/create_assessment.html", context)
-
 @login_required
 def view_assessment(request, assessment_id):
-    professor = get_object_or_404(UserProfile, user=request.user)
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
     if assessment.professor == professor:
@@ -272,7 +249,6 @@ def view_assessment(request, assessment_id):
                 for index, question in enumerate(updated_questions):
                     question.assessment = assessment
                     question.order = index + 1
-                    question.save()
 
                 formset.save_m2m()
                 return redirect("professor_dashboard")
@@ -299,7 +275,8 @@ QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionRe
 
 def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
-    student = request.user.userprofile
+    student = get_object_or_404(StudentProfile, user=request.user)
+    #student = request.user.userprofile
     questions = assessment.questions.all()
 
     # Ensure that QuestionResponse objects are created if they don't exist
@@ -337,8 +314,9 @@ def submit_assessment(request, assessment_id):
 @login_required
 def publish_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
 
-    if assessment.professor != request.user.userprofile:
+    if assessment.professor != professor:
         return redirect('unauthorized')
 
     print(f"Assessment {assessment.id}. Published: {assessment.published}")
