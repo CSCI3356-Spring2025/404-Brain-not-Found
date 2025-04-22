@@ -17,7 +17,9 @@ def student_dashboard(request):
         return redirect("professor_dashboard")
     except ProfessorProfile.DoesNotExist:
         user_type = "Student"
-        student_profile = StudentProfile.objects.get(user=request.user)
+        #student_profile = StudentProfile.objects.get(user=request.user)
+        student_profile, created = StudentProfile.objects.get_or_create(user=request.user)
+
         courses = student_profile.courses_enrolled.all()
         teams = student_profile.teams.all()
         assessments = Assessment.objects.filter(course__in=courses)
@@ -125,7 +127,8 @@ def professor_dashboard(request):
         return redirect("student_dashboard") 
     courses = Course.objects.filter(professor=professor)
     #students = StudentProfile.objects.filter(is_student=True) #changed from UserProfile
-    students = StudentProfile.objects.filter(courses_enrolled__in=courses)
+    #students = StudentProfile.objects.filter(courses_enrolled__in=courses)
+    students = StudentProfile.objects.filter()
     assessments = Assessment.objects.filter(professor=professor)
     return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students, 'assessments': assessments})
 
