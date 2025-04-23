@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from datetime import timedelta
 from django.utils import timezone
 import uuid
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -27,10 +28,18 @@ class ProfessorProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+class SemesterType(models.TextChoices):
+    SPRING = 'spring', 'Spring'
+    FALL = 'fall', 'Fall'
+    SUMMER = 'summer', 'Summer'
+
+
 class Course(models.Model):
     name = models.CharField(max_length=100)
     professor = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, related_name='courses_taught')
     students = models.ManyToManyField(StudentProfile, related_name='courses_enrolled')
+    year = models.IntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2100)], null=True, blank=True)
+    semester = models.CharField(max_length=10, choices = SemesterType.choices, null=True, blank=True)
 
     def __str__(self):
         return self.name

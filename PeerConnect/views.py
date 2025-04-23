@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse
+from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType
 from django.http import JsonResponse
 from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm
 from django.forms import modelformset_factory
@@ -92,7 +92,7 @@ def student_results(request, assessment_id):
 
 def create(request):
     #students = UserProfile.objects.filter(is_student=True)
-    students = UserProfile.objects.all()
+    students = StudentProfile.objects.all()
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
 
@@ -104,7 +104,7 @@ def create(request):
         selected_course = get_object_or_404(Course, id=course_id)
         form = TeamForm(course=selected_course)
         teams = Team.objects.filter(course=selected_course)
-    return render(request, "PeerConnect/create.html", {'professor': professor, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams})
+    return render(request, "PeerConnect/create.html", {'professor': professor, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams, 'SemesterType': SemesterType})
 
     # changed to include StudentProfile
 def course_form(request):
@@ -112,7 +112,8 @@ def course_form(request):
     students = StudentProfile.objects.all()
     return render(request, "PeerConnect/course_form.html", {
         'professor': professor,
-        'students': students
+        'students': students,
+        'SemesterType': SemesterType
     })
 
 def landing_page(request):
@@ -130,7 +131,7 @@ def professor_dashboard(request):
     #students = StudentProfile.objects.filter(courses_enrolled__in=courses)
     students = StudentProfile.objects.filter()
     assessments = Assessment.objects.filter(professor=professor)
-    return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students, 'assessments': assessments})
+    return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students, 'assessments': assessments, 'SemesterType': SemesterType})
 
 def signup_view(request):
     if request.user.is_authenticated:
@@ -142,8 +143,11 @@ def create_course(request):
     if request.method == "POST":
         name = request.POST.get("name")
         student_ids = request.POST.getlist("students")
+        semester = request.POST.get('semester')
+        year = request.POST.get('year')
+
         professor = get_object_or_404(ProfessorProfile, user=request.user)
-        course = Course.objects.create(name=name, professor=professor)
+        course = Course.objects.create(name=name, professor=professor, semester=semester, year=int(year))
         students = StudentProfile.objects.filter(id__in=student_ids)
         course.students.set(students)
     
