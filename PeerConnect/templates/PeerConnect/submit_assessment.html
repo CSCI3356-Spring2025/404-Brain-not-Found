@@ -5,6 +5,9 @@
 
 <div class="tab-wrapper">
     <h2 class="assessment-title">{{ assessment.name }}</h2>
+    {% if assessment.self_assessment %}
+        <h2 class="assessment-subtitle">Answer for yourself as well!</h2>
+    {% endif %}
     <!-- Radio buttons for tab switching -->
     <input type="radio" name="tabs" id="tab1" checked>
     <label for="tab1" class="tab-label">Open-Ended</label>
