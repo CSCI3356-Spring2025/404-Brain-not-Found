@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question, QuestionResponse
+from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question, QuestionResponse, StudentProfile
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from django.utils.safestring import mark_safe
@@ -114,3 +114,17 @@ QuestionResponseFormSet = modelformset_factory(
     # professor can send invites to students
 class InviteStudentsForm(forms.Form):
     emails = forms.CharField(widget=forms.Textarea, help_text="Enter one email per line.")
+
+class EvaluateStudentForm(forms.Form):
+    evaluated_student = forms.ModelChoiceField(
+        queryset=StudentProfile.objects.none(),
+        empty_label="Select a student to evaluate",
+        required=True
+    )
+    
+    def __init__(self, *args, course=None, exclude_student=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if course:
+            queryset = course.students.filter(active=True)
+            self.fields['evaluated_student'].queryset = queryset
+            self.fields['evaluated_student'].label_from_instance = lambda obj: f"{obj.user.first_name} {obj.user.last_name}"

@@ -98,6 +98,9 @@ class QuestionResponse(models.Model):
     answer_text = models.TextField(blank=True, null=True)
     answer_likert = models.IntegerField(blank=True, null=True)
     #submitted_at = models.DateTimeField(auto_now_add=True)
+    
+    evaluated_student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='evaluations_received', null=True)
+
 
     def __str__(self):
         return f"Response by {self.student} for {self.question}"

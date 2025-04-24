@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType
 from django.http import JsonResponse
-from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm
+from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm
 from django.forms import modelformset_factory
-
+from django.contrib import messages
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -283,40 +283,74 @@ QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionRe
 def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     student = get_object_or_404(StudentProfile, user=request.user)
-    #student = request.user.userprofile
     questions = assessment.questions.all()
-
-    # Ensure that QuestionResponse objects are created if they don't exist
-    for question in questions:
-        QuestionResponse.objects.get_or_create(
-            student=student,
-            assessment=assessment,
-            question=question
-        )
-
-    if request.method == "POST":
-        # Get the formset with existing responses (if any)
+    
+    # Get the course for the assessment
+    course = assessment.course.first()  # Assuming the assessment is associated with at least one course
+    
+    # Initialize the student selection form
+    evaluated_student_form = EvaluateStudentForm(course=course)
+    
+    # Handle the case where a student is selected or form is submitted
+    evaluated_student_id = request.POST.get('evaluated_student') or request.GET.get('evaluated_student')
+    evaluated_student = None
+    
+    if evaluated_student_id:
+        evaluated_student = get_object_or_404(StudentProfile, id=evaluated_student_id)
+        
+        # Get or create responses for this specific evaluation
+        for question in questions:
+            QuestionResponse.objects.get_or_create(
+                student=student,  # The student filling out the form
+                evaluated_student=evaluated_student,  # The student being evaluated
+                assessment=assessment,
+                question=question
+            )
+    
+    if request.method == "POST" and 'submit_responses' in request.POST:
+        # This handles the actual form submission
         formset = QuestionResponseFormSet(
             request.POST,
-            queryset=QuestionResponse.objects.filter(student=student, assessment=assessment)
+            queryset=QuestionResponse.objects.filter(
+                student=student, 
+                assessment=assessment,
+                evaluated_student=evaluated_student
+            )
         )
 
         if formset.is_valid():
             responses = formset.save(commit=False)
-            for response, question in zip(responses, questions):
+            for response in responses:
                 response.student = student
+                response.evaluated_student = evaluated_student
                 response.assessment = assessment
-                response.question = question  # Ensure each response is linked to a question
                 response.save()
+            
+            messages.success(request, f"Assessment submitted for {evaluated_student.user.get_full_name()}")
             return redirect('/student_dashboard/')
         else:
-            print("Formset errors:", formset.errors)  # Debug errors
-            print("POST data:", request.POST)  # Check if id is missing
+            print("Formset errors:", formset.errors)
     else:
-        # Prefill responses if student has already attempted some
-        formset = QuestionResponseFormSet(queryset=QuestionResponse.objects.filter(student=student, assessment=assessment))
+        # If a student is selected, show the form pre-filled with any existing responses
+        if evaluated_student:
+            formset = QuestionResponseFormSet(
+                queryset=QuestionResponse.objects.filter(
+                    student=student, 
+                    assessment=assessment,
+                    evaluated_student=evaluated_student
+                )
+            )
+        else:
+            # No student selected yet, just render the selection form
+            formset = None
 
-    return render(request, "PeerConnect/submit_assessment.html", {"assessment": assessment, "formset": formset})
+    return render(request, "PeerConnect/submit_assessment.html", {
+        "assessment": assessment, 
+        "formset": formset,
+        "evaluated_student_form": evaluated_student_form,
+        "evaluated_student": evaluated_student
+    })
+
 
 @login_required
 def publish_assessment(request, assessment_id):

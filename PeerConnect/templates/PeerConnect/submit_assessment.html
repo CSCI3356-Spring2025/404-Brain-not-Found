@@ -8,6 +8,19 @@
     {% if assessment.self_assessment %}
         <h2 class="assessment-subtitle">Answer for yourself as well!</h2>
     {% endif %}
+
+    <div class="student-selection">
+        <form method="get" class="student-select-form">
+            <h3>Select a student to evaluate:</h3>
+            {{ evaluated_student_form.evaluated_student }}
+            <button type="submit" class="btn">Select Student</button>
+        </form>
+    </div>
+
+    {% if evaluated_student %}
+
+    <h3 class="evaluating-for">Evaluating for: {{ evaluated_student.user.first_name }} {{ evaluated_student.user.last_name }}</h3>
+
     <!-- Radio buttons for tab switching -->
     <input type="radio" name="tabs" id="tab1" checked>
     <label for="tab1" class="tab-label">Open-Ended</label>
@@ -19,6 +32,9 @@
         {% csrf_token %}
         {{ formset.management_form }}
 
+        <input type="hidden" name="evaluated_student" value="{{ evaluated_student.id }}">
+        <input type="hidden" name="submit_responses" value="1">
+        
         <div class="tab" id="qualitative-tab">
             {% for form in formset %}
                 {% if form.instance.question.question_type == 'open' %}
@@ -57,5 +73,8 @@
 
         <button type="submit" class="submit-btn">Submit Assessment</button>
     </form>
+    {% else %}
+        <p class="instructions">Please select a student to evaluate from the dropdown above.</p>
+    {% endif %}
 </div>
 {% endblock %}

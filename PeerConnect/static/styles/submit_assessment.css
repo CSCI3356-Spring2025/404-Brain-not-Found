@@ -181,3 +181,35 @@ input[type="text"] {
 .submit-btn:hover {
     background-color: #1e3a5f;
 }
+
+.student-selection {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+.student-select-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.student-select-form h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.evaluating-for {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #e6f7ff;
+    border-radius: 5px;
+    border-left: 4px solid #1890ff;
+}
+
+.instructions {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
