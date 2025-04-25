@@ -63,10 +63,30 @@ def student_results(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     questions = Question.objects.filter(assessment=assessment).order_by('order')
     question_responses = QuestionResponse.objects.filter(assessment=assessment)
+    current_student = get_object_or_404(StudentProfile, user=request.user)
+
+    student_team = None
+    for course in assessment.course.all():
+        try:
+            team = Team.objects.get(
+                members=current_student,
+                course=course
+            )
+            student_team = team
+            break 
+        except Team.DoesNotExist:
+            continue
+        except Team.MultipleObjectsReturned:
+            student_team = Team.objects.filter(members=current_student, course=course).first()
+            break
+    team_members = []
+    if student_team:
+        team_members = StudentProfile.objects.filter(teams=student_team)
+
     responses_by_q = []
     for question in questions:
         if question.question_type == 'open':
-            responses = question_responses.filter(question=question)
+            responses = question_responses.filter(question=question, evaluated_student=current_student)
             sorted_responses = sorted(
                 [r.answer_text for r in responses],
                 key=lambda text: text.strip().split()[0].lower() if text.strip() else ''
@@ -75,16 +95,30 @@ def student_results(request, assessment_id):
             print(sorted_responses)
             responses_by_q.append({'question': question, 'type': 'open', 'responses': sorted_responses})
         else:
-            likert_values = question_responses.filter(question=question, answer_likert__isnull=False).values_list('answer_likert', flat=True)
-            if likert_values:
-                avg = sum(likert_values) / len(likert_values)
+            likert_values_class = question_responses.filter(question=question, answer_likert__isnull=False).values_list('answer_likert', flat=True)
+            if likert_values_class:
+                avg_class = sum(likert_values_class) / len(likert_values_class)
             else:
-                avg = None
-            responses_by_q.append({'question': question, 'type': 'likert', 'average': avg})
+                avg_class = None
+            likert_values_student = question_responses.filter(question=question, evaluated_student=current_student, answer_likert__isnull=False).values_list('answer_likert', flat=True)
+            if likert_values_student:
+                avg_student = sum(likert_values_student) / len(likert_values_student)
+            else:
+                avg_student = None
+            avg_team = None
+            team_name = None
+            if student_team:
+                likert_values_team = question_responses.filter(question=question, evaluated_student__in=list(team_members) + [current_student], answer_likert__isnull=False).values_list('answer_likert', flat=True)
+                if likert_values_team:
+                    avg_team = sum(likert_values_team) / len(likert_values_team)
+                    team_name = student_team.name
+
+            responses_by_q.append({'question': question, 'type': 'likert', 'average_class': avg_class, 'average_student': avg_student, 'average_team': avg_team, 'team_name': team_name})
 
 
  
     context = {
+        'user': request.user, 
         'assessment': assessment,
         'responses_by_question': responses_by_q
     }
