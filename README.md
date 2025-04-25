@@ -2,4 +2,5 @@
 
 Setup:<br>
 `pip install django-allauth`<br>
-`pip install pyjwt`
+`pip install pyjwt`<br>
+`pip install requests`
