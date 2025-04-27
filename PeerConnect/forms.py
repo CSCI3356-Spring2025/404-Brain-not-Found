@@ -112,8 +112,10 @@ QuestionResponseFormSet = modelformset_factory(
 )
 
     # professor can send invites to students
-class InviteStudentsForm(forms.Form):
-    emails = forms.CharField(widget=forms.Textarea, help_text="Enter one email per line.")
+class StudentInvitationForm(forms.Form):
+    student_name = forms.CharField(max_length=100)
+    student_email = forms.EmailField()
+
 
 class EvaluateStudentForm(forms.Form):
     evaluated_student = forms.ModelChoiceField(

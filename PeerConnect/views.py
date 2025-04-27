@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType
+from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType, CourseInvitation
 from django.http import JsonResponse
-from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm
+from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm, StudentInvitationForm
 from django.forms import modelformset_factory
 from django.contrib import messages
 
@@ -185,13 +185,38 @@ def create_course(request):
         students = StudentProfile.objects.filter(id__in=student_ids)
         course.students.set(students)
     
-        return redirect("/create/")
+        #return redirect("/create/")
+        return redirect("create_team", course_id=course.id)
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def delete_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     course.delete()
     return redirect("/create/")
+
+def course_roster(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    if request.method == "POST":
+        form = StudentInvitationForm(request.POST)
+
+        if form.is_valid():
+            student_name = form.cleaned_data['student_name']
+            student_email = form.cleaned_data['student_email']
+
+            invitation = CourseInvitation.objects.create(
+                course=course,
+                email=student_email,
+                #token=token
+            )
+            return redirect("course_roster", course_id=course.id)
+
+    else:
+        form = StudentInvitationForm()
+
+    invitations = CourseInvitation.objects.filter(course=course)
+    return render(request, "PeerConnect/course_roster.html", {'course': course}) #, 'form': form, 'invitations': invitations})
+
 
 def render_create_team(request, course_id):
     course = get_object_or_404(Course, id=course_id)

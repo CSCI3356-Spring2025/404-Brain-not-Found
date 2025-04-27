@@ -1,0 +1,16 @@
+
+{% load static %}
+
+<h1>Invite Students to {{ course.name }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Invite</button>
+</form>
+
+<h2>Invitations Sent:</h2>
+<ul>
+    {% for invitation in invitations %}
+        <li>{{ invitation.email }} - {% if invitation.accepted %} Accepted {% else %} Pending {% endif %}</li>
+    {% endfor %}
+</ul>
