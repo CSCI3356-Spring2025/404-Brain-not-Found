@@ -177,3 +177,14 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
+    # Sending emails
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Use the SMTP backend for sending emails
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'mirabeev@bc.edu'
+EMAIL_HOST_PASSWORD = 'srqb gzqn sdpn pngr' #delete after testing
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+

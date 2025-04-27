@@ -1,11 +1,27 @@
-
 {% load static %}
 
-<h1>Invite Students to {{ course.name }}</h1>
+<h1>Class Roster for {{ course.name }}</h1>
+
+<h2>Currently Enrolled Students:</h2>
+<ul>
+    {% for student in course.students.all %}
+        <li>{{ student.user.first_name }} {{ student.user.last_name }} ({{ student.user.email }})</li>
+    {% empty %}
+        <li>No students enrolled yet.</li>
+    {% endfor %}
+</ul>
+
+
+<h2>Invite Students to {{ course.name }}</h2>
+
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Invite</button>
+    <div>
+        <label for="invitations">Student Names and Emails:</label>
+        <textarea name="invitations" id="invitations" rows="10" required placeholder="Equeen nter names and emails, one per line (e.g., 'John Doe, john@example.com')"></textarea>
+    
+    </div>
+    <button type="submit">Send Invitations</button>
 </form>
 
 <h2>Invitations Sent:</h2>
@@ -14,3 +30,5 @@
         <li>{{ invitation.email }} - {% if invitation.accepted %} Accepted {% else %} Pending {% endif %}</li>
     {% endfor %}
 </ul>
+
+

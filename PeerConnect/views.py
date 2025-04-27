@@ -6,6 +6,8 @@ from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, Ques
 from django.forms import modelformset_factory
 from django.contrib import messages
 from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -223,14 +225,34 @@ def course_roster(request, course_id):
         form = StudentInvitationForm(request.POST)
 
         if form.is_valid():
-            student_name = form.cleaned_data['student_name']
-            student_email = form.cleaned_data['student_email']
+            #student_name = form.cleaned_data['student_name']
+            #student_email = form.cleaned_data['student_email']
+            invitations_text = form.cleaned_data['invitations']
+            student_pairs = invitations_text.splitlines()  # Split by new line
 
-            invitation = CourseInvitation.objects.create(
-                course=course,
-                email=student_email,
-                #token=token
-            )
+            for pair in student_pairs:
+                parts = pair.split(',')
+                if len(parts) == 2:
+                    name = parts[0].strip()
+                    email = parts[1].strip()
+                    
+                    invitation = CourseInvitation(course=course, email=email)
+                    invitation.save()
+
+                    token_url = f"{request.build_absolute_uri('/accept_invite/')}{course.id}/{email}"  # Adjust URL as needed
+                    
+                    send_mail(
+                        "Course Invitation", #message name
+                        f"Hello {name},\n\nYou have been invited to join the course: {course.name}. Click the link to accept: {token_url}", #message
+                        settings.EMAIL_HOST_USER,  # Host email address
+                        [email],  # Student's email
+                        fail_silently=False,  # Raise errors if sending fails
+                    )
+                    # invitation = CourseInvitation.objects.create(
+                    #     course=course,
+                    #     email=student_email,
+                    #     #token=token
+                    # )
             return redirect("course_roster", course_id=course.id)
 
     else:
