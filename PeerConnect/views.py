@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm, StudentInvitationForm
 from django.forms import modelformset_factory
 from django.contrib import messages
+from django.urls import reverse
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -185,9 +186,30 @@ def create_course(request):
         students = StudentProfile.objects.filter(id__in=student_ids)
         course.students.set(students)
     
-        #return redirect("/create/")
-        return redirect("create_team", course_id=course.id)
+        base_url = reverse('create')
+        url_with_course_id = f"{base_url}?course_id={course.id}"
+        return redirect(url_with_course_id)
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+# def edit_course(request, course_id):
+#     if request.method == "POST":
+#         name = request.POST.get("name")
+#         student_ids = request.POST.getlist("students")
+#         semester = request.POST.get('semester')
+#         year = request.POST.get('year')
+
+#         professor = get_object_or_404(ProfessorProfile, user=request.user)
+#         students = StudentProfile.objects.filter(id__in=student_ids)
+#         course = get_object_or_404(Course, id=course_id)
+#         students = UserProfile.objects.filter(student=True)
+#         course.students.set(students)
+    
+#         return render(request, 'course_form.html', {
+#         'students': students,
+#         'edit_mode': True,
+#         'course': course
+#     })
+#     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def delete_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)

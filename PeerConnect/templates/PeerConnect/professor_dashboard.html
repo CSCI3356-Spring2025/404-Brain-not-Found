@@ -12,9 +12,12 @@
             <h4>Courses</h4>
             <div class="course-container">
                 {% for course in courses %}
-                    <a href="{% url 'create' %}">
-                        <button class="course-card">{{ course.name }}</button>
-                    </a>
+                    <form method="GET" action="{% url 'create' %}">
+                        <input type="hidden" name="course_id" value="{{ course.id }}">
+                        <button type="submit" class="course-card">
+                            {{ course.name }}
+                        </button>
+                    </form>
                 {% endfor %}
                 <a href="#course-popup">
                     <button class="course-card new-course">+</button>

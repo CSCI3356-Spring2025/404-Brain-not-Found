@@ -3,10 +3,10 @@
 {% block content %}
 <div class="summary-container">
     <div class="greeting">Results for {{ assessment.name }}</div>
-    <div class="question-container">
       {% if questions %}
         {% for question in questions %}
           {% if question.question_type == "open" %}
+          <div class="question-container">
             <div class="section-title">Question {{ question.order }}: {{ question.text }}</div>
               <div class="response-section">
                   <h3 class="response-title">Individual Responses</h3>
