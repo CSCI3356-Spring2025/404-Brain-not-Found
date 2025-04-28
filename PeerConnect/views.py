@@ -276,64 +276,78 @@ def dashboard_redirect(request):
 def create_assessment(request):
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     
-    try:
-        num_questions = int(request.GET.get("questions", 1))
-        if num_questions < 1:
-            num_questions = 1
-    except (ValueError, TypeError):
-        num_questions = 1
-
-
-    QuestionFormSetDynamic = modelformset_factory(Question, form=QuestionForm, extra=num_questions, can_order=False)
-
-    if request.method == "POST" :
-
+    # Get the number of questions from either the session or the POST data
+    if "add_question" in request.POST:
+        num_questions = int(request.POST.get('form_count', 1)) + 1
+    else:
+        num_questions = int(request.session.get('questions', 1))
+    
+    # Store the updated count in the session
+    request.session['questions'] = num_questions
+    
+    # Create the formset with the appropriate number of extra forms
+    QuestionFormSetDynamic = modelformset_factory(
+        Question, 
+        form=QuestionForm, 
+        extra=num_questions, 
+        can_delete=True
+    )
+    
+    if request.method == "POST":
         form = AssessmentForm(request.POST)
-        if form.is_valid() :
+        
+        if "add_question" in request.POST:
+            # Create a new formset with one more form
+            formset = QuestionFormSetDynamic(queryset=Question.objects.none())
+            
+            # Pre-fill the form with any existing data
+            # This preserves data for existing questions
+            for i, subform in enumerate(formset):
+                prefix = f'form-{i}'
+                for field_name in subform.fields:
+                    field_key = f'{prefix}-{field_name}'
+                    if field_key in request.POST and i < num_questions - 1:
+                        subform.initial[field_name] = request.POST.get(field_key)
+            
+            context = {
+                'form': form,  # Keep the entered assessment data
+                'formset': formset,
+                'courses': Course.objects.filter(professor=professor),
+                'form_count': num_questions
+            }
+            return render(request, "PeerConnect/create_assessment.html", context)
+        
+        # For normal form submission
+        formset = QuestionFormSetDynamic(request.POST, queryset=Question.objects.none())
+        
+        if form.is_valid() and formset.is_valid():
             assessment = form.save(commit=False)
             assessment.professor = professor
             assessment.save()
             form.save_m2m()
-            #formset.instance = assessment
-
-            formset = QuestionFormSet(request.POST, instance=assessment)
-            print(request.POST.dict())
-            if  formset.is_valid():
-                questions = formset.save(commit=False)
-                for index, question in enumerate(questions):
-                    question.assessment = assessment
-                    question.order = index + 1
-                    question.save()
-                formset.save_m2m()
-            else:
-                # If question formset has errors, re-render with errors
-                return render(request, "PeerConnect/create_assessment.html", {
-                    'form': form,
-                    'formset': formset,
-                    'courses': Course.objects.filter(professor=professor)
-                })
+            
+            questions = formset.save(commit=False)
+            for index, question in enumerate(questions):
+                question.assessment = assessment
+                question.order = index + 1
+                question.save()
+            formset.save_m2m()
+            
+            # Reset the session
+            request.session['questions'] = 1
             return redirect("professor_dashboard")
-
-        else:
-            formset = QuestionFormSet(request.POST)
-    
     else:
         form = AssessmentForm()
-        try:
-            num_questions = int(request.GET.get("questions", 1))
-            if num_questions < 1:
-                num_questions = 1
-        except (ValueError, TypeError):
-            num_questions = 1
-        QuestionFormSetExtra = modelformset_factory(Question, form=QuestionForm, extra=num_questions, can_delete=False)
-        formset = QuestionFormSetExtra(queryset=Question.objects.none())
-
+        formset = QuestionFormSetDynamic(queryset=Question.objects.none())
+    
     context = {
         'form': form,
         'formset': formset,
-        'courses': Course.objects.filter(professor=professor)
+        'courses': Course.objects.filter(professor=professor),
+        'form_count': num_questions
     }
     return render(request, "PeerConnect/create_assessment.html", context)
+
 
 @login_required
 def view_assessment(request, assessment_id):
