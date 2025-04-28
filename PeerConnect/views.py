@@ -194,6 +194,17 @@ def dashboard_redirect(request):
 @login_required
 def create_assessment(request):
     professor = get_object_or_404(ProfessorProfile, user=request.user)
+    
+    try:
+        num_questions = int(request.GET.get("questions", 1))
+        if num_questions < 1:
+            num_questions = 1
+    except (ValueError, TypeError):
+        num_questions = 1
+
+
+    QuestionFormSetDynamic = modelformset_factory(Question, form=QuestionForm, extra=num_questions, can_order=False)
+
     if request.method == "POST" :
 
         form = AssessmentForm(request.POST)
@@ -227,7 +238,14 @@ def create_assessment(request):
     
     else:
         form = AssessmentForm()
-        formset = QuestionFormSet()
+        try:
+            num_questions = int(request.GET.get("questions", 1))
+            if num_questions < 1:
+                num_questions = 1
+        except (ValueError, TypeError):
+            num_questions = 1
+        QuestionFormSetExtra = modelformset_factory(Question, form=QuestionForm, extra=num_questions, can_delete=False)
+        formset = QuestionFormSetExtra(queryset=Question.objects.none())
 
     context = {
         'form': form,
@@ -242,6 +260,7 @@ def view_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
     if assessment.professor == professor:
+        extra_forms = int(request.GET.get("extra", 0)) 
         questions = Question.objects.filter(assessment=assessment).order_by('order')
         QuestionFormSet = modelformset_factory(Question, form=QuestionForm, extra=0, can_delete=True)
 

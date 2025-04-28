@@ -14,15 +14,19 @@
             {% for subform in formset %}
                 <div class="question-form">
                     {{ subform.as_p }}
+                    {% if subform.can_delete %}
+                        <label for="{{ subform.prefix }}-DELETE" style="color: #c0392b; font-weight: 500;">
+                        {{ subform.DELETE }} Remove this question
+                        </label>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
 
-
-    <button type="button" id="add-question">Add Question</button>
-    <button type="submit">Create Assessment</button>
+        <a href="?questions={{ formset.total_form_count|add:1 }}" id="add-question">Add Question</a>
+        
+        <button type="submit" class="create-assessment">Create Assessment</button>
     </form>
 </div>
-    
-<script src="{% static 'styles/PeerConnect/js/questions.js' %}"></script>
+
 {% endblock %}

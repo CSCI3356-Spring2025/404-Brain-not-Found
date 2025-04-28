@@ -84,7 +84,7 @@ class QuestionType(models.TextChoices):
 
 class Question(models.Model):
     assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
-    text = models.TextField()
+    text = models.CharField(max_length=255)
     order = models.PositiveIntegerField()
     question_type = models.CharField(max_length=10, choices = QuestionType.choices, default = QuestionType.OPEN)
     

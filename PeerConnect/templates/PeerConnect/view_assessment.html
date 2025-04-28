@@ -18,11 +18,13 @@
             {% endfor %}
         </div>
 
-
-    <button type="button" id="add-question">Add Question</button>
     <button type="submit">Save Assessment</button>
     </form>
+
+    <form method="get" action="">
+        <input type="hidden" name="extra" value="{{ formset.total_form_count|add:1 }}">
+        <button type="submit">Add Another Question</button>
+    </form>
 </div>
-    
-<script src="{% static 'styles/PeerConnect/js/questions.js' %}"></script>
+
 {% endblock %}
