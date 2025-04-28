@@ -5,10 +5,10 @@ from django.forms.models import inlineformset_factory
 from django.utils.safestring import mark_safe
 from django.forms import modelformset_factory
 
-
+    # changed to include StudentProfile vs. User_Profs
 class TeamForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
-        queryset=UserProfile.objects.none(),  # Default to empty, will be set dynamically
+        queryset=StudentProfile.objects.none(),  # Default to empty, will be set dynamically
         widget=forms.CheckboxSelectMultiple,
         required=True
     )
