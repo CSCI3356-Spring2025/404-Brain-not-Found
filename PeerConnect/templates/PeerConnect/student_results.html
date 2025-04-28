@@ -2,14 +2,14 @@
 
 {% block content %}
 <div class="summary-container">
-    <h1 class="greeting">Results for "{{ assessment.name }}"</h1>
+    <h1 class="greeting">Results for "{{ assessment.name }}" for {{ user.first_name }}</h1>
   
     {% for item in responses_by_question %}
       <div class="question-container">
         <div class="section-title">Question {{ forloop.counter }}: {{ item.question.text }}</div>
   
         {% if item.type == 'open' %}
-          <div class="results-title">Student Responses:</div>
+          <!--<div class="results-title">Student Responses:</div>-->
           <ul class="response-list">
             {% for response in item.responses %}
               <li class="response-item">{{ response }}</li>
@@ -18,7 +18,11 @@
   
         {% elif item.type == 'likert' %}
           <div class="results-title">
-            Average Rating: {{ item.average|floatformat:2 }}/5
+            Average rating for {{user.first_name}}: {{ item.average_student|floatformat:2 }}/5<br>
+            {% if item.team_name %}
+              Average rating for {{item.team_name}}: {{ item.average_team|floatformat:2 }}/5<br>
+            {% endif %}
+            Average rating for class: {{ item.average_class|floatformat:2 }}/5
           </div>
 
         {% endif %}

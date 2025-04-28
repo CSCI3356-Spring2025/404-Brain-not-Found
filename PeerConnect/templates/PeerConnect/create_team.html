@@ -29,6 +29,11 @@
             {% else %}
                 <h1 class="team-title">Once you start creating teams, they'll appear here!</h1>
             {% endif %}
+
+            <a href="{% url 'course_roster' course_id=course.id %}" class="submit-btn">
+                Manage Students
+            </a>
+
         </section>
         <section class="team-form-container">
             <h1 class="title">Create a New Team</h1>

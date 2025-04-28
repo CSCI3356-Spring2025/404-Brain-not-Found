@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType
+from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType, CourseInvitation
 from django.http import JsonResponse
-from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm
+from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm, StudentInvitationForm
 from django.forms import modelformset_factory
 from django.contrib import messages
+from django.urls import reverse
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -63,10 +64,30 @@ def student_results(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     questions = Question.objects.filter(assessment=assessment).order_by('order')
     question_responses = QuestionResponse.objects.filter(assessment=assessment)
+    current_student = get_object_or_404(StudentProfile, user=request.user)
+
+    student_team = None
+    for course in assessment.course.all():
+        try:
+            team = Team.objects.get(
+                members=current_student,
+                course=course
+            )
+            student_team = team
+            break 
+        except Team.DoesNotExist:
+            continue
+        except Team.MultipleObjectsReturned:
+            student_team = Team.objects.filter(members=current_student, course=course).first()
+            break
+    team_members = []
+    if student_team:
+        team_members = StudentProfile.objects.filter(teams=student_team)
+
     responses_by_q = []
     for question in questions:
         if question.question_type == 'open':
-            responses = question_responses.filter(question=question)
+            responses = question_responses.filter(question=question, evaluated_student=current_student)
             sorted_responses = sorted(
                 [r.answer_text for r in responses],
                 key=lambda text: text.strip().split()[0].lower() if text.strip() else ''
@@ -75,16 +96,30 @@ def student_results(request, assessment_id):
             print(sorted_responses)
             responses_by_q.append({'question': question, 'type': 'open', 'responses': sorted_responses})
         else:
-            likert_values = question_responses.filter(question=question, answer_likert__isnull=False).values_list('answer_likert', flat=True)
-            if likert_values:
-                avg = sum(likert_values) / len(likert_values)
+            likert_values_class = question_responses.filter(question=question, answer_likert__isnull=False).values_list('answer_likert', flat=True)
+            if likert_values_class:
+                avg_class = sum(likert_values_class) / len(likert_values_class)
             else:
-                avg = None
-            responses_by_q.append({'question': question, 'type': 'likert', 'average': avg})
+                avg_class = None
+            likert_values_student = question_responses.filter(question=question, evaluated_student=current_student, answer_likert__isnull=False).values_list('answer_likert', flat=True)
+            if likert_values_student:
+                avg_student = sum(likert_values_student) / len(likert_values_student)
+            else:
+                avg_student = None
+            avg_team = None
+            team_name = None
+            if student_team:
+                likert_values_team = question_responses.filter(question=question, evaluated_student__in=list(team_members) + [current_student], answer_likert__isnull=False).values_list('answer_likert', flat=True)
+                if likert_values_team:
+                    avg_team = sum(likert_values_team) / len(likert_values_team)
+                    team_name = student_team.name
+
+            responses_by_q.append({'question': question, 'type': 'likert', 'average_class': avg_class, 'average_student': avg_student, 'average_team': avg_team, 'team_name': team_name})
 
 
  
     context = {
+        'user': request.user, 
         'assessment': assessment,
         'responses_by_question': responses_by_q
     }
@@ -151,13 +186,59 @@ def create_course(request):
         students = StudentProfile.objects.filter(id__in=student_ids)
         course.students.set(students)
     
-        return redirect("/create/")
+        base_url = reverse('create')
+        url_with_course_id = f"{base_url}?course_id={course.id}"
+        return redirect(url_with_course_id)
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+# def edit_course(request, course_id):
+#     if request.method == "POST":
+#         name = request.POST.get("name")
+#         student_ids = request.POST.getlist("students")
+#         semester = request.POST.get('semester')
+#         year = request.POST.get('year')
+
+#         professor = get_object_or_404(ProfessorProfile, user=request.user)
+#         students = StudentProfile.objects.filter(id__in=student_ids)
+#         course = get_object_or_404(Course, id=course_id)
+#         students = UserProfile.objects.filter(student=True)
+#         course.students.set(students)
+    
+#         return render(request, 'course_form.html', {
+#         'students': students,
+#         'edit_mode': True,
+#         'course': course
+#     })
+#     return JsonResponse({"error": "Invalid request"}, status=400)
 
 def delete_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     course.delete()
     return redirect("/create/")
+
+def course_roster(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    if request.method == "POST":
+        form = StudentInvitationForm(request.POST)
+
+        if form.is_valid():
+            student_name = form.cleaned_data['student_name']
+            student_email = form.cleaned_data['student_email']
+
+            invitation = CourseInvitation.objects.create(
+                course=course,
+                email=student_email,
+                #token=token
+            )
+            return redirect("course_roster", course_id=course.id)
+
+    else:
+        form = StudentInvitationForm()
+
+    invitations = CourseInvitation.objects.filter(course=course)
+    return render(request, "PeerConnect/course_roster.html", {'course': course}) #, 'form': form, 'invitations': invitations})
+
 
 def render_create_team(request, course_id):
     course = get_object_or_404(Course, id=course_id)
