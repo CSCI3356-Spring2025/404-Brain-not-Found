@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils import timezone
+
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -420,6 +422,10 @@ def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     student = get_object_or_404(StudentProfile, user=request.user)
     questions = assessment.questions.all()
+
+    # checking if its past the due date
+    if timezone.now() > assessment.due_date:
+        return redirect('past_due_date')
     
     # Get the course for the assessment
     course = assessment.course.first()  # Assuming the assessment is associated with at least one course
@@ -504,3 +510,6 @@ def publish_assessment(request, assessment_id):
     print(f"Assessment {assessment.id}. Published: {assessment.published}")
 
     return redirect('assessment_summary', assessment_id=assessment.id)
+
+def past_due_date(request):
+    return render(request, "PeerConnect/past_due_date.html", {})
