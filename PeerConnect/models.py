@@ -52,12 +52,6 @@ class Team(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.course.name})"
-    
-class PredefinedQuestion(models.Model):
-    text = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.text
         
 class Assessment(models.Model):
     professor = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, related_name='assessments_created')  # Link to the professor who created the assessment
@@ -67,10 +61,6 @@ class Assessment(models.Model):
     available_date = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(default= timezone.now() + timedelta(days=7))
     self_assessment = models.BooleanField(default=False)
-    num_questions = models.PositiveIntegerField(default=0)
-    
-
-    predefined_questions = models.ManyToManyField(PredefinedQuestion, blank=True)
     
     #tracks whether it is published
     published = models.BooleanField(default=False)

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType, CourseInvitation
+from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, QuestionResponse, SemesterType, CourseInvitation
 from django.http import JsonResponse
 from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm, StudentInvitationForm
 from django.forms import modelformset_factory
