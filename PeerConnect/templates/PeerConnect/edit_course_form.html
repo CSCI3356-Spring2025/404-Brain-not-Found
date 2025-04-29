@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Inder&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Instrument+Sans&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inknut+Antiqua&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
+
+    <link href="{% static 'styles/course_form.css' %}" rel="stylesheet" />
+
+    <title>PeerConnect</title>
+</head>
+<body>
+    <div class="course-form-wrapper">
+        <form method="POST" action="{% url 'edit_course' course.id %}">
+            {% csrf_token %}
+
+            <label for="name">Course</label>
+            <input type="text" id="name" name="name" value="{{course.name}}" required>
+            
+            <label for="semester">Semester</label>
+            <select id="semester" name="semester" class="small-select" value={{course.semester}}required>
+                {% for value, label in SemesterType.choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="year">Year</label>
+            <input type="number" id="year" name="year" min="2000" max="2100" value="{{course.year}}" required>
+
+            <!-- <label for="students">Students</label> -->
+            <!--<input type="text" id="students" name="students" list="students-list" placeholder="Start typing to search..." required multiple>
+
+            <datalist id="students-list">
+                {% for student in students %}
+                    <option value="{{ student.user.first_name }} {{ student.user.last_name }}" data-id="{{ student.id }}">
+                {% endfor %}
+            </datalist>
+            
+            <button type="submit">Add</button>
+            
+            <div class="selected-students">
+                {% if selected_students %}
+                    {% for student in selected_students %}
+                        <span>{{ student.user.first_name }} {{ student.user.last_name }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>-->
+            
+            <!-- <select id="students" name="students" multiple required>
+                {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.user.first_name }} {{ student.user.last_name }}</option>
+                {% endfor %}
+            </select> -->
+
+            <button type="submit">Update Course</button>
+        </form>
+    </div>
+</body>
+</html>
