@@ -91,7 +91,7 @@
          <h1 id="title">{{ selected_course.name }}</h1>
          <a href="#" class="close">&times;</a> <!-- Close button -->
       </div>
-      {% include 'PeerConnect/course_form.html' %}
+      {% include 'PeerConnect/edit_course_form.html' with course=selected_course %}
    </div>
 </div>
 {% endif %}

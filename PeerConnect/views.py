@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
+from django.http import HttpResponse
 
 
     #updated to use StudentProfile and Prof profile
@@ -204,25 +205,27 @@ def create_course(request):
         return redirect(url_with_course_id)
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-# def edit_course(request, course_id):
-#     if request.method == "POST":
-#         name = request.POST.get("name")
-#         student_ids = request.POST.getlist("students")
-#         semester = request.POST.get('semester')
-#         year = request.POST.get('year')
+@login_required
+def edit_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
 
-#         professor = get_object_or_404(ProfessorProfile, user=request.user)
-#         students = StudentProfile.objects.filter(id__in=student_ids)
-#         course = get_object_or_404(Course, id=course_id)
-#         students = UserProfile.objects.filter(student=True)
-#         course.students.set(students)
-    
-#         return render(request, 'course_form.html', {
-#         'students': students,
-#         'edit_mode': True,
-#         'course': course
-#     })
-#     return JsonResponse({"error": "Invalid request"}, status=400)
+    if request.method == "POST":
+        name = request.POST.get("name")
+        semester = request.POST.get("semester")
+        year = request.POST.get("year")
+
+        course.name = name
+        course.semester = semester
+        course.year = int(year)
+        course.save()
+
+        base_url = reverse('create')
+        url_with_course_id = f"{base_url}?course_id={course.id}"
+        return redirect(url_with_course_id)
+
+    return render(request, "edit_course_form.html", {
+        "course": course
+    })
 
 def delete_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)

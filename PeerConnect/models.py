@@ -32,6 +32,7 @@ class SemesterType(models.TextChoices):
     SPRING = 'spring', 'Spring'
     FALL = 'fall', 'Fall'
     SUMMER = 'summer', 'Summer'
+    WINTER = 'winter', 'Winter'
 
 
 class Course(models.Model):
