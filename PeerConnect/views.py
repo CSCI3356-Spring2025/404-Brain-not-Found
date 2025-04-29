@@ -233,7 +233,7 @@ def delete_course(request, course_id):
     return redirect("/create/")
 
     #Course roster page, send invitations
-def course_roster(request, course_id):
+""" def course_roster(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
     if request.method == "POST":
@@ -283,7 +283,46 @@ def course_roster(request, course_id):
         'invitations': invitations,
         'enrolled_students': students,
     })
+ """
 
+
+from django.views.decorators.http import require_POST
+
+@require_POST
+def course_roster(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    form = StudentInvitationForm(request.POST)
+    if form.is_valid():
+        invitations_text = form.cleaned_data['invitations']
+        student_pairs = invitations_text.splitlines()  # Split by new line
+
+        for pair in student_pairs:
+            parts = pair.split(',')
+            if len(parts) == 2:
+                name = parts[0].strip()
+                email = parts[1].strip()
+
+                # Create invitation
+                invitation = CourseInvitation(course=course, email=email)
+                invitation.save()
+
+                # Build tokenized URL
+                token_url = request.build_absolute_uri(
+                    reverse('accept_invitation', args=[invitation.token])
+                )
+
+                # Send email
+                send_mail(
+                    subject="Course Invitation",
+                    message=f"Hello {name},\n\nYou have been invited to join the course: {course.name}.\nClick to accept: {token_url}",
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+
+    # Redirect back to the create page, roster tab
+    return redirect(reverse("create") + f"?course_id={course.id}&tab=roster")
 
 @login_required
 def accept_invitation(request, token):

@@ -48,6 +48,8 @@ urlpatterns = [
     path('past_due_date/', views.past_due_date, name='past_due_date'),
 
     path('accept_invitation/<uuid:token>/', views.accept_invitation, name='accept_invitation'),
+    path("courses/<int:course_id>/roster/", views.course_roster, name="course_roster"),
+
 
     path('accounts/', include('allauth.urls')),
 
