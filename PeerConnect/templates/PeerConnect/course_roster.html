@@ -19,7 +19,13 @@
                     <tr>
                         <td>{{ student.user.first_name }} {{ student.user.last_name }}</td>
                         <td>{{ student.user.email }}</td>
-                        <td>Team Alpha</td>
+                        <td>
+                            {% for team in student.teams.all %}
+                                {% if team.course == selected_course %}
+                                    <span class="badge">{{ team.name }}</span> 
+                                {% endif %}
+                            {% endfor %}
+                        </td>
                         <td>
                             <button class="btn btn-light btn-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
