@@ -1,34 +1,82 @@
 {% load static %}
 
-<h1>Class Roster for {{ course.name }}</h1>
-
-<h2>Currently Enrolled Students:</h2>
-<ul>
-    {% for student in course.students.all %}
-        <li>{{ student.user.first_name }} {{ student.user.last_name }} ({{ student.user.email }})</li>
-    {% empty %}
-        <li>No students enrolled yet.</li>
-    {% endfor %}
-</ul>
-
-
-<h2>Invite Students to {{ course.name }}</h2>
-
-<form method="post">
-    {% csrf_token %}
-    <div>
-        <label for="invitations">Student Names and Emails:</label>
-        <textarea name="invitations" id="invitations" rows="10" required placeholder="Equeen nter names and emails, one per line (e.g., 'John Doe, john@example.com')"></textarea>
-    
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Class Roster</h3>
     </div>
-    <button type="submit">Send Invitations</button>
-</form>
+    <div class="card-content">
+        <table class="roster-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Team</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in selected_course.students.all %}
+                    <tr>
+                        <td>{{ student.user.first_name }} {{ student.user.last_name }}</td>
+                        <td>{{ student.user.email }}</td>
+                        <td>Team Alpha</td>
+                        <td>
+                            <button class="btn btn-light btn-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<h2>Invitations Sent:</h2>
-<ul>
-    {% for invitation in invitations %}
-        <li>{{ invitation.email }} - {% if invitation.accepted %} Accepted {% else %} Pending {% endif %}</li>
-    {% endfor %}
-</ul>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Send Invitations</h3>
+    </div>
+    <div class="card-content">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="invitations">Enter names and emails, one per line:</label>
+                <textarea name="invitations" id="invitations" rows="6" required placeholder="John Doe, john@example.com&#10;Jane Smith, jane@example.com"></textarea>
+                <p class="form-hint">Format: Name, email@example.com</p>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Send Invitations</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Invitation Status</h3>
+    </div>
+            
+    <div class="card-content">
+        {% if invitations %}
+            <ul class="invitation-list">
+                {% for invitation in invitations %}
+                    <li class="invitation-item {% if invitation.accepted %}accepted{% else %}pending{% endif %}">
+                        <span class="invitation-email">{{ invitation.email }}</span>
+                        <span class="invitation-status">
+                            {% if invitation.accepted %}
+                                <span class="status-badge accepted">Accepted</span>
+                            {% else %}
+                                <span class="status-badge pending">Pending</span>
+                            {% endif %}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-state">No invitations sent yet.</p>
+        {% endif %}
+    </div>
+</div>

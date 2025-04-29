@@ -132,16 +132,24 @@ def create(request):
     students = StudentProfile.objects.all()
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
+    active_tab = request.GET.get('tab', 'teams')
 
     course_id = request.GET.get("course_id")
     selected_course = None
     teams = None
     form = None
+    invitations = None
+    assessments = None
     if course_id:
         selected_course = get_object_or_404(Course, id=course_id)
         form = TeamForm(course=selected_course)
         teams = Team.objects.filter(course=selected_course)
-    return render(request, "PeerConnect/create.html", {'professor': professor, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams, 'SemesterType': SemesterType})
+        invitations = CourseInvitation.objects.filter(course=selected_course)
+        assessments = Assessment.objects.filter(course=selected_course)
+    else:
+        assessments = Assessment.objects.filter(professor=professor)
+        
+    return render(request, "PeerConnect/create.html", {'professor': professor, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams, 'SemesterType': SemesterType, 'active_tab': active_tab, 'invitations': invitations, 'assessments': assessments})
 
     # changed to include StudentProfile
 def course_form(request):
