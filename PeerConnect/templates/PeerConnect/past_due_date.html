@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<body class="past-due-body">
+<div class="container">
+    <div class="clock-icon">⏰</div>
+    <h7>Assessment Unavailable</h7>
+    <p>You cannot access this assessment past the due date. The submission period has ended.</p>
+    <a href="{% url 'student_dashboard' %}" class="btn">Return to Dashboard</a>
+</div>
+</body>
+{% endblock %}

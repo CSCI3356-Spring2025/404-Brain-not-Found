@@ -44,7 +44,9 @@ urlpatterns = [
     path('assessment_summary/<int:assessment_id>', views.assessment_summary, name='assessment_summary'),
     path('publish_assessment/<int:assessment_id>', views.publish_assessment, name='publish_assessment'),
     path('student_results/<int:assessment_id>', views.student_results, name='student_results'),
+    path('past_due_date/', views.past_due_date, name='past_due_date'),
 
+    path('accept_invitation/<uuid:token>/', views.accept_invitation, name='accept_invitation'),
 
     path('accounts/', include('allauth.urls')),
 

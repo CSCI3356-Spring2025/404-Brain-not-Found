@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils import timezone
+
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -23,7 +25,8 @@ def student_dashboard(request):
         #student_profile = StudentProfile.objects.get(user=request.user)
         student_profile, created = StudentProfile.objects.get_or_create(user=request.user)
 
-        courses = student_profile.courses_enrolled.all()
+        #courses = student_profile.courses_enrolled.all()
+        courses = Course.objects.filter(students=student_profile)
         teams = student_profile.teams.all()
         assessments = Assessment.objects.filter(course__in=courses)
 
@@ -187,14 +190,14 @@ def signup_view(request):
 def create_course(request):
     if request.method == "POST":
         name = request.POST.get("name")
-        student_ids = request.POST.getlist("students")
+        #student_ids = request.POST.getlist("students")
         semester = request.POST.get('semester')
         year = request.POST.get('year')
 
         professor = get_object_or_404(ProfessorProfile, user=request.user)
         course = Course.objects.create(name=name, professor=professor, semester=semester, year=int(year))
-        students = StudentProfile.objects.filter(id__in=student_ids)
-        course.students.set(students)
+        #students = StudentProfile.objects.filter(id__in=student_ids)
+        #course.students.set(students)
     
         base_url = reverse('create')
         url_with_course_id = f"{base_url}?course_id={course.id}"
@@ -226,6 +229,7 @@ def delete_course(request, course_id):
     course.delete()
     return redirect("/create/")
 
+    #Course roster page, send invitations
 def course_roster(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
@@ -247,7 +251,8 @@ def course_roster(request, course_id):
                     invitation = CourseInvitation(course=course, email=email)
                     invitation.save()
 
-                    token_url = f"{request.build_absolute_uri('/accept_invite/')}{course.id}/{email}"  # Adjust URL as needed
+                    #token_url = f"{request.build_absolute_uri('/accept_invite/')}{course.id}/{email}" 
+                    token_url = request.build_absolute_uri(reverse('accept_invitation', args=[invitation.token]))
                     
                     send_mail(
                         "Course Invitation", #message name
@@ -267,7 +272,40 @@ def course_roster(request, course_id):
         form = StudentInvitationForm()
 
     invitations = CourseInvitation.objects.filter(course=course)
-    return render(request, "PeerConnect/course_roster.html", {'course': course}) #, 'form': form, 'invitations': invitations})
+    
+    students = course.students.all() 
+    return render(request, "PeerConnect/course_roster.html", {
+        'course': course,
+        'form': form,   
+        'invitations': invitations,
+        'enrolled_students': students,
+    })
+
+
+@login_required
+def accept_invitation(request, token):
+    try:
+        invitation = CourseInvitation.objects.get(token=token) #get invitation
+    except CourseInvitation.DoesNotExist:
+        return HttpResponse("Invalid invitation link.", status=404)
+    
+    if not request.user.is_authenticated: #for now
+        return HttpResponse("User not created.", status=404)
+
+    if request.user.email != invitation.email:
+        return HttpResponse("This invitation link was not intended for your account.", status=403)
+
+    if not invitation.accepted:
+        #create or get studentProfile
+        student_profile, created = StudentProfile.objects.get_or_create(user=request.user)
+        # add student to course
+        invitation.course.students.add(student_profile)
+        invitation.course.save() 
+
+        invitation.accepted = True
+        invitation.save()
+    return redirect('student_dashboard')
+
 
 
 def render_create_team(request, course_id):
@@ -428,6 +466,10 @@ def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     student = get_object_or_404(StudentProfile, user=request.user)
     questions = assessment.questions.all()
+
+    # checking if its past the due date
+    if timezone.now() > assessment.due_date:
+        return redirect('past_due_date')
     
     # Get the course for the assessment
     course = assessment.course.first()  # Assuming the assessment is associated with at least one course
@@ -512,3 +554,6 @@ def publish_assessment(request, assessment_id):
     print(f"Assessment {assessment.id}. Published: {assessment.published}")
 
     return redirect('assessment_summary', assessment_id=assessment.id)
+
+def past_due_date(request):
+    return render(request, "PeerConnect/past_due_date.html", {})
