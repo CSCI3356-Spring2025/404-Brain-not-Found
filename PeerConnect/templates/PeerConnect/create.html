@@ -24,17 +24,10 @@
          <div class="content-header">
             <h1 class="course-title">{{ selected_course.name }}</h1>
             <div class="course-actions">
-               <div class="menu-icon" id="toggle-menu">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                       <circle cx="12" cy="12" r="1"></circle>
-                       <circle cx="19" cy="12" r="1"></circle>
-                       <circle cx="5" cy="12" r="1"></circle>
-                   </svg>
-               </div>
-               <div class="dropdown-menu" id="course-menu">
-                   <a href="#" id="edit-course-btn">Edit Course</a>
-                   <a href="#" id="delete-course-btn">Delete Course</a>
-               </div>
+               <div class="action-buttons">
+                  <a href="#edit-popup" class="edit-button">Edit</a>
+                  <a href="#delete-popup" class="delete-button">Delete</a>
+              </div>
            </div>
        </div>
 
