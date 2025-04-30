@@ -388,6 +388,24 @@ def create_assessment(request):
             
             # Reset the session
             request.session['questions'] = 1
+
+            #sending the email!
+            for course in assessment.course.all():
+                for student in course.students.all():
+                    user = student.user
+                    send_mail(
+                        subject=f"New Peer Assessment: {assessment.name}",
+                        message=(
+                            f"Hi {user.first_name},\n\n"
+                            f"A new peer assessment \"{assessment.name}\" has been opened for the course {course.name}!\n"
+                            f"Available from: {assessment.available_date.strftime('%Y-%m-%d %H:%M')}\n"
+                            f"Due by: {assessment.due_date.strftime('%Y-%m-%d %H:%M')}\n\n"
+                            f"Please log into PeerConnect to complete your evaluation."
+                        ),
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[user.email],
+                        fail_silently=False,
+                    )
             return redirect("professor_dashboard")
     else:
         form = AssessmentForm()
