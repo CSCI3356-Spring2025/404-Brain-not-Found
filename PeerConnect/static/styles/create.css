@@ -642,6 +642,12 @@ a {
   transition: opacity 0.3s ease-in-out;
 }
 
+[id^="delete-assessment-popup-"]:target {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 #course-popup:target {
   display: flex;
   opacity: 1;
