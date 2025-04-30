@@ -570,6 +570,21 @@ def publish_assessment(request, assessment_id):
     
     assessment.published = True
     assessment.save()
+
+    for course in assessment.course.all():
+        for student in course.students.all():
+            user = student.user
+            send_mail(
+                subject=f"New Peer Assessment: {assessment.name}",
+                message=(
+                    f"Hi {user.first_name},\n\n"
+                    f"Results for \"{assessment.name}\" have been published for the course {course.name}!\n"
+                    f"Please log into PeerConnect to see your results."
+                ),
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
     
     print(f"Assessment {assessment.id}. Published: {assessment.published}")
 
