@@ -504,14 +504,20 @@ def view_assessment(request, assessment_id):
 
 QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
 
-def delete_assessment(request, assessment_id):
+def delete_assessment(request, assessment_id, course_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     professor = get_object_or_404(ProfessorProfile, user=request.user)
+    course = get_object_or_404(Course, id=course_id)
 
     if assessment.professor != professor:
         return redirect('unauthorized')
+    
+    # Remove the course from the assessment's courses
+    assessment.course.remove(course)
+    # if the assessment no longer belongs to any course, delete it entirely
+    if assessment.course.count() == 0:
+        assessment.delete()
 
-    assessment.delete()
     messages.success(request, "Assessment deleted successfully.")
     return redirect('professor_dashboard')
 

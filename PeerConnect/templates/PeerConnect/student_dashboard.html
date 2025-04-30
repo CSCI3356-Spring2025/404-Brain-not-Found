@@ -38,10 +38,18 @@
                  </button>
                </a>-->
                
-               <div class="to-do-progress">
-                 <div class="progress-bar"></div>
-               </div>
-               <p>5 of 8 tasks completed</p>
+              <div class="to-do-progress">
+                <div class="progress-bar"></div>
+              </div>
+              {% if assessments %}
+                {% if assessments|length == 1 %}
+                <p class="progress-text">You have 1 assessment due</p>
+                {% elif assessments|length > 1 %}
+                  <p class="progress-text">You have {{assessments|length}} assessments due</p>
+                {% else %}
+                <p class="progress-text">You have 0 tasks due</p>
+                {% endif %}
+              {% endif %}
              </div>
            </div>
            
