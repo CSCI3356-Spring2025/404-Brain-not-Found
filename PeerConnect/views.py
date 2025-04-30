@@ -10,6 +10,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+
 
 
     #updated to use StudentProfile and Prof profile
@@ -232,62 +234,7 @@ def delete_course(request, course_id):
     course.delete()
     return redirect("/create/")
 
-    #Course roster page, send invitations
-""" def course_roster(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
-
-    if request.method == "POST":
-        form = StudentInvitationForm(request.POST)
-
-        if form.is_valid():
-            #student_name = form.cleaned_data['student_name']
-            #student_email = form.cleaned_data['student_email']
-            invitations_text = form.cleaned_data['invitations']
-            student_pairs = invitations_text.splitlines()  # Split by new line
-
-            for pair in student_pairs:
-                parts = pair.split(',')
-                if len(parts) == 2:
-                    name = parts[0].strip()
-                    email = parts[1].strip()
-                    
-                    invitation = CourseInvitation(course=course, email=email)
-                    invitation.save()
-
-                    #token_url = f"{request.build_absolute_uri('/accept_invite/')}{course.id}/{email}" 
-                    token_url = request.build_absolute_uri(reverse('accept_invitation', args=[invitation.token]))
-                    
-                    send_mail(
-                        "Course Invitation", #message name
-                        f"Hello {name},\n\nYou have been invited to join the course: {course.name}. Click the link to accept: {token_url}", #message
-                        settings.EMAIL_HOST_USER,  # Host email address
-                        [email],  # Student's email
-                        fail_silently=False,  # Raise errors if sending fails
-                    )
-                    # invitation = CourseInvitation.objects.create(
-                    #     course=course,
-                    #     email=student_email,
-                    #     #token=token
-                    # )
-            return redirect("course_roster", course_id=course.id)
-
-    else:
-        form = StudentInvitationForm()
-
-    invitations = CourseInvitation.objects.filter(course=course)
-    
-    students = course.students.all() 
-    return render(request, "PeerConnect/course_roster.html", {
-        'course': course,
-        'form': form,   
-        'invitations': invitations,
-        'enrolled_students': students,
-    })
- """
-
-
-from django.views.decorators.http import require_POST
-
+#course roster page, send invitations
 @require_POST
 def course_roster(request, course_id):
     course = get_object_or_404(Course, id=course_id)
@@ -295,7 +242,7 @@ def course_roster(request, course_id):
     form = StudentInvitationForm(request.POST)
     if form.is_valid():
         invitations_text = form.cleaned_data['invitations']
-        student_pairs = invitations_text.splitlines()  # Split by new line
+        student_pairs = invitations_text.splitlines() 
 
         for pair in student_pairs:
             parts = pair.split(',')
@@ -303,16 +250,13 @@ def course_roster(request, course_id):
                 name = parts[0].strip()
                 email = parts[1].strip()
 
-                # Create invitation
                 invitation = CourseInvitation(course=course, email=email)
                 invitation.save()
 
-                # Build tokenized URL
                 token_url = request.build_absolute_uri(
                     reverse('accept_invitation', args=[invitation.token])
                 )
 
-                # Send email
                 send_mail(
                     subject="Course Invitation",
                     message=f"Hello {name},\n\nYou have been invited to join the course: {course.name}.\nClick to accept: {token_url}",
@@ -321,7 +265,6 @@ def course_roster(request, course_id):
                     fail_silently=False,
                 )
 
-    # Redirect back to the create page, roster tab
     return redirect(reverse("create") + f"?course_id={course.id}&tab=roster")
 
 @login_required
