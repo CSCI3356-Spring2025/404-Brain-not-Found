@@ -23,7 +23,11 @@
             {% endfor %}
         </div>
 
-        <a href="?questions={{ formset.total_form_count|add:1 }}" id="add-question">Add Question</a>
+        <!--<a href="?questions={{ formset.total_form_count|add:1 }}" id="add-question">Add Question</a>-->
+        <input type="hidden" name="form_count" value="{{ form_count }}">
+        <button type="submit" name="add_question" value="true" id="add-question">Add Question</button>
+        
+
         
         <button type="submit" class="create-assessment">Create Assessment</button>
     </form>

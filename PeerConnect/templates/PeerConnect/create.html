@@ -6,45 +6,53 @@
 
    <div class="left-column">
       <div class="title">Courses</div>
-      {% for course in courses %}
-         <form method="GET" action="{% url 'create' %}">
-            <input type="hidden" name="course_id" value="{{ course.id }}">
-            <button type="submit" class="course-box {% if selected_course and selected_course.id == course.id %}selected{% endif %}">
-                  {{ course.name }}
-            </button>
-         </form>
-      {% endfor %}
+      <div class="course-list">
+         {% for course in courses %}
+            <form method="GET" action="{% url 'create' %}">
+               <input type="hidden" name="course_id" value="{{ course.id }}">
+               <button type="submit" class="course-box {% if selected_course and selected_course.id == course.id %}selected{% endif %}">
+                     {{ course.name }}
+               </button>
+            </form>
+         {% endfor %}
+      </div>
       <a href="#course-popup"><div class="new-course">Create Course</div></a>
    </div>
 
    <div class="main-content">
       {% if selected_course %}
-        <div class="team-content">
-            {% include 'PeerConnect/create_team.html' with course=selected_course %}
-        </div>
+         <div class="content-header">
+            <h1 class="course-title">{{ selected_course.name }}</h1>
+            <div class="course-actions">
+               <div class="action-buttons">
+                  <a href="#edit-popup" class="edit-button">Edit</a>
+                  <a href="#delete-popup" class="delete-button">Delete</a>
+              </div>
+           </div>
+       </div>
 
-        <!-- 
-        <a href="#delete-popup">
-            <div class="delete-course">
-               <img src="{% static 'assets/delete.png' %}" alt="Delete">
-            </div>
-        </a>
-      -->
-      <div class="menu-icon">
-         <a href="#menu">
-             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                 <circle cx="12" cy="12" r="1"></circle>
-                 <circle cx="19" cy="12" r="1"></circle>
-                 <circle cx="5" cy="12" r="1"></circle>
-             </svg>
-         </a>
-     </div>
-     
-     <div id="menu" class="menu">
-         <a href="#delete-popup" class="delete-course">Delete Course</a>
-         <a href="#edit-popup" class="edit-course">Edit Course</a>
-         <a href="#">✖</a> <!-- Close menu by linking to an empty anchor -->
-     </div>
+       <div class="tabs-nav">
+         <a href="{% url 'create' %}?course_id={{ selected_course.id }}&tab=teams" class="tab-item {% if active_tab == 'teams' %}active{% endif %}">Teams</a>
+         <a href="{% url 'create' %}?course_id={{ selected_course.id }}&tab=roster" class="tab-item {% if active_tab == 'roster' %}active{% endif %}">Roster</a>
+         <a href="{% url 'create' %}?course_id={{ selected_course.id }}&tab=assessments" class="tab-item {% if active_tab == 'assessments' %}active{% endif %}">Assessments</a>
+       </div>
+
+        <!-- Tab Content -->
+        <div >
+         {% if active_tab == "teams" %}
+             <div>
+                 {% include 'PeerConnect/create_team.html' %}
+             </div>
+         {% elif active_tab == "roster" %}
+             <div>
+                 {% include 'PeerConnect/course_roster.html' %}
+             </div>
+         {% elif active_tab == "assessments" %}
+             <div >
+               {% include 'PeerConnect/course_assessments.html' %}
+             </div>
+         {% endif %}
+        </div>
 
       {% else %}
          <p id="no-course-message">You have no courses selected, please select or create to begin!</p>
@@ -83,7 +91,7 @@
          <h1 id="title">{{ selected_course.name }}</h1>
          <a href="#" class="close">&times;</a> <!-- Close button -->
       </div>
-      {% include 'PeerConnect/course_form.html' %}
+      {% include 'PeerConnect/edit_course_form.html' with course=selected_course %}
    </div>
 </div>
 {% endif %}

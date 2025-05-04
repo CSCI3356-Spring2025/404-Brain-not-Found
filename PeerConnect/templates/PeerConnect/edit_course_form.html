@@ -15,21 +15,21 @@
 </head>
 <body>
     <div class="course-form-wrapper">
-        <form method="POST" action="{% url 'create_course' %}">
+        <form method="POST" action="{% url 'edit_course' course.id %}">
             {% csrf_token %}
 
             <label for="name">Course</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" value="{{course.name}}" required>
             
             <label for="semester">Semester</label>
-            <select id="semester" name="semester" class="small-select" required>
+            <select id="semester" name="semester" class="small-select" value={{course.semester}}required>
                 {% for value, label in SemesterType.choices %}
                     <option value="{{ value }}">{{ label }}</option>
                 {% endfor %}
             </select>
 
             <label for="year">Year</label>
-            <input type="number" id="year" name="year" min="2000" max="2100" required>
+            <input type="number" id="year" name="year" min="2000" max="2100" value="{{course.year}}" required>
 
             <!-- <label for="students">Students</label> -->
             <!--<input type="text" id="students" name="students" list="students-list" placeholder="Start typing to search..." required multiple>
@@ -56,7 +56,7 @@
                 {% endfor %}
             </select> -->
 
-            <button type="submit">Create Course</button>
+            <button type="submit">Update Course</button>
         </form>
     </div>
 </body>

@@ -1,3 +1,19 @@
+
+/* Team Members */
+.team-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.team-member {
+  background: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
 .team-form {
     display: flex;
     flex-direction: column;
@@ -173,6 +189,32 @@
     gap: 40px;
   }
   
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* backdrop */
+  }
+  
+  /* Show when targeted */
+  #team-popup:target {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    margin: 10% auto;
+    width: 50%;
+    border-radius: 8px;
+  }
   /* Responsive design adjustments */
   @media (max-width: 768px) {
     

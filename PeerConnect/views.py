@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, PredefinedQuestion, QuestionResponse, SemesterType, CourseInvitation
+from .models import UserProfile, ProfessorProfile, StudentProfile, Course, Team, Assessment, Question, QuestionResponse, SemesterType, CourseInvitation
 from django.http import JsonResponse
 from .forms import TeamForm, AssessmentForm, QuestionForm, QuestionFormSet, QuestionResponseForm, EvaluateStudentForm, StudentInvitationForm
 from django.forms import modelformset_factory
@@ -8,6 +8,11 @@ from django.contrib import messages
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils import timezone
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+
+
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -23,7 +28,8 @@ def student_dashboard(request):
         #student_profile = StudentProfile.objects.get(user=request.user)
         student_profile, created = StudentProfile.objects.get_or_create(user=request.user)
 
-        courses = student_profile.courses_enrolled.all()
+        #courses = student_profile.courses_enrolled.all()
+        courses = Course.objects.filter(students=student_profile)
         teams = student_profile.teams.all()
         assessments = Assessment.objects.filter(course__in=courses)
 
@@ -132,16 +138,24 @@ def create(request):
     students = StudentProfile.objects.all()
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     courses = Course.objects.filter(professor=professor)
+    active_tab = request.GET.get('tab', 'teams')
 
     course_id = request.GET.get("course_id")
     selected_course = None
     teams = None
     form = None
+    invitations = None
+    assessments = None
     if course_id:
         selected_course = get_object_or_404(Course, id=course_id)
         form = TeamForm(course=selected_course)
         teams = Team.objects.filter(course=selected_course)
-    return render(request, "PeerConnect/create.html", {'professor': professor, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams, 'SemesterType': SemesterType})
+        invitations = CourseInvitation.objects.filter(course=selected_course)
+        assessments = Assessment.objects.filter(course=selected_course)
+    else:
+        assessments = Assessment.objects.filter(professor=professor)
+        
+    return render(request, "PeerConnect/create.html", {'professor': professor, 'students': students, 'courses': courses, 'selected_course': selected_course, 'form': form, 'teams': teams, 'SemesterType': SemesterType, 'active_tab': active_tab, 'invitations': invitations, 'assessments': assessments})
 
     # changed to include StudentProfile
 def course_form(request):
@@ -179,87 +193,104 @@ def signup_view(request):
 def create_course(request):
     if request.method == "POST":
         name = request.POST.get("name")
-        student_ids = request.POST.getlist("students")
+        #student_ids = request.POST.getlist("students")
         semester = request.POST.get('semester')
         year = request.POST.get('year')
 
         professor = get_object_or_404(ProfessorProfile, user=request.user)
         course = Course.objects.create(name=name, professor=professor, semester=semester, year=int(year))
-        students = StudentProfile.objects.filter(id__in=student_ids)
-        course.students.set(students)
+        #students = StudentProfile.objects.filter(id__in=student_ids)
+        #course.students.set(students)
     
         base_url = reverse('create')
         url_with_course_id = f"{base_url}?course_id={course.id}"
         return redirect(url_with_course_id)
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-# def edit_course(request, course_id):
-#     if request.method == "POST":
-#         name = request.POST.get("name")
-#         student_ids = request.POST.getlist("students")
-#         semester = request.POST.get('semester')
-#         year = request.POST.get('year')
+@login_required
+def edit_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
 
-#         professor = get_object_or_404(ProfessorProfile, user=request.user)
-#         students = StudentProfile.objects.filter(id__in=student_ids)
-#         course = get_object_or_404(Course, id=course_id)
-#         students = UserProfile.objects.filter(student=True)
-#         course.students.set(students)
-    
-#         return render(request, 'course_form.html', {
-#         'students': students,
-#         'edit_mode': True,
-#         'course': course
-#     })
-#     return JsonResponse({"error": "Invalid request"}, status=400)
+    if request.method == "POST":
+        name = request.POST.get("name")
+        semester = request.POST.get("semester")
+        year = request.POST.get("year")
+
+        course.name = name
+        course.semester = semester
+        course.year = int(year)
+        course.save()
+
+        base_url = reverse('create')
+        url_with_course_id = f"{base_url}?course_id={course.id}"
+        return redirect(url_with_course_id)
+
+    return render(request, "edit_course_form.html", {
+        "course": course
+    })
 
 def delete_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     course.delete()
     return redirect("/create/")
 
+#course roster page, send invitations
+@require_POST
 def course_roster(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
-    if request.method == "POST":
-        form = StudentInvitationForm(request.POST)
+    form = StudentInvitationForm(request.POST)
+    if form.is_valid():
+        invitations_text = form.cleaned_data['invitations']
+        student_pairs = invitations_text.splitlines() 
 
-        if form.is_valid():
-            #student_name = form.cleaned_data['student_name']
-            #student_email = form.cleaned_data['student_email']
-            invitations_text = form.cleaned_data['invitations']
-            student_pairs = invitations_text.splitlines()  # Split by new line
+        for pair in student_pairs:
+            parts = pair.split(',')
+            if len(parts) == 2:
+                name = parts[0].strip()
+                email = parts[1].strip()
 
-            for pair in student_pairs:
-                parts = pair.split(',')
-                if len(parts) == 2:
-                    name = parts[0].strip()
-                    email = parts[1].strip()
-                    
-                    invitation = CourseInvitation(course=course, email=email)
-                    invitation.save()
+                invitation = CourseInvitation(course=course, email=email)
+                invitation.save()
 
-                    token_url = f"{request.build_absolute_uri('/accept_invite/')}{course.id}/{email}"  # Adjust URL as needed
-                    
-                    send_mail(
-                        "Course Invitation", #message name
-                        f"Hello {name},\n\nYou have been invited to join the course: {course.name}. Click the link to accept: {token_url}", #message
-                        settings.EMAIL_HOST_USER,  # Host email address
-                        [email],  # Student's email
-                        fail_silently=False,  # Raise errors if sending fails
-                    )
-                    # invitation = CourseInvitation.objects.create(
-                    #     course=course,
-                    #     email=student_email,
-                    #     #token=token
-                    # )
-            return redirect("course_roster", course_id=course.id)
+                token_url = request.build_absolute_uri(
+                    reverse('accept_invitation', args=[invitation.token])
+                )
 
-    else:
-        form = StudentInvitationForm()
+                send_mail(
+                    subject="Course Invitation",
+                    message=f"Hello {name},\n\nYou have been invited to join the course: {course.name}.\nClick to accept: {token_url}",
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
 
-    invitations = CourseInvitation.objects.filter(course=course)
-    return render(request, "PeerConnect/course_roster.html", {'course': course}) #, 'form': form, 'invitations': invitations})
+    return redirect(reverse("create") + f"?course_id={course.id}&tab=roster")
+
+@login_required
+def accept_invitation(request, token):
+    try:
+        invitation = CourseInvitation.objects.get(token=token) #get invitation
+    except CourseInvitation.DoesNotExist:
+        return HttpResponse("Invalid invitation link.", status=404)
+    
+    if not request.user.is_authenticated: #for now
+        return HttpResponse("User not created.", status=404)
+
+    if request.user.email != invitation.email:
+        return HttpResponse("This invitation link was not intended for your account.", status=403)
+
+    if not invitation.accepted:
+        #create or get studentProfile
+        student_profile, created = StudentProfile.objects.get_or_create(user=request.user)
+        # add student to course
+        invitation.course.students.add(student_profile)
+        invitation.course.save() 
+
+        invitation.accepted = True
+        invitation.save()
+    return redirect('student_dashboard')
+
 
 
 def render_create_team(request, course_id):
@@ -298,64 +329,96 @@ def dashboard_redirect(request):
 def create_assessment(request):
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     
-    try:
-        num_questions = int(request.GET.get("questions", 1))
-        if num_questions < 1:
-            num_questions = 1
-    except (ValueError, TypeError):
-        num_questions = 1
-
-
-    QuestionFormSetDynamic = modelformset_factory(Question, form=QuestionForm, extra=num_questions, can_order=False)
-
-    if request.method == "POST" :
-
+    # Get the number of questions from either the session or the POST data
+    if "add_question" in request.POST:
+        num_questions = int(request.POST.get('form_count', 1)) + 1
+    else:
+        num_questions = int(request.session.get('questions', 1))
+    
+    # Store the updated count in the session
+    request.session['questions'] = num_questions
+    
+    # Create the formset with the appropriate number of extra forms
+    QuestionFormSetDynamic = modelformset_factory(
+        Question, 
+        form=QuestionForm, 
+        extra=num_questions, 
+        can_delete=True
+    )
+    
+    if request.method == "POST":
         form = AssessmentForm(request.POST)
-        if form.is_valid() :
+        
+        if "add_question" in request.POST:
+            # Create a new formset with one more form
+            formset = QuestionFormSetDynamic(queryset=Question.objects.none())
+            
+            # Pre-fill the form with any existing data
+            # This preserves data for existing questions
+            for i, subform in enumerate(formset):
+                prefix = f'form-{i}'
+                for field_name in subform.fields:
+                    field_key = f'{prefix}-{field_name}'
+                    if field_key in request.POST and i < num_questions - 1:
+                        subform.initial[field_name] = request.POST.get(field_key)
+            
+            context = {
+                'form': form,  # Keep the entered assessment data
+                'formset': formset,
+                'courses': Course.objects.filter(professor=professor),
+                'form_count': num_questions
+            }
+            return render(request, "PeerConnect/create_assessment.html", context)
+        
+        # For normal form submission
+        formset = QuestionFormSetDynamic(request.POST, queryset=Question.objects.none())
+        
+        if form.is_valid() and formset.is_valid():
             assessment = form.save(commit=False)
             assessment.professor = professor
             assessment.save()
             form.save_m2m()
-            #formset.instance = assessment
+            
+            questions = formset.save(commit=False)
+            for index, question in enumerate(questions):
+                question.assessment = assessment
+                question.order = index + 1
+                question.save()
+            formset.save_m2m()
+            
+            # Reset the session
+            request.session['questions'] = 1
 
-            formset = QuestionFormSet(request.POST, instance=assessment)
-            print(request.POST.dict())
-            if  formset.is_valid():
-                questions = formset.save(commit=False)
-                for index, question in enumerate(questions):
-                    question.assessment = assessment
-                    question.order = index + 1
-                    question.save()
-                formset.save_m2m()
-            else:
-                # If question formset has errors, re-render with errors
-                return render(request, "PeerConnect/create_assessment.html", {
-                    'form': form,
-                    'formset': formset,
-                    'courses': Course.objects.filter(professor=professor)
-                })
+            #sending the email!
+            for course in assessment.course.all():
+                for student in course.students.all():
+                    user = student.user
+                    send_mail(
+                        subject=f"New Peer Assessment: {assessment.name}",
+                        message=(
+                            f"Hi {user.first_name},\n\n"
+                            f"A new peer assessment \"{assessment.name}\" has been opened for the course {course.name}!\n"
+                            f"Available from: {assessment.available_date.strftime('%Y-%m-%d %H:%M')}\n"
+                            f"Due by: {assessment.due_date.strftime('%Y-%m-%d %H:%M')}\n\n"
+                            f"Please log into PeerConnect to complete your evaluation."
+                        ),
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[user.email],
+                        fail_silently=False,
+                    )
             return redirect("professor_dashboard")
-
-        else:
-            formset = QuestionFormSet(request.POST)
-    
     else:
         form = AssessmentForm()
-        try:
-            num_questions = int(request.GET.get("questions", 1))
-            if num_questions < 1:
-                num_questions = 1
-        except (ValueError, TypeError):
-            num_questions = 1
-        QuestionFormSetExtra = modelformset_factory(Question, form=QuestionForm, extra=num_questions, can_delete=False)
-        formset = QuestionFormSetExtra(queryset=Question.objects.none())
-
+        formset = QuestionFormSetDynamic(queryset=Question.objects.none())
+    
     context = {
         'form': form,
         'formset': formset,
-        'courses': Course.objects.filter(professor=professor)
+        'courses': Course.objects.filter(professor=professor),
+        'form_count': num_questions
     }
     return render(request, "PeerConnect/create_assessment.html", context)
+
 
 @login_required
 def view_assessment(request, assessment_id):
@@ -402,10 +465,31 @@ def view_assessment(request, assessment_id):
 
 QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
 
+def delete_assessment(request, assessment_id, course_id):
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
+    course = get_object_or_404(Course, id=course_id)
+
+    if assessment.professor != professor:
+        return redirect('unauthorized')
+    
+    # Remove the course from the assessment's courses
+    assessment.course.remove(course)
+    # if the assessment no longer belongs to any course, delete it entirely
+    if assessment.course.count() == 0:
+        assessment.delete()
+
+    messages.success(request, "Assessment deleted successfully.")
+    return redirect('professor_dashboard')
+
 def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     student = get_object_or_404(StudentProfile, user=request.user)
     questions = assessment.questions.all()
+
+    # checking if its past the due date
+    if timezone.now() > assessment.due_date:
+        return redirect('past_due_date')
     
     # Get the course for the assessment
     course = assessment.course.first()  # Assuming the assessment is associated with at least one course
@@ -486,7 +570,25 @@ def publish_assessment(request, assessment_id):
     
     assessment.published = True
     assessment.save()
+
+    for course in assessment.course.all():
+        for student in course.students.all():
+            user = student.user
+            send_mail(
+                subject=f"New Peer Assessment: {assessment.name}",
+                message=(
+                    f"Hi {user.first_name},\n\n"
+                    f"Results for \"{assessment.name}\" have been published for the course {course.name}!\n"
+                    f"Please log into PeerConnect to see your results."
+                ),
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
     
     print(f"Assessment {assessment.id}. Published: {assessment.published}")
 
     return redirect('assessment_summary', assessment_id=assessment.id)
+
+def past_due_date(request):
+    return render(request, "PeerConnect/past_due_date.html", {})

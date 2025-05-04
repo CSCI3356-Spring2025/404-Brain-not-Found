@@ -1,14 +1,14 @@
 from django import forms
-from .models import UserProfile, Team, Assessment, PredefinedQuestion, Question, QuestionResponse, StudentProfile
+from .models import UserProfile, Team, Assessment, Question, QuestionResponse, StudentProfile
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from django.utils.safestring import mark_safe
 from django.forms import modelformset_factory
 
-
+    # changed to include StudentProfile vs. User_Profs
 class TeamForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
-        queryset=UserProfile.objects.none(),  # Default to empty, will be set dynamically
+        queryset=StudentProfile.objects.none(),  # Default to empty, will be set dynamically
         widget=forms.CheckboxSelectMultiple,
         required=True
     )
@@ -28,14 +28,6 @@ class TeamForm(forms.ModelForm):
         self.fields["members"].label_from_instance = lambda obj: f"{obj.user.first_name} {obj.user.last_name}"
 
 class AssessmentForm(forms.ModelForm):
-    predefined_questions = forms.ModelMultipleChoiceField(
-        queryset=PredefinedQuestion.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required = False,
-        label = "Common Questions"
-    )
-    #available_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Available Date", initial=timezone.now)
-    #due_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label="Due Date", initial=timezone.now)
     available_date = forms.DateTimeField(
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         input_formats=['%Y-%m-%dT%H:%M']
@@ -46,7 +38,7 @@ class AssessmentForm(forms.ModelForm):
     )
     class Meta:
         model = Assessment
-        fields = ["name", "course", "team", "available_date", "due_date", "self_assessment", "num_questions"]
+        fields = ["name", "course", "team", "available_date", "due_date", "self_assessment"]
 
     def __init__(self, *args, **kwargs):
         course = kwargs.pop("course", None)  # Extract course from kwargs
@@ -57,15 +49,7 @@ class AssessmentForm(forms.ModelForm):
             self.fields["available_date"].label = f"Available Date for {course.name}"
             self.fields["due_date"].label = f"Due Date for {course.name}"
         
-        self.fields["self_assessment"].label = "Is this a self-assessment?"
-
-
-        self.fields["num_questions"].label = "Number of Questions"
-        # num_questions = self.initial.get("num_questions", 0)
-        # for i in range(num_questions):
-        #     self.fields[f"question_{i}_text"] = forms.CharField(max_length=255, label=f"Question {i+1}")
-        #     self.fields[f"question_{i}_type"] = forms.ChoiceField(choices=Question.QUESTION_TYPE_CHOICES, label=f"Question {i+1} Type")
-    
+        self.fields["self_assessment"].label = "Is this a self-assessment?" 
 
 class QuestionForm(forms.ModelForm):
     class Meta:
