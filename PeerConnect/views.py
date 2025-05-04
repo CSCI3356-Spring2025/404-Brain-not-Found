@@ -11,7 +11,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-
+from django.contrib.auth import logout
 
 
     #updated to use StudentProfile and Prof profile
@@ -596,3 +596,8 @@ def publish_assessment(request, assessment_id):
 
 def past_due_date(request):
     return render(request, "PeerConnect/past_due_date.html", {})
+
+def custom_logout(request):
+    logout(request)
+    return redirect('landing')  # or 'login' or any other named URL
+
