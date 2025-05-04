@@ -18,24 +18,30 @@
             </thead>
             <tbody>
                 {% for assessment in assessments %}
-                <div id="delete-assessment-popup-{{ assessment.id }}" class="modal">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1>Are you sure you want to delete '{{ assessment.name }}'?</h1>
-                      <a href="#" class="close">&times;</a>
+                    <div id="delete-assessment-popup-{{ assessment.id }}" class="modal">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            {% with assessment.course.all|length as course_count %}
+                            {% if course_count == 1 %}
+                                <h1>Are you sure you want to permanently delete '{{ assessment.name }}'?</h1>
+                            {% else %}
+                                <h1>Are you sure you want to delete '{{ assessment.name }}' from {{ selected_course.name }}?</h1>
+                            {% endif %}
+                            {% endwith %}
+                            <a href="#" class="close">&times;</a>
+                        </div>
+                        <a href="{% url 'delete_assessment' selected_course.id assessment.id %}">
+                            <div class="delete-course">Yes</div>
+                        </a>
+                        </div>
                     </div>
-                    <a href="{% url 'delete_assessment' selected_course.id assessment.id %}">
-                      <div class="delete-course">Yes</div>
-                    </a>
-                  </div>
-                </div>
                 
                     <tr>
                         <td>{{ assessment.name }}</td>
                         <td>{{ assessment.available_date }}</td>
                         <td>{{ assessment.due_date }}</td>
                         <td>
-                            <a href="{% url 'view_assessment' assessment.id %}" class="btn btn-light btn-icon">
+                            <a href="{% url 'edit_assessment' assessment.id %}" class="btn btn-light btn-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>

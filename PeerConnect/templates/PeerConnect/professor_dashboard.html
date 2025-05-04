@@ -30,7 +30,7 @@
                     <ul>
                         {% for assessment in assessments %}
                             <li>
-                                <a href="{% url 'view_assessment' assessment.id %}">{{ assessment.name }}</a>
+                                <a href="{% url 'edit_assessment' assessment.id %}">{{ assessment.name }}</a>
                                 <p id="due-date">{{ assessment.due_date }}</p>
                                 <a href="{% url 'assessment_summary' assessment.id %}">View Results</a>
                             </li>
