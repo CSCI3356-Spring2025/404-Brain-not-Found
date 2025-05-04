@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.contrib.auth.views import LogoutView
 from PeerConnect import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('logout/', LogoutView.as_view(next_page='landing'), name='logout'),
 
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
     path('peer_answer_quant/', views.peer_answer_quant, name='peer_answer_quant'),
