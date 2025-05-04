@@ -1,0 +1,177 @@
+/* Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inder', sans-serif;
+  }
+  
+  :root {
+    --primary-color: #1e3a5f;
+    --secondary-color: #e07a5f;
+    --accent-color: #f5e6da;
+    --light-bg: #f9f9f9;
+    --dark-text: #333;
+    --light-text: #fff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --input-border: #ddd;
+    --hover-bg: #f0f7ff;
+  }
+  
+  body {
+    font-size: 16px;
+    background: #f5f7fa;
+    color: var(--dark-text);
+    line-height: 1.6;
+  }
+  
+  /* Header */
+  .header {
+    background: var(--primary-color);
+    color: var(--light-text);
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  
+  .results-container {
+    padding: 25px;
+    border-radius: var(--border-radius);
+    background: var(--light-bg);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .results-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Section Headings */
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    color: var(--dark-text);
+  }
+  
+  /* To-Do Section */
+  .to-do {
+    text-align: left;
+  }
+  
+  .to-do-btn {
+    background-color: var(--primary-color);
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 16px;
+    width: 100%;
+    text-align: left;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .to-do-btn:hover {
+    background-color: #2548c7;
+  }
+  
+  .to-do-progress {
+    margin-top: 20px;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 65%; /* Example progress */
+  }
+  
+  /* Results Section */
+  .results {
+    text-align: left;
+  }
+  
+  .results-btn {
+    background-color: var(--secondary-color);
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 16px;
+    width: 100%;
+    text-align: left;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .results-btn:hover {
+    background-color: #b05d46;
+  }
+
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .greeting {
+      font-size: 36px;
+      padding: 30px 0;
+    }
+    
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Additional Components */
+  .notification-badge {
+    display: inline-block;
+    background: red;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  
+  .due-date {
+    font-size: 12px;
+    color: #b5b5b5;
+    margin-top: 5px;
+    justify-content: left;
+  }
+  
+  /* Calendar - Quick View */
+  .calendar-preview {
+    background: white;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    margin-top: 20px;
+  }
+  
+  .calendar-date {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .calendar-events {
+    list-style-type: none;
+  }
+  
+  .calendar-event {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+  }
