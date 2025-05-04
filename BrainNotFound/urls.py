@@ -55,5 +55,7 @@ urlpatterns = [
 
 
     path('accounts/', include('allauth.urls')),
+    path('logout/', views.custom_logout, name='logout'),
+
 
 ]
