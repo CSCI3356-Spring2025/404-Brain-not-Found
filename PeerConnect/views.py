@@ -41,6 +41,9 @@ def student_dashboard(request):
             'teams': teams, 
             'assessments': assessments
         })
+    
+def results_page(request):
+    return render(request, "PeerConnect/results_page.html", {})
 
 def peer_answer_qual(request):
     return render(request, "PeerConnect/peer_answer_qual.html", {})

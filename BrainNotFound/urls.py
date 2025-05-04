@@ -28,6 +28,7 @@ urlpatterns = [
     path('peer_answer_qual/', views.peer_answer_qual, name='peer_answer_qual'),
     path('create/', views.create, name='create'),
     path('course_roster/<int:course_id>/', views.course_roster, name='course_roster'),
+    path('results_page/', views.results_page, name='results_page'),
 
 
     path('course_form/', views.course_form, name='course_form'),
