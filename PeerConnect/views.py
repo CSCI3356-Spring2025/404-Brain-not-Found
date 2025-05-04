@@ -31,7 +31,8 @@ def student_dashboard(request):
         #courses = student_profile.courses_enrolled.all()
         courses = Course.objects.filter(students=student_profile)
         teams = student_profile.teams.all()
-        assessments = Assessment.objects.filter(course__in=courses)
+        now = timezone.now()
+        assessments = Assessment.objects.filter(course__in=courses, available_date__lte=now, due_date__gte=now)
 
         return render(request, "PeerConnect/student_dashboard.html", {
             'user': request.user, 
