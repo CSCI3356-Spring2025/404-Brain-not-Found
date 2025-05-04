@@ -38,7 +38,7 @@ class AssessmentForm(forms.ModelForm):
     )
     class Meta:
         model = Assessment
-        fields = ["name", "course", "team", "available_date", "due_date", "self_assessment"]
+        fields = ["name", "course", "available_date", "due_date", "self_assessment"]
 
     def __init__(self, *args, **kwargs):
         course = kwargs.pop("course", None)  # Extract course from kwargs

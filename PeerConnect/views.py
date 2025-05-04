@@ -382,15 +382,20 @@ def create_assessment(request):
             assessment.professor = professor
             assessment.save()
             form.save_m2m()
-            
+
+            # Get all teams from the selected courses
+            selected_courses = form.cleaned_data['course']
+            teams = Team.objects.filter(course__in=selected_courses).distinct()
+            assessment.team.set(teams)  # assign all teams from those courses
+
+            # Save questions
             questions = formset.save(commit=False)
             for index, question in enumerate(questions):
                 question.assessment = assessment
                 question.order = index + 1
                 question.save()
             formset.save_m2m()
-            
-            # Reset the session
+
             request.session['questions'] = 1
 
             #sending the email!
@@ -425,7 +430,7 @@ def create_assessment(request):
 
 
 @login_required
-def view_assessment(request, assessment_id):
+def edit_assessment(request, assessment_id):
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
@@ -460,7 +465,7 @@ def view_assessment(request, assessment_id):
             form = AssessmentForm(instance=assessment)
             formset = QuestionFormSet(queryset=questions)
 
-        return render(request, "PeerConnect/view_assessment.html", {
+        return render(request, "PeerConnect/edit_assessment.html", {
             'assessment': assessment,
             'form': form,
             'formset': formset,
