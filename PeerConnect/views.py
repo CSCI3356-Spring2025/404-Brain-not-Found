@@ -474,6 +474,7 @@ def edit_assessment(request, assessment_id):
 
 QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
 
+@login_required
 def delete_assessment(request, assessment_id, course_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     professor = get_object_or_404(ProfessorProfile, user=request.user)
@@ -490,6 +491,19 @@ def delete_assessment(request, assessment_id, course_id):
 
     messages.success(request, "Assessment deleted successfully.")
     return redirect('professor_dashboard')
+
+@login_required
+def delete_entire_assessment(request, assessment_id):
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+
+    if assessment.professor != professor:
+        messages.error(request, "You are not authorized to delete this assessment.")
+        return redirect("unauthorized")
+
+    assessment.delete()
+    messages.success(request, "Assessment deleted successfully.")
+    return redirect("professor_dashboard")
 
 def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)

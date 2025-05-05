@@ -37,6 +37,7 @@ urlpatterns = [
     path('create_course/', views.create_course, name='create_course'),
     path('edit_course/<int:course_id>', views.edit_course, name='edit_course'),
     path('assessment/<int:course_id>/<int:assessment_id>/', views.delete_assessment, name='delete_assessment'),
+    path('assessment/delete/<int:assessment_id>/', views.delete_entire_assessment, name='delete_entire_assessment'),
     path('create_team/<int:course_id>', views.render_create_team, name='render_create_team'),
     path('save_team/<int:course_id>/', views.create_team, name='save_team'), 
     path('create_assessment', views.create_assessment, name='create_assessment'),

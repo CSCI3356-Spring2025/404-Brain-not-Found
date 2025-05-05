@@ -25,6 +25,11 @@
         <input type="hidden" name="extra" value="{{ formset.total_form_count|add:1 }}">
         <button type="submit">Add Another Question</button>
     </form>
+    <form method="POST" action="{% url 'delete_entire_assessment' assessment.id %}" onsubmit="return confirm('Are you sure you want to delete this assessment permanently?');">
+        {% csrf_token %}
+        <button type="submit" class="delete-button">Delete Assessment</button>
+    </form>
+    
 </div>
 
 {% endblock %}
