@@ -7,10 +7,24 @@ from datetime import timedelta
 
 
 def remind_unsubmitted():
-    tomorrow = timezone.now().date() + timedelta(days=1)
-    assessments = Assessment.objects.filter(due_date__date=tomorrow, published=True)
+    print("Running reminder job")
+    now = timezone.now()
+    print("Now:", now)
 
-    for assessment in assessments:
+        # gets date/time 12 hours from now
+    twelve_hrs_later = now + timedelta(hours=24)
+    print("Twelve hours later:", twelve_hrs_later)
+
+        # filters due_dates <= 12 hrs away and >= now
+    #upcoming_assessments = Assessment.objects.filter(due_date__lte = twelve_hrs_later, due_date__gte=now, published=True)
+    upcoming = Assessment.objects.filter(due_date__lte=now + timezone.timedelta(hours=24), due_date__gte=now, published=True)
+
+    print(f"Found {upcoming_assessments.count()} upcoming assessments.")
+    #tomorrow = timezone.now().date() + timedelta(days=1)
+    #assessments = Assessment.objects.filter(due_date__date=tomorrow, published=True)
+
+    for assessment in upcoming_assessments:
+        
         for course in assessment.course.all():
             for student in course.students.all():
                 has_responded = QuestionResponse.objects.filter(
@@ -21,7 +35,7 @@ def remind_unsubmitted():
                 if not has_responded:
                     user = student.user
                     send_mail(
-                        subject=f"Reminder: Peer Assessment Due Tomorrow",
+                        subject=f"Reminder: Peer Assessment Due in 12 Hours",
                         message=(
                             f"Hi {user.first_name},\n\n"
                             f"You have not yet completed the peer assessment \"{assessment.name}\" "
