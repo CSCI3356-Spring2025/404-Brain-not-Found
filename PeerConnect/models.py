@@ -64,6 +64,7 @@ class Assessment(models.Model):
     
     #tracks whether it is published
     published = models.BooleanField(default=False)
+    open_reminder_sent = models.BooleanField(default=False)
     
     def __str__(self):
         courses_names = ", ".join(course.name for course in self.course.all())

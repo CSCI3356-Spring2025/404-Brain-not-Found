@@ -38,13 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'PeerConnect',
+    #'PeerConnect',
  
     #allauth apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    
+    'PeerConnect.apps.PeerconnectConfig',
+
 ]
 
 MIDDLEWARE = [
