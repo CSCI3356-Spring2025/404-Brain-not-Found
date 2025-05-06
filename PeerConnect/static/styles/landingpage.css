@@ -81,11 +81,14 @@ body {
   cursor: pointer;
   display: inline-block;
 }
-
+  
+/* Header Styles */
 .login-btn {
-  background-color: #315cec;
+  /* background-color: #1e3a5f;*/
+  background-color: #1e3a5f;
 }
 
 .signup-btn {
-  background-color: rgb(240, 50, 50);
+  background-color:#e07a5f;
+  
 }
