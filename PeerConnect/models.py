@@ -62,13 +62,19 @@ class Assessment(models.Model):
     due_date = models.DateTimeField(default= timezone.now() + timedelta(days=7))
     self_assessment = models.BooleanField(default=False)
     
-    #tracks whether it is published
+        # tracks whether results are published
     published = models.BooleanField(default=False)
-    open_reminder_sent = models.BooleanField(default=False)
-    
+        
+        # tracks whether available reminder sent 
+    available_reminder_sent = models.BooleanField(default=False)
+
+        # tracks whether due soon reminder sent 
+    due_soon_reminder_sent = models.BooleanField(default=False)
+
     def __str__(self):
         courses_names = ", ".join(course.name for course in self.course.all())
         return f"{self.name} ({courses_names})"
+
 
 class QuestionType(models.TextChoices):
     OPEN = 'open', 'Open-Ended'

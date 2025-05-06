@@ -5,6 +5,42 @@ from PeerConnect.models import Assessment, QuestionResponse, StudentProfile
 from django.conf import settings
 from datetime import timedelta
 
+    # Reminds students when an assessment becomes available to edit
+def remind_available():
+    print("Running Available Assessment job")
+    now = timezone.now()
+
+        # filters for unpublished assessments with availble dates earlier than now
+    upcoming_assessments = Assessment.objects.filter(due_date__gte = now, available_date__lte = now, published=False)
+    print(f"Found {upcoming_assessments.count()} available_to_edit assessments.")
+
+    for assessment in upcoming_assessments:
+        print(f"Looking at {assessment.name}, sent = {assessment.available_reminder_sent}")
+
+        if not assessment.available_reminder_sent: # only send available email once
+            print(f"{assessment.name} available reminder not sent ")
+            for course in assessment.course.all():
+                for student in course.students.all():
+                    print("Sending email to", student.user.email)
+                    user = student.user
+                    send_mail(
+                        subject=f"Reminder: Peer Assessment Available to Edit",
+                        message=(
+                            f"Hi {user.first_name},\n\n"
+                            f"The assessment \"{assessment.name}\" "
+                            f"for the course {course.name} is available to edit.\n\n"
+                            f"The deadline is {assessment.due_date.strftime('%Y-%m-%d %H:%M')}.\n"
+                            f"Please log into PeerConnect and complete it before the deadline."
+                        ),
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[user.email],
+                        fail_silently=False,
+                    )
+            assessment.available_reminder_sent = True
+            assessment.save()
+        else:
+            print("Available reminder already sent")
+
 
 def remind_unsubmitted():
     print("Running reminder job")
@@ -16,15 +52,12 @@ def remind_unsubmitted():
     print("Twelve hours later:", twelve_hrs_later)
 
         # filters due_dates <= 12 hrs away and >= now
-        # ** Removed published=True because only want to remind for unpublished assessments
     upcoming_assessments = Assessment.objects.filter(due_date__lte=now + timezone.timedelta(hours=24), due_date__gte=now, published=False)
 
     print(f"Found {upcoming_assessments.count()} upcoming assessments.")
-    #tomorrow = timezone.now().date() + timedelta(days=1)
-    #assessments = Assessment.objects.filter(due_date__date=tomorrow, published=True)
-
+    
     for assessment in upcoming_assessments:
-        if not assessment.open_reminder_sent:
+        if not assessment.due_soon_reminder_sent:
 
             for course in assessment.course.all():
                 print(f"Course: {course.name}, students: {course.students.count()}")
@@ -53,7 +86,7 @@ def remind_unsubmitted():
                             recipient_list=[user.email],
                             fail_silently=False,
                         )
-            assessment.open_reminder_sent = True
+            assessment.due_soon_reminder_sent = True
             assessment.save()
         else:
             print("Assessment reminder already sent")
