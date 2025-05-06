@@ -403,7 +403,7 @@ def create_assessment(request):
                 for student in course.students.all():
                     user = student.user
                     send_mail(
-                        subject=f"New Peer Assessment: {assessment.name}",
+                        subject=f"New Peer Assessment Created: {assessment.name}",
                         message=(
                             f"Hi {user.first_name},\n\n"
                             f"A new peer assessment \"{assessment.name}\" has been opened for the course {course.name}!\n"
@@ -598,7 +598,7 @@ def publish_assessment(request, assessment_id):
         for student in course.students.all():
             user = student.user
             send_mail(
-                subject=f"New Peer Assessment: {assessment.name}",
+                subject=f"Results Published for Assessment: {assessment.name}",
                 message=(
                     f"Hi {user.first_name},\n\n"
                     f"Results for \"{assessment.name}\" have been published for the course {course.name}!\n"
