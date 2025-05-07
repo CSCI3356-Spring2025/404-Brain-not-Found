@@ -161,6 +161,11 @@
   line-height: 1.2;
 }
 
+.nav-item a {
+  color: #1E1E1E;
+  text-decoration: none;
+}
+
 .nav-item:hover {
   background-color: #f0f4ff;
 }

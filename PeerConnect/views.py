@@ -46,6 +46,12 @@ def student_dashboard(request):
 def results_page(request):
     return render(request, "PeerConnect/results_page.html", {})
 
+def teams_page(request):
+    return render(request, "PeerConnect/teams_page.html", {})
+
+def archive_page(request):
+    return render(request, "PeerConnect/archive_page.html", {})
+
 def peer_answer_qual(request):
     return render(request, "PeerConnect/peer_answer_qual.html", {})
 
