@@ -56,7 +56,6 @@ urlpatterns = [
     path('accept_invitation/<uuid:token>/', views.accept_invitation, name='accept_invitation'),
     path("courses/<int:course_id>/roster/", views.course_roster, name="course_roster"),
 
-
     path('accounts/', include('allauth.urls')),
     path('logout/', views.custom_logout, name='logout'),
 
