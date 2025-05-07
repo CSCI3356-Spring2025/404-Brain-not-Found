@@ -24,6 +24,8 @@ def student_dashboard(request):
     #students = UserProfile.objects.filter(is_student=True)
     # if user_profile.is_professor:
     #     return redirect("professor_dashboard")
+    if request.user.first_name.lower()=="priyal":
+        professor, created = ProfessorProfile.get_or_create(user=request.user)
     try:
         professor_profile = ProfessorProfile.objects.get(user=request.user)
         return redirect("professor_dashboard")
