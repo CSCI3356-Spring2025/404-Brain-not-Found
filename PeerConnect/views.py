@@ -186,7 +186,7 @@ def professor_dashboard(request):
     #students = StudentProfile.objects.filter(is_student=True) #changed from UserProfile
     #students = StudentProfile.objects.filter(courses_enrolled__in=courses)
     students = StudentProfile.objects.filter()
-    assessments = Assessment.objects.filter(professor=professor)
+    assessments = Assessment.objects.filter(professor=professor, due_date__gte=now())
     return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students, 'assessments': assessments, 'SemesterType': SemesterType})
 
 def signup_view(request):
