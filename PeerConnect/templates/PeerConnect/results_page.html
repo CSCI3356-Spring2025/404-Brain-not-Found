@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="results-container">
+        <h3 class="section-title">Recent Results</h3>
+        <div class="results">
+        {% for assessment in assessments %}
+        {% if assessment.published %}
+        <a href="{% url 'student_results' assessment.id %}">
+            <button class="results-btn">
+            {{assessment.name}}
+            </button>
+        </a>
+        {% endif %}
+        {% endfor %}  
+        </div>
+    </div>
+               
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="teams-container">
+        <h3 class="section-title">My Teams</h3>
+        {% for team in teams%}
+        <div class="teams">
+        <div class="team-card">
+            <h4 class="team-name">{{team.name}}</h4>
+            <p class="team-course">{{team.course}}</p>
+            <div class="team-members">
+            <span class="team-member">You</span>
+            {% with members=team.members.all %}
+            {% for member in members %}
+            {% if member != request.user.userprofile %}
+            <span class="team-member">{{member.user}}</span>
+            {% endif %}
+            {% endfor %}
+            {% endwith %}
+            </div>
+        <!--<p class="team-role">Member</p>-->
+        </div>
+        
+        </div>
+        {% endfor %}
+        
+    </div>
+    <!--<div class="teams-container">
+        <h3 class="section-title">My Courses</h3>
+        {% for course in courses %}
+        <div class="team-card">
+        <h4 class="team-name">{{course.name}}</h4>
+        <p class="team-course">{{course.professor}}</p>
+        </div>
+        {% endfor %}
+    </div>-->
+               
+{% endblock %}

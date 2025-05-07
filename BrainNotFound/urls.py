@@ -16,17 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.contrib.auth.views import LogoutView
 from PeerConnect import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('logout/', LogoutView.as_view(next_page='landing'), name='logout'),
 
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
     path('peer_answer_quant/', views.peer_answer_quant, name='peer_answer_quant'),
     path('peer_answer_qual/', views.peer_answer_qual, name='peer_answer_qual'),
     path('create/', views.create, name='create'),
     path('course_roster/<int:course_id>/', views.course_roster, name='course_roster'),
+    path('results_page/', views.results_page, name='results_page'),
+    path('teams_page/', views.teams_page, name='teams_page'),
+    path('archive_page/', views.archive_page, name='archive_page'),
 
 
     path('course_form/', views.course_form, name='course_form'),
@@ -35,15 +39,16 @@ urlpatterns = [
     path('create_course/', views.create_course, name='create_course'),
     path('edit_course/<int:course_id>', views.edit_course, name='edit_course'),
     path('assessment/<int:course_id>/<int:assessment_id>/', views.delete_assessment, name='delete_assessment'),
+    path('assessment/delete/<int:assessment_id>/', views.delete_entire_assessment, name='delete_entire_assessment'),
     path('create_team/<int:course_id>', views.render_create_team, name='render_create_team'),
     path('save_team/<int:course_id>/', views.create_team, name='save_team'), 
     path('create_assessment', views.create_assessment, name='create_assessment'),
-    path('view_assessment/<int:assessment_id>/', views.view_assessment, name='view_assessment'),
-
+    path('edit_assessment/<int:assessment_id>/', views.edit_assessment, name='edit_assessment'),
     path('delete_course/<int:course_id>', views.delete_course, name='delete_course'),
     path('delete_team/<int:team_id>', views.delete_team, name='delete_team'), 
     path('submit_assessment/<int:assessment_id>', views.submit_assessment, name='submit_assessment'),
     path('assessment_summary/<int:assessment_id>', views.assessment_summary, name='assessment_summary'),
+    path('assessment_summary/edit_response/<int:response_id>/', views.edit_open_response, name='edit_open_response'),
     path('publish_assessment/<int:assessment_id>', views.publish_assessment, name='publish_assessment'),
     path('student_results/<int:assessment_id>', views.student_results, name='student_results'),
     path('past_due_date/', views.past_due_date, name='past_due_date'),
@@ -53,5 +58,7 @@ urlpatterns = [
 
 
     path('accounts/', include('allauth.urls')),
+    path('logout/', views.custom_logout, name='logout'),
+
 
 ]

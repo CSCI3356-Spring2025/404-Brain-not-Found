@@ -1,3 +1,5 @@
+from decouple import config 
+
 """
 Django settings for BrainNotFound project.
 
@@ -38,13 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'PeerConnect',
+    #'PeerConnect',
  
     #allauth apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    
+    'PeerConnect.apps.PeerconnectConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -182,8 +187,10 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Use the SMTP backend for sending emails
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mirabeev@bc.edu'
-EMAIL_HOST_PASSWORD = 'srqb gzqn sdpn pngr' #delete after testing
+#EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='mirabeev@bc.edu')
+#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='srqb gzqn sdpn pngr')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 

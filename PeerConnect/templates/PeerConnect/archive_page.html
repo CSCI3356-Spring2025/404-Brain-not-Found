@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="archive-container">
+        <h3 class="section-title">Archive</h3>
+        <div class="results">
+        {% for assessment in assessments %}
+        <a href="{% url 'student_results' assessment.id %}">
+            <button class="results-btn">
+            {{assessment.name}}
+            </button>
+        </a>
+        {% endfor %}         
+        </div>
+    </div> 
+{% endblock %}

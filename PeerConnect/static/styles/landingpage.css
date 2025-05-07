@@ -5,11 +5,39 @@
   font-family: 'Inder', sans-serif;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: url('assets/peers2.webp');
+  background-size: cover; 
+  opacity: 0.4;
+  z-index: -1; /
+}
+
 body {
   font-size: 14px;
-  background: #fff;
+  /* background: #fff; */
+  /* background-image: url('assets/peers.avif') ; */
   color: #000;
 }
+
+
+/* body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: url('../assets/delete.png') no-repeat center center;
+  background-size: cover;
+  opacity: 0.4;
+  z-index: -1;
+} */ 
 
 .landing-container {
   width: 80%;
@@ -81,11 +109,14 @@ body {
   cursor: pointer;
   display: inline-block;
 }
-
+  
+/* Header Styles */
 .login-btn {
-  background-color: #315cec;
+  /* background-color: #1e3a5f;*/
+  background-color: #1e3a5f;
 }
 
 .signup-btn {
-  background-color: rgb(240, 50, 50);
+  background-color:#e07a5f;
+  
 }

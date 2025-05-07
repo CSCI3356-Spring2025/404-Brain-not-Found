@@ -16,6 +16,13 @@
                     <details class="response-entry">
                       <summary>{{ response.student }}</summary>
                       <p>{{ response.answer_text }}</p>
+
+                      <form method="POST" action="{% url 'edit_open_response' response.id %}">
+                        {% csrf_token %}
+                        <label for="text_response_{{ response.id }}">Edit this response:</label><br>
+                        <textarea id="text_response_{{ response.id }}" name="text_response" rows="3" cols="50">{{ response.answer_text }}</textarea><br>
+                        <button type="submit">Save</button>
+                      </form>
                     </details>
                     {% endif %}
                   {% endfor %}

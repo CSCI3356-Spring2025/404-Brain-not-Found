@@ -11,8 +11,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-
-
+from django.contrib.auth import logout
+from django.utils.timezone import now
 
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
@@ -31,7 +31,8 @@ def student_dashboard(request):
         #courses = student_profile.courses_enrolled.all()
         courses = Course.objects.filter(students=student_profile)
         teams = student_profile.teams.all()
-        assessments = Assessment.objects.filter(course__in=courses)
+        now = timezone.now()
+        assessments = Assessment.objects.filter(course__in=courses, available_date__lte=now, due_date__gte=now)
 
         return render(request, "PeerConnect/student_dashboard.html", {
             'user': request.user, 
@@ -40,6 +41,15 @@ def student_dashboard(request):
             'teams': teams, 
             'assessments': assessments
         })
+    
+def results_page(request):
+    return render(request, "PeerConnect/results_page.html", {})
+
+def teams_page(request):
+    return render(request, "PeerConnect/teams_page.html", {})
+
+def archive_page(request):
+    return render(request, "PeerConnect/archive_page.html", {})
 
 def peer_answer_qual(request):
     return render(request, "PeerConnect/peer_answer_qual.html", {})
@@ -64,9 +74,18 @@ def assessment_summary(request, assessment_id):
     context = {
         'assessment': assessment,
         'questions': questions,
-        'question_responses': question_responses
+        'question_responses': question_responses,
+        'students': students
     }
     return render(request, 'PeerConnect/peer_assessment_summary.html', context)
+
+@login_required
+def edit_open_response(request, response_id):
+    response = get_object_or_404(QuestionResponse, id=response_id)
+    if request.method == "POST":
+        response.answer_text = request.POST.get("text_response", "").strip()
+        response.save()
+        return redirect('assessment_summary', assessment_id=response.assessment.id)
 
 def student_results(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
@@ -181,7 +200,7 @@ def professor_dashboard(request):
     #students = StudentProfile.objects.filter(is_student=True) #changed from UserProfile
     #students = StudentProfile.objects.filter(courses_enrolled__in=courses)
     students = StudentProfile.objects.filter()
-    assessments = Assessment.objects.filter(professor=professor)
+    assessments = Assessment.objects.filter(professor=professor, due_date__gte=now())
     return render(request, "PeerConnect/professor_dashboard.html", {'courses': courses, 'students': students, 'assessments': assessments, 'SemesterType': SemesterType})
 
 def signup_view(request):
@@ -378,15 +397,20 @@ def create_assessment(request):
             assessment.professor = professor
             assessment.save()
             form.save_m2m()
-            
+
+            # Get all teams from the selected courses
+            selected_courses = form.cleaned_data['course']
+            teams = Team.objects.filter(course__in=selected_courses).distinct()
+            assessment.team.set(teams)  # assign all teams from those courses
+
+            # Save questions
             questions = formset.save(commit=False)
             for index, question in enumerate(questions):
                 question.assessment = assessment
                 question.order = index + 1
                 question.save()
             formset.save_m2m()
-            
-            # Reset the session
+
             request.session['questions'] = 1
 
             #sending the email!
@@ -394,7 +418,7 @@ def create_assessment(request):
                 for student in course.students.all():
                     user = student.user
                     send_mail(
-                        subject=f"New Peer Assessment: {assessment.name}",
+                        subject=f"New Peer Assessment Created: {assessment.name}",
                         message=(
                             f"Hi {user.first_name},\n\n"
                             f"A new peer assessment \"{assessment.name}\" has been opened for the course {course.name}!\n"
@@ -419,52 +443,96 @@ def create_assessment(request):
     }
     return render(request, "PeerConnect/create_assessment.html", context)
 
-
 @login_required
-def view_assessment(request, assessment_id):
+def edit_assessment(request, assessment_id):
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
-    if assessment.professor == professor:
-        extra_forms = int(request.GET.get("extra", 0)) 
-        questions = Question.objects.filter(assessment=assessment).order_by('order')
-        QuestionFormSet = modelformset_factory(Question, form=QuestionForm, extra=0, can_delete=True)
+    # Authorization check
+    if assessment.professor != professor:
+        return redirect('unauthorized')
 
-        if request.method == 'POST':
-            form = AssessmentForm(request.POST, instance=assessment)
-            formset = QuestionFormSet(request.POST, queryset=questions)
+    existing_questions = Question.objects.filter(assessment=assessment).order_by("order")
+    existing_count = existing_questions.count()
 
-            if form.is_valid() and formset.is_valid():
-                form.save()
-                updated_questions = formset.save(commit=False)
+    if request.method == "GET" and "add_question" in request.GET:
+        num_questions = int(request.GET.get("form_count", existing_count)) + 1
+    elif request.method == "POST":
+        num_questions = int(request.POST.get("form_count", existing_count))
+    else:
+        num_questions = existing_count
 
-                for index, question in enumerate(updated_questions):
-                    question.assessment = assessment
-                    question.order = index + 1
+    extra = num_questions - existing_count
 
-                formset.save_m2m()
-                return redirect("professor_dashboard")
-            else:
-                return render(request, "PeerConnect/view_assessment.html", {
-                    'assessment': assessment,
-                    'form': form,
-                    'formset': formset,
-                    'courses': Course.objects.filter(professor=professor)
-                })
+    QuestionFormSetDynamic = modelformset_factory(
+        Question,
+        form=QuestionForm,
+        extra=extra,
+        can_delete=True
+    )
 
-        else:
-            form = AssessmentForm(instance=assessment)
-            formset = QuestionFormSet(queryset=questions)
+    if request.method == "POST":
+        form = AssessmentForm(request.POST, instance=assessment)
+        formset = QuestionFormSetDynamic(request.POST, queryset=existing_questions)
 
-        return render(request, "PeerConnect/view_assessment.html", {
-            'assessment': assessment,
-            'form': form,
-            'formset': formset,
-            'courses': Course.objects.filter(professor=professor)
-        })
+        if "add_question" in request.POST:
+            # Pre-fill forms to preserve existing input
+            for i, subform in enumerate(formset.forms):
+                prefix = f'form-{i}'
+                for field_name in subform.fields:
+                    field_key = f'{prefix}-{field_name}'
+                    if field_key in request.POST and i < num_questions - 1:
+                        subform.initial[field_name] = request.POST.get(field_key)
+
+            context = {
+                'form': form,
+                'formset': formset,
+                'courses': Course.objects.filter(professor=professor),
+                'form_count': num_questions,
+                'assessment': assessment,
+            }
+            return render(request, "PeerConnect/edit_assessment.html", context)
+
+        if form.is_valid() and formset.is_valid():
+            form.save()
+
+            # Delete any removed questions
+            for deleted_form in formset.deleted_forms:
+                if deleted_form.instance.pk:
+                    deleted_form.instance.delete()
+
+            # Fix: define `questions`
+            questions = formset.save(commit=False)
+
+            # Save added or changed questions
+            next_order = existing_count + 1
+            for question in questions:
+                if not question.pk:
+                    question.order = next_order
+                    next_order += 1
+                question.assessment = assessment
+                question.save()
+
+            formset.save_m2m()
+
+            request.session["edit_questions"] = existing_count
+            return redirect("professor_dashboard")
+    else:
+        form = AssessmentForm(instance=assessment)
+        formset = QuestionFormSetDynamic(queryset=existing_questions)
+
+    context = {
+        'form': form,
+        'formset': formset,
+        'courses': Course.objects.filter(professor=professor),
+        'form_count': num_questions,
+        'assessment': assessment,
+    }
+    return render(request, "PeerConnect/edit_assessment.html", context)
 
 QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
 
+@login_required
 def delete_assessment(request, assessment_id, course_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     professor = get_object_or_404(ProfessorProfile, user=request.user)
@@ -481,6 +549,19 @@ def delete_assessment(request, assessment_id, course_id):
 
     messages.success(request, "Assessment deleted successfully.")
     return redirect('professor_dashboard')
+
+@login_required
+def delete_entire_assessment(request, assessment_id):
+    professor = get_object_or_404(ProfessorProfile, user=request.user)
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+
+    if assessment.professor != professor:
+        messages.error(request, "You are not authorized to delete this assessment.")
+        return redirect("unauthorized")
+
+    assessment.delete()
+    messages.success(request, "Assessment deleted successfully.")
+    return redirect("professor_dashboard")
 
 def submit_assessment(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
@@ -575,7 +656,7 @@ def publish_assessment(request, assessment_id):
         for student in course.students.all():
             user = student.user
             send_mail(
-                subject=f"New Peer Assessment: {assessment.name}",
+                subject=f"Results Published for Assessment: {assessment.name}",
                 message=(
                     f"Hi {user.first_name},\n\n"
                     f"Results for \"{assessment.name}\" have been published for the course {course.name}!\n"
@@ -592,3 +673,8 @@ def publish_assessment(request, assessment_id):
 
 def past_due_date(request):
     return render(request, "PeerConnect/past_due_date.html", {})
+
+def custom_logout(request):
+    logout(request)
+    return redirect('landing')  # or 'login' or any other named URL
+
