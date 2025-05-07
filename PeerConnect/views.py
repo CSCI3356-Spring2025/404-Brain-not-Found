@@ -13,6 +13,9 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth import logout
 from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+from .models import Team, ProfessorProfile
+
 
     #updated to use StudentProfile and Prof profile
 @login_required
@@ -46,8 +49,20 @@ def student_dashboard(request):
 def results_page(request):
     return render(request, "PeerConnect/results_page.html", {})
 
+@login_required
 def teams_page(request):
-    return render(request, "PeerConnect/teams_page.html", {})
+    try:
+        professor = ProfessorProfile.objects.get(user=request.user)
+    except ProfessorProfile.DoesNotExist:
+        return redirect("student_dashboard")  # or show 403
+
+    # Get all teams for the professor’s courses
+    teams = Team.objects.filter(course__professor=professor).prefetch_related('members', 'course')
+
+    return render(request, "PeerConnect/teams_page.html", {
+        'teams': teams
+    })
+
 
 def archive_page(request):
     return render(request, "PeerConnect/archive_page.html", {})
