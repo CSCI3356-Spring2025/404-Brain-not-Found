@@ -87,6 +87,34 @@
   width: 100%;
 }
 
+/* Date and Time Display */
+.date-time-display {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 0px 1px 4px rgba(12, 12, 13, 0.05);
+  padding: 3px 15px;
+  width: 230px;
+  font-family: 'Inter', sans-serif;
+}
+
+.datetime-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-display {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1E3A5F;
+}
+
+.time-display {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1E1E1E;
+}
+
 .course-code {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
@@ -140,7 +168,7 @@
   background-color: #FFFFFF;
   border-radius: 10px; /* Reduced from 12px */
   box-shadow: 0px 1px 4px rgba(12, 12, 13, 0.05);
-  padding: 5px 10px; /* Reduced from 10px 15px */
+  padding: 5px 15px; /* Reduced from 10px 15px */
 }
 
 .nav-list {
@@ -190,6 +218,12 @@
   
   .brand-name {
     margin: 5px 0;
+  }
+
+  .date-time-display {
+    margin: 10px 0;
+    width: 100%;
+    max-width: 280px;
   }
   
   .main-nav {
