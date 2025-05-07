@@ -9,17 +9,25 @@
             <h1 class="brand-name">PeerConnect</h1>
         </a>
 
-
+        <!--
         <div class="course-selector">
             <div class="course-badge">
                 <h2 class="course-code">CSCI1101</h2>
                 <span class="dropdown-arrow"></span>
             </div>
         </div>
+        -->
+
+        <div class="date-time-display">
+            <div class="datetime-container">
+              <div class="date-display" id="currentDate">Date</div>
+              <div class="time-display" id="currentTime">Time</div>
+            </div>
+        </div>
         
         <nav class="main-nav">
             <ul class="nav-list">
-                <li class="nav-item nav-item-active"><a href="{% url 'student_dashboard' %}">Dashboard</a></li>
+                <li class="nav-item"><a href="{% url 'student_dashboard' %}">Dashboard</a></li>
                 <li class="nav-item"><a href="{% url 'results_page' %}">Results</a></li>
                 <li class="nav-item"><a href="{% url 'teams_page' %}">Teams</a></li>
                 <!--<li class="nav-item">Help</li>-->
@@ -57,4 +65,63 @@
             {% endif %}          
         </div>
     </div>
+    <!-- Your navbar HTML structure above -->
+
+<!-- Add this script tag at the end of your body -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Function to update date and time
+      function updateDateTime() {
+        const now = new Date();
+        
+        // Format date: Tuesday, May 7, 2025
+        const options = { weekday: 'short', month: 'long', day: 'numeric' };
+        const dateString = now.toLocaleDateString('en-US', options);
+        
+        // Format time: 10:30:45 AM
+        const timeOptions = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
+        const timeString = now.toLocaleTimeString('en-US', timeOptions);
+        
+        // Update the HTML elements
+        document.getElementById('currentDate').textContent = dateString;
+        document.getElementById('currentTime').textContent = timeString;
+      }
+      
+      // Update immediately
+      updateDateTime();
+      
+      // Update every second
+      setInterval(updateDateTime, 1000);
+      
+      // Code for highlighting active navigation item
+      const currentLocation = window.location.pathname;
+      const navLinks = document.querySelectorAll('.nav-item a');
+      
+      navLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        
+        if(linkPath === currentLocation || 
+           linkPath === currentLocation.split('/').pop() ||
+           (currentLocation.endsWith('/') && linkPath === 'index.html')) {
+          link.parentElement.classList.add('nav-item-active');
+        }
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get current page URL
+        const currentLocation = window.location.pathname;
+        
+        // Get all nav links
+        const navLinks = document.querySelectorAll('.nav-item a');
+        
+        // Check each link to see if it matches current page
+        navLinks.forEach(link => {
+            if(link.getAttribute('href') === currentLocation || 
+            link.getAttribute('href') === currentLocation.split('/').pop()) {
+            link.parentElement.classList.add('nav-item-active');
+            }
+        });
+        });
+  </script>
 </header>

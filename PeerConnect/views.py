@@ -75,8 +75,7 @@ def assessment_summary(request, assessment_id):
     context = {
         'assessment': assessment,
         'questions': questions,
-        'question_responses': question_responses,
-        'students': students
+        'question_responses': question_responses
     }
     return render(request, 'PeerConnect/peer_assessment_summary.html', context)
 
