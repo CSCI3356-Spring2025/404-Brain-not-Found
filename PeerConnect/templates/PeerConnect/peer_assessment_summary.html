@@ -17,13 +17,18 @@
                       <summary>{{ response.student }}</summary>
                       <p>{{ response.answer_text }}</p>
 
+                     
+                      <input type="checkbox" id="edit-toggle-{{ response.id }}" class="edit-toggle" />
+                      <label for="edit-toggle-{{ response.id }}" class="edit-label">Edit this response</label>
+                      <div class="edit-form">
                       <form method="POST" action="{% url 'edit_open_response' response.id %}">
                         {% csrf_token %}
-                        <label for="text_response_{{ response.id }}">Edit this response:</label><br>
                         <textarea id="text_response_{{ response.id }}" name="text_response" rows="3" cols="50">{{ response.answer_text }}</textarea><br>
                         <button type="submit">Save</button>
                       </form>
+                      </div>
                     </details>
+                    
                     {% endif %}
                   {% endfor %}
                 </div>

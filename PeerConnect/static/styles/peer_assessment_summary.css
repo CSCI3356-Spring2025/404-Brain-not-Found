@@ -179,3 +179,26 @@ textarea {
   padding: 30px;
   color: var(--primary-color);
 }
+
+.edit-toggle {
+  display: none;
+}
+
+.edit-label {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.edit-form {
+  display: none;
+  margin-top: 0.5em;
+}
+
+.edit-toggle:checked + .edit-label {
+  display: none; /* hide the link after click */
+}
+
+.edit-toggle:checked ~ .edit-form {
+  display: block; /* show the form */
+}
