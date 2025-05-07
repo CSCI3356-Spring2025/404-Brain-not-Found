@@ -1,3 +1,16 @@
+:root {
+    --primary-color: #1e3a5f;
+    --secondary-color: #e07a5f;
+    --accent-color: #f5e6da;
+    --light-bg: #f9f9f9;
+    --dark-text: #333;
+    --light-text: #fff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --input-border: #ddd;
+    --hover-bg: #f0f7ff;
+  }
+
 .course-form-wrapper {
     font-family: Arial, sans-serif;
     background: white;
@@ -81,28 +94,9 @@
 .course-form-wrapper .selected-students span {
     margin: 5px;
     padding: 5px;
-    background-color: #007bff;
     color: white;
     border-radius: 4px;
     display: inline-block;
-}
-
-/* Submit button */
-.course-form-wrapper button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    align-self: center;
-}
-
-/* Hover effect for button */
-.course-form-wrapper button:hover {
-    background-color: #0056b3;
 }
 
 /* Responsive tweaks */

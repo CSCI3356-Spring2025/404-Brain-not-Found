@@ -2,56 +2,110 @@
 
 {% block content %}
 
-    <div class="container">
+     <div class="parent-container">
+        
         <aside class="sidebar">
-            <h1 class="greeting">Welcome {{type}} {{user.first_name}}!</h1>
-            <h4>Summary Statistics</h4>
-        </aside>
-
-        <div class="items">
-            <h4>Courses</h4>
-            <div class="course-container">
-                {% for course in courses %}
-                    <form method="GET" action="{% url 'create' %}">
-                        <input type="hidden" name="course_id" value="{{ course.id }}">
-                        <button type="submit" class="course-card">
-                            {{ course.name }}
-                        </button>
-                    </form>
-                {% endfor %}
-                <a href="#course-popup">
-                    <button class="course-card new-course">+</button>
-                </a>
-            </div>
-            
-            <div class="assessment-container">
-                <h4>Upcoming Assessments</h4>
-                {% if assessments %}
+            <div class="title">Assessments</div>
+            {% if assessments %}
                     <ul>
                         {% for assessment in assessments %}
                             <li>
-                                <a href="{% url 'edit_assessment' assessment.id %}">{{ assessment.name }}</a>
-                                <p id="due-date">{{ assessment.due_date }}</p>
-                                <a href="{% url 'assessment_summary' assessment.id %}">View Results</a>
+                                <h3 class="card-title team-members">{{ assessment.name }}</h3>
+                                <p id="due-date"><span class="badge">{{ assessment.due_date }}</span></p>
+                                <div class="card-actions">
+                                    <a href="{% url 'view_assessment' assessment.id %}" class="btn btn-light btn-icon" title="Edit Assessment" >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </a>
+                                    <form method="GET" action="{% url 'assessment_summary' assessment.id %}">
+                                        <input type="hidden" name="assessment.id" value="{{ assessment.id }}">
+                                        <button type="submit" class="btn btn-light btn-icon" title="View Results">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                                
                             </li>
                         {% endfor %}
                     </ul>
                 {% else %}
                     <p>No assessments available.</p>
                 {% endif %}
-            </div>
-            <button class="create-assessments-btn"><a href="{% url 'create_assessment' %}" class="create-assessments-link"> Create Assessment</a></button>
-        </div>
-    </div>
+                <a href="{% url 'create_assessment' %}"><button class="btn btn-primary"> Create Assessment</button></a>
+        </aside>
+        <div class="main-content">
+            
+             <div class="content-header">
+                  <h1 class="course-title">Your Courses</h1>
+                  <h1 class="course-title">Welcome {{type}} {{user.first_name}}!</h1>
+                  <a href="#course-popup"><div class="btn btn-primary">Add Course</div></a>
+             </div>
+             
+              <div>
+                {% if courses %}
+                <div class="card-grid">
+                
+                    {% for course in courses%}
+                    
+                    <div class="card">
+                        
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3 class="card-title">{{course.name}}</h3>
+                                <div class="card-actions">
+                                    <form method="GET" action="{% url 'create' %}">
+                                        <input type="hidden" name="course_id" value="{{ course.id }}">
+                                        <button type="submit" class="btn btn-light btn-icon" title="View Details">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>        
+                            
+                            <div class="team-members">
+                                {% with students=course.students.all %}
+                                {% for student in students %}
+                                {% if student != request.user.userprofile %}
+                                <span class="team-member">{{student.user.first_name}}</span>
+                                {% endif %}
+                                {% endfor %}
+                                {% endwith %}
+                            </div>
+                            <div class="card-footer">
+                                {% for assessment in course.assessments.all %}
+                                    <span class="badge">{{ assessment.name }}</span>
+                                {% empty %}
+                                    <span class="text-muted">No assessments created</span>
+                                {% endfor %}
+                            </div>
+                    </div>
+                    </div>
+                    {% endfor %}
+        
+                {% else %}
+                    <section class="team-form-container">
+                        Welcome to PeerConnect! Currently, you have no courses created.
+                    </section>
+                {% endif %}
+              </div>
+            
+     </div>
 
-    <div id="course-popup" class="modal">
+     <div id="course-popup" class="modal">
         <div class="modal-content">
            <div class="modal-header">
               <h1 id="title">Create a Course</h1>
-              <a href="#" class="close">&times;</a> <!-- Close button -->
+              <a href="#" class="close">&times;</a> 
            </div>
            {% include 'PeerConnect/course_form.html' %}
         </div>
      </div>
-
 {% endblock %}
