@@ -14,17 +14,25 @@
             {% for subform in formset %}
                 <div class="question-form">
                     {{ subform.as_p }}
+        
+                    {% if subform.can_delete %}
+                        <label for="{{ subform.prefix }}-DELETE" style="color: #c0392b; font-weight: 500;">
+                            {{ subform.DELETE }} Remove this question
+                        </label>
+                    {% endif %}
                 </div>
             {% endfor %}
-        </div>
+        </div>        
 
     <button type="submit">Save Assessment</button>
     </form>
 
     <form method="get" action="">
-        <input type="hidden" name="extra" value="{{ formset.total_form_count|add:1 }}">
-        <button type="submit">Add Another Question</button>
+        <input type="hidden" name="form_count" value="{{ form_count }}">
+        <button type="submit" name="add_question" value="true">Add Another Question</button>
     </form>
+    
+    
     <form method="POST" action="{% url 'delete_entire_assessment' assessment.id %}" onsubmit="return confirm('Are you sure you want to delete this assessment permanently?');">
         {% csrf_token %}
         <button type="submit" class="delete-button">Delete Assessment</button>

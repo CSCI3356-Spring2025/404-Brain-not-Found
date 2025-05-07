@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth import logout
+from django.utils.timezone import now
 
 
     #updated to use StudentProfile and Prof profile
@@ -428,49 +429,92 @@ def create_assessment(request):
     }
     return render(request, "PeerConnect/create_assessment.html", context)
 
-
 @login_required
 def edit_assessment(request, assessment_id):
     professor = get_object_or_404(ProfessorProfile, user=request.user)
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
-    if assessment.professor == professor:
-        extra_forms = int(request.GET.get("extra", 0)) 
-        questions = Question.objects.filter(assessment=assessment).order_by('order')
-        QuestionFormSet = modelformset_factory(Question, form=QuestionForm, extra=0, can_delete=True)
+    # Authorization check
+    if assessment.professor != professor:
+        return redirect('unauthorized')
 
-        if request.method == 'POST':
-            form = AssessmentForm(request.POST, instance=assessment)
-            formset = QuestionFormSet(request.POST, queryset=questions)
+    existing_questions = Question.objects.filter(assessment=assessment).order_by("order")
+    existing_count = existing_questions.count()
 
-            if form.is_valid() and formset.is_valid():
-                form.save()
-                updated_questions = formset.save(commit=False)
+    if request.method == "GET" and "add_question" in request.GET:
+        num_questions = int(request.GET.get("form_count", existing_count)) + 1
+    elif request.method == "POST":
+        num_questions = int(request.POST.get("form_count", existing_count))
+    else:
+        num_questions = existing_count
 
-                for index, question in enumerate(updated_questions):
-                    question.assessment = assessment
-                    question.order = index + 1
+    extra = num_questions - existing_count
 
-                formset.save_m2m()
-                return redirect("professor_dashboard")
-            else:
-                return render(request, "PeerConnect/view_assessment.html", {
-                    'assessment': assessment,
-                    'form': form,
-                    'formset': formset,
-                    'courses': Course.objects.filter(professor=professor)
-                })
+    QuestionFormSetDynamic = modelformset_factory(
+        Question,
+        form=QuestionForm,
+        extra=extra,
+        can_delete=True
+    )
 
-        else:
-            form = AssessmentForm(instance=assessment)
-            formset = QuestionFormSet(queryset=questions)
+    if request.method == "POST":
+        form = AssessmentForm(request.POST, instance=assessment)
+        formset = QuestionFormSetDynamic(request.POST, queryset=existing_questions)
 
-        return render(request, "PeerConnect/edit_assessment.html", {
-            'assessment': assessment,
-            'form': form,
-            'formset': formset,
-            'courses': Course.objects.filter(professor=professor)
-        })
+        if "add_question" in request.POST:
+            # Pre-fill forms to preserve existing input
+            for i, subform in enumerate(formset.forms):
+                prefix = f'form-{i}'
+                for field_name in subform.fields:
+                    field_key = f'{prefix}-{field_name}'
+                    if field_key in request.POST and i < num_questions - 1:
+                        subform.initial[field_name] = request.POST.get(field_key)
+
+            context = {
+                'form': form,
+                'formset': formset,
+                'courses': Course.objects.filter(professor=professor),
+                'form_count': num_questions,
+                'assessment': assessment,
+            }
+            return render(request, "PeerConnect/edit_assessment.html", context)
+
+        if form.is_valid() and formset.is_valid():
+            form.save()
+
+            # Delete any removed questions
+            for deleted_form in formset.deleted_forms:
+                if deleted_form.instance.pk:
+                    deleted_form.instance.delete()
+
+            # Fix: define `questions`
+            questions = formset.save(commit=False)
+
+            # Save added or changed questions
+            next_order = existing_count + 1
+            for question in questions:
+                if not question.pk:
+                    question.order = next_order
+                    next_order += 1
+                question.assessment = assessment
+                question.save()
+
+            formset.save_m2m()
+
+            request.session["edit_questions"] = existing_count
+            return redirect("professor_dashboard")
+    else:
+        form = AssessmentForm(instance=assessment)
+        formset = QuestionFormSetDynamic(queryset=existing_questions)
+
+    context = {
+        'form': form,
+        'formset': formset,
+        'courses': Course.objects.filter(professor=professor),
+        'form_count': num_questions,
+        'assessment': assessment,
+    }
+    return render(request, "PeerConnect/edit_assessment.html", context)
 
 QuestionResponseFormSet = modelformset_factory(QuestionResponse, form=QuestionResponseForm, extra=0)
 
