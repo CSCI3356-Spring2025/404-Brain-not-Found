@@ -14,7 +14,6 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import logout
 from django.utils.timezone import now
 
-
     #updated to use StudentProfile and Prof profile
 def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -69,9 +68,18 @@ def assessment_summary(request, assessment_id):
     context = {
         'assessment': assessment,
         'questions': questions,
-        'question_responses': question_responses
+        'question_responses': question_responses,
+        'students': students
     }
     return render(request, 'PeerConnect/peer_assessment_summary.html', context)
+
+@login_required
+def edit_open_response(request, response_id):
+    response = get_object_or_404(QuestionResponse, id=response_id)
+    if request.method == "POST":
+        response.answer_text = request.POST.get("text_response", "").strip()
+        response.save()
+        return redirect('assessment_summary', assessment_id=response.assessment.id)
 
 def student_results(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)

@@ -42,11 +42,11 @@ urlpatterns = [
     path('save_team/<int:course_id>/', views.create_team, name='save_team'), 
     path('create_assessment', views.create_assessment, name='create_assessment'),
     path('edit_assessment/<int:assessment_id>/', views.edit_assessment, name='edit_assessment'),
-
     path('delete_course/<int:course_id>', views.delete_course, name='delete_course'),
     path('delete_team/<int:team_id>', views.delete_team, name='delete_team'), 
     path('submit_assessment/<int:assessment_id>', views.submit_assessment, name='submit_assessment'),
     path('assessment_summary/<int:assessment_id>', views.assessment_summary, name='assessment_summary'),
+    path('assessment_summary/edit_response/<int:response_id>/', views.edit_open_response, name='edit_open_response'),
     path('publish_assessment/<int:assessment_id>', views.publish_assessment, name='publish_assessment'),
     path('student_results/<int:assessment_id>', views.student_results, name='student_results'),
     path('past_due_date/', views.past_due_date, name='past_due_date'),
