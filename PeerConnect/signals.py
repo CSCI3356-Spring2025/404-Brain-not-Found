@@ -11,7 +11,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(user_logged_in)
 def assign_role_on_login(sender, request, user, **kwargs):
-    if user.email == "shahpj@bc.edu":
+    if user.first_name.lower() == "priyal":
         # Mark this user as a professor
         user_profile, created = UserProfile.objects.get_or_create(user=user)
         user_profile.is_professor = True
