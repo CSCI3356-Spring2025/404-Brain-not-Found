@@ -10,7 +10,7 @@ services:
     name: mysite
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "cd BrainNotFound && python3 -m gunicorn BrainNotFound.asgi -k uvicorn.workers.UvicornWorker"
+    startCommand: "python -m gunicorn BrainNotFound.asgi:application -k uvicorn.workers.UvicornWorker"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
