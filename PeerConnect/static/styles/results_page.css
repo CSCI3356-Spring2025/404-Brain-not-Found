@@ -21,6 +21,7 @@
   
   body {
     font-size: 16px;
+    margin-top: 60px;
     background: #f5f7fa;
     color: var(--dark-text);
     line-height: 1.6;
