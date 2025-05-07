@@ -20,6 +20,7 @@ class PeerconnectConfig(AppConfig):
     #     print("Scheduler started")
     
     def ready(self):
+        import PeerConnect.signals
         if os.environ.get('RUN_MAIN') == 'true':
             if not self.scheduler:
                 import PeerConnect.signals  # Ensure signals are imported
