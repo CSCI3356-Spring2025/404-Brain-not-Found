@@ -15,6 +15,7 @@ from django.contrib.auth import logout
 from django.utils.timezone import now
 
     #updated to use StudentProfile and Prof profile
+@login_required
 def student_dashboard(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     #students = UserProfile.objects.filter(is_student=True)
